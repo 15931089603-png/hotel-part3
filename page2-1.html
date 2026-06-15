@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>侦探推理 - 线索&证据</title>
+    <style>
+        :root {
+            --bg: #f5f0eb;
+            --card-bg: #ffffff;
+            --text: #2c2416;
+            --text-secondary: #8c7b6b;
+            --accent: #5b3e2e;
+            --accent-light: #8b6f5a;
+            --gold: #c9a96e;
+            --tag-bg-1: #fef9f2;
+            --tag-border-1: #e8d5c0;
+            --tag-bg-2: #f7f4f0;
+            --tag-border-2: #d9cebd;
+            --tag-bg-3: #faf7f2;
+            --tag-border-3: #e0d3c0;
+            --tag-bg-4: #fdf9f5;
+            --tag-border-4: #e5d8c5;
+            --danger: #c0392b;
+            --success: #2d7d46;
+            --shadow-soft: 0 2px 16px rgba(60, 40, 20, 0.06);
+            --shadow-medium: 0 8px 32px rgba(60, 40, 20, 0.10);
+            --shadow-heavy: 0 16px 48px rgba(40, 20, 0, 0.18);
+            --radius-sm: 8px;
+            --radius-md: 14px;
+            --radius-lg: 20px;
+            --radius-xl: 24px;
+            --font-serif: 'Georgia', 'Noto Serif SC', 'STSong', 'Songti SC', 'SimSun', 'KaiTi', serif;
+            --font-sans: 'Inter', 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(160deg, #f7f3ed 0%, #f0e8db 30%, #f5efe6 60%, #faf7f2 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            font-family: var(--font-sans);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 30px 20px 60px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* 背景装饰 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -120px;
+            right: -100px;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(180, 150, 120, 0.06) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -80px;
+            left: -120px;
+            width: 450px;
+            height: 450px;
+            background: radial-gradient(circle, rgba(160, 130, 100, 0.05) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 720px;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 28px;
+        }
+
+        /* ========== 顶部线索散布区域 ========== */
+        .clue-cluster-area {
+            position: relative;
+            width: 100%;
+            max-width: 620px;
+            height: 380px;
+            margin: 0 auto;
+            user-select: none;
+        }
+
+        /* 中心图标容器 */
+        .center-icon-wrapper {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            transition: transform var(--transition);
+            -webkit-tap-highlight-color: transparent;
+        }
+        .center-icon-wrapper:hover {
+            transform: translate(-50%, -50%) scale(1.06);
+        }
+        .center-icon-wrapper:active {
+            transform: translate(-50%, -50%) scale(0.96);
+        }
+
+        .icon-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 40% 35%, #fffefb 0%, #f5ece0 60%, #e8d9c5 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow:
+                0 6px 28px rgba(80, 50, 20, 0.13),
+                0 2px 8px rgba(80, 50, 20, 0.07),
+                inset 0 1px 0 rgba(255, 255, 255, 0.7);
+            position: relative;
+            transition: box-shadow var(--transition), transform var(--transition);
+            animation: iconPulse 4s ease-in-out infinite;
+        }
+        @keyframes iconPulse {
+            0%,
+            100% {
+                box-shadow: 0 6px 28px rgba(80, 50, 20, 0.13), 0 2px 8px rgba(80, 50, 20, 0.07), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+            }
+            50% {
+                box-shadow: 0 8px 36px rgba(80, 50, 20, 0.19), 0 3px 12px rgba(80, 50, 20, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 0 0 18px rgba(200, 160, 100, 0.06);
+            }
+        }
+        .center-icon-wrapper:hover .icon-circle {
+            box-shadow: 0 10px 40px rgba(80, 50, 20, 0.20), 0 4px 14px rgba(80, 50, 20, 0.11), inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 0 0 24px rgba(200, 160, 100, 0.09);
+        }
+        .icon-circle .emojis {
+            font-size: 52px;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            position: relative;
+            z-index: 1;
+            filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.10));
+        }
+        .icon-circle .emojis .bulb {
+            animation: bulbGlow 2.5s ease-in-out infinite;
+            display: inline-block;
+        }
+        @keyframes bulbGlow {
+            0%,
+            100% {
+                filter: brightness(1);
+                transform: translateY(0);
+            }
+            30% {
+                filter: brightness(1.25);
+                transform: translateY(-3px);
+            }
+            60% {
+                filter: brightness(1);
+                transform: translateY(0);
+            }
+            85% {
+                filter: brightness(1.18);
+                transform: translateY(-2px);
+            }
+        }
+
+        /* 图标下方灰色提示 */
+        .icon-hint {
+            font-size: 13px;
+            color: #b0a090;
+            text-align: center;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            transition: color var(--transition);
+            font-family: var(--font-serif);
+            font-style: italic;
+        }
+        .center-icon-wrapper:hover .icon-hint {
+            color: #8b7b65;
+        }
+
+        /* 散布词条 */
+        .clue-tag {
+            position: absolute;
+            padding: 9px 16px;
+            border-radius: 22px;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.4px;
+            cursor: default;
+            transition: all var(--transition);
+            white-space: nowrap;
+            z-index: 5;
+            font-family: var(--font-serif);
+            box-shadow: 0 2px 8px rgba(60, 40, 20, 0.05);
+            border: 1.5px solid transparent;
+            animation: tagFloat 6s ease-in-out infinite;
+        }
+        .clue-tag:hover {
+            transform: translateY(-3px) scale(1.04) !important;
+            box-shadow: 0 6px 18px rgba(60, 40, 20, 0.12) !important;
+            z-index: 15 !important;
+            border-color: rgba(160, 130, 90, 0.35) !important;
+        }
+
+        /* 各词条不同的浮动动画延迟 */
+        .clue-tag:nth-child(1) {
+            animation-delay: 0s;
+        }
+        .clue-tag:nth-child(2) {
+            animation-delay: 0.7s;
+        }
+        .clue-tag:nth-child(3) {
+            animation-delay: 1.4s;
+        }
+        .clue-tag:nth-child(4) {
+            animation-delay: 2.1s;
+        }
+        .clue-tag:nth-child(5) {
+            animation-delay: 2.8s;
+        }
+        .clue-tag:nth-child(6) {
+            animation-delay: 3.5s;
+        }
+        .clue-tag:nth-child(7) {
+            animation-delay: 4.2s;
+        }
+        .clue-tag:nth-child(8) {
+            animation-delay: 4.9s;
+        }
+
+        @keyframes tagFloat {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+            25% {
+                transform: translateY(-5px);
+            }
+            50% {
+                transform: translateY(-2px);
+            }
+            75% {
+                transform: translateY(-7px);
+            }
+        }
+
+        /* 各词条颜色变体 */
+        .clue-tag.tag-style-1 {
+            background: #fefaf5;
+            border-color: #e8d5bf;
+            color: #5c3d24;
+        }
+        .clue-tag.tag-style-2 {
+            background: #faf7f1;
+            border-color: #dbceb8;
+            color: #4a3522;
+        }
+        .clue-tag.tag-style-3 {
+            background: #fdf9f3;
+            border-color: #e2d3bc;
+            color: #5e3f28;
+        }
+        .clue-tag.tag-style-4 {
+            background: #fefcf8;
+            border-color: #e6d7c2;
+            color: #523820;
+        }
+        .clue-tag.tag-style-5 {
+            background: #fbf6ef;
+            border-color: #ddd0ba;
+            color: #4d3624;
+        }
+        .clue-tag.tag-style-6 {
+            background: #fdf8f2;
+            border-color: #e0cfb6;
+            color: #563a26;
+        }
+        .clue-tag.tag-style-7 {
+            background: #fefbf7;
+            border-color: #e5d5be;
+            color: #5b3d2a;
+        }
+        .clue-tag.tag-style-8 {
+            background: #fcf7f1;
+            border-color: #dcd0bb;
+            color: #4f3722;
+        }
+
+        /* 词条隐藏状态 */
+        .clue-tag.hidden-tag {
+            opacity: 0;
+            transform: scale(0.6) !important;
+            pointer-events: none;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ========== 题目区域 ========== */
+        .questions-section {
+            width: 100%;
+            max-width: 580px;
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 30px 32px 26px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(180, 150, 120, 0.15);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+        .questions-section.hidden-section {
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
+            max-height: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+            margin-bottom: -20px;
+            overflow: hidden;
+            border-width: 0;
+            box-shadow: none;
+        }
+
+        .question-block {
+            margin-bottom: 22px;
+        }
+        .question-block:last-of-type {
+            margin-bottom: 18px;
+        }
+        .question-label {
+            font-weight: 600;
+            font-size: 15px;
+            color: #3d2e1e;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 0.3px;
+        }
+        .question-label .q-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: #5b3e2e;
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        /* 填空题输入框 */
+        .fill-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0d5c5;
+            border-radius: var(--radius-sm);
+            font-size: 15px;
+            font-family: var(--font-sans);
+            color: var(--text);
+            background: #fdfbf7;
+            transition: all var(--transition);
+            outline: none;
+            letter-spacing: 0.4px;
+        }
+        .fill-input:focus {
+            border-color: #b8956e;
+            box-shadow: 0 0 0 4px rgba(180, 140, 100, 0.10);
+            background: #fff;
+        }
+        .fill-input::placeholder {
+            color: #c4b8a5;
+            font-style: italic;
+            letter-spacing: 0.3px;
+        }
+
+        /* 选择题选项 - 纵向排列 */
+        .options-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .option-item {
+            width: 100%;
+            position: relative;
+        }
+        .option-item input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+            pointer-events: none;
+        }
+        .option-item label {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 12px 18px;
+            border: 2px solid #e0d5c5;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            background: #fdfbf7;
+            transition: all var(--transition);
+            text-align: left;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            color: #4a3a2a;
+            width: 100%;
+        }
+        .option-item label:hover {
+            border-color: #c4a87d;
+            background: #fefcf8;
+            box-shadow: 0 2px 8px rgba(100, 70, 30, 0.06);
+        }
+        .option-item input[type="radio"]:checked+label {
+            border-color: #5b3e2e;
+            background: #f5ede3;
+            color: #3d2210;
+            font-weight: 600;
+            box-shadow: 0 0 0 4px rgba(90, 55, 30, 0.08);
+        }
+
+        /* 真相还原按钮 */
+        .reveal-btn {
+            display: block;
+            width: 100%;
+            max-width: 280px;
+            margin: 0 auto;
+            padding: 14px 28px;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            background: linear-gradient(135deg, #5b3e2e 0%, #3d2210 100%);
+            color: #f5e6d5;
+            box-shadow: 0 6px 20px rgba(60, 30, 10, 0.22);
+            transition: all var(--transition);
+            font-family: var(--font-serif);
+            -webkit-tap-highlight-color: transparent;
+            position: relative;
+            overflow: hidden;
+        }
+        .reveal-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.12);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        .reveal-btn:hover {
+            background: linear-gradient(135deg, #6b4a38 0%, #4d2c18 100%);
+            box-shadow: 0 10px 28px rgba(60, 30, 10, 0.30);
+            transform: translateY(-2px);
+            color: #fff;
+        }
+        .reveal-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 14px rgba(60, 30, 10, 0.18);
+        }
+        .reveal-btn:active::after {
+            width: 300px;
+            height: 300px;
+        }
+
+        /* ========== 结果区域 ========== */
+        .result-section {
+            width: 100%;
+            max-width: 580px;
+            display: none;
+            flex-direction: column;
+            gap: 20px;
+            animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        .result-section.visible {
+            display: flex;
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-banner {
+            padding: 22px 26px;
+            border-radius: var(--radius-lg);
+            text-align: center;
+            font-size: 17px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            line-height: 1.6;
+            box-shadow: var(--shadow-medium);
+            font-family: var(--font-serif);
+        }
+        .result-banner.result-perfect {
+            background: linear-gradient(135deg, #fefdf7 0%, #fdf5e6 100%);
+            border: 2px solid #d4b87a;
+            color: #4a3020;
+        }
+        .result-banner.result-close {
+            background: linear-gradient(135deg, #fefdf8 0%, #fdf7ed 100%);
+            border: 2px solid #c9b896;
+            color: #4d3422;
+        }
+        .result-banner.result-wrong {
+            background: linear-gradient(135deg, #fef9f8 0%, #fdf3f0 100%);
+            border: 2px solid #d4a09a;
+            color: #6b2a22;
+        }
+        .result-icon {
+            font-size: 40px;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .truth-reveal-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 28px 30px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(180, 150, 120, 0.15);
+            font-family: var(--font-serif);
+            line-height: 1.9;
+            letter-spacing: 0.3px;
+            color: #3d2e1e;
+        }
+        .truth-reveal-card h3 {
+            font-size: 19px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #3d2210;
+            letter-spacing: 0.6px;
+            text-align: center;
+            border-bottom: 2px solid #e8d8c0;
+            padding-bottom: 14px;
+        }
+        .truth-reveal-card p {
+            margin-bottom: 10px;
+            text-indent: 2em;
+            font-size: 15px;
+        }
+        .truth-reveal-card p:last-child {
+            margin-bottom: 0;
+            font-weight: 600;
+            color: #5b3020;
+            text-indent: 2em;
+        }
+
+        /* 进入第三幕按钮 */
+        .next-act-btn {
+            display: inline-block;
+            margin: 8px auto 0;
+            padding: 12px 34px;
+            font-size: 16px;
+            font-weight: 600;
+            border: 2px solid #5b3e2e;
+            border-radius: 30px;
+            background: transparent;
+            color: #5b3e2e;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 0.8px;
+            align-self: center;
+            font-family: var(--font-serif);
+            background: rgba(255,255,255,0.5);
+            backdrop-filter: blur(2px);
+        }
+        .next-act-btn:hover {
+            background: #5b3e2e;
+            color: #f5e6d5;
+            border-color: #5b3e2e;
+            box-shadow: 0 4px 12px rgba(60, 30, 10, 0.15);
+        }
+        .next-act-btn:active {
+            transform: scale(0.96);
+        }
+
+        /* ========== 弹窗 ========== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(30, 18, 8, 0.55);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(3px);
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-dialog {
+            background: #fffefb;
+            border-radius: var(--radius-xl);
+            width: 92%;
+            max-width: 600px;
+            max-height: 78vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-heavy);
+            position: relative;
+            padding: 36px 32px 28px;
+            transform: translateY(30px) scale(0.94);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(180, 150, 120, 0.2);
+        }
+        .modal-overlay.active .modal-dialog {
+            transform: translateY(0) scale(1);
+        }
+
+        .modal-close-btn {
+            position: absolute;
+            top: 14px;
+            left: 16px;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: none;
+            background: #f5ede3;
+            cursor: pointer;
+            font-size: 18px;
+            color: #7b6450;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition);
+            z-index: 5;
+            -webkit-tap-highlight-color: transparent;
+            line-height: 1;
+        }
+        .modal-close-btn:hover {
+            background: #e8d5c0;
+            color: #4a3020;
+            transform: rotate(90deg);
+        }
+        .modal-close-btn:active {
+            transform: rotate(90deg) scale(0.9);
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 0.6px;
+            color: #3d2210;
+            margin-bottom: 18px;
+            text-align: center;
+            font-family: var(--font-serif);
+        }
+        .modal-clue-list {
+            list-style: none;
+            padding: 0;
+        }
+        .modal-clue-list li {
+            padding: 9px 0 9px 22px;
+            position: relative;
+            font-size: 14.5px;
+            line-height: 1.7;
+            color: #4a3a2a;
+            border-bottom: 1px solid #f0e8da;
+            letter-spacing: 0.3px;
+        }
+        .modal-clue-list li::before {
+            content: '•';
+            position: absolute;
+            left: 2px;
+            top: 9px;
+            color: #b8956e;
+            font-weight: bold;
+            font-size: 18px;
+            line-height: 1;
+        }
+        .modal-clue-list li:last-child {
+            border-bottom: none;
+        }
+        .modal-clue-list li .arrow-hint {
+            color: #8b6f5a;
+            font-weight: 500;
+        }
+
+        /* 滚动条美化 */
+        .modal-dialog::-webkit-scrollbar {
+            width: 5px;
+        }
+        .modal-dialog::-webkit-scrollbar-track {
+            background: transparent;
+            border-radius: 10px;
+        }
+        .modal-dialog::-webkit-scrollbar-thumb {
+            background: #d5c5ad;
+            border-radius: 10px;
+        }
+        .modal-dialog::-webkit-scrollbar-thumb:hover {
+            background: #b8956e;
+        }
+
+        /* ========== 响应式 ========== */
+        @media (max-width: 600px) {
+            .clue-cluster-area {
+                height: 310px;
+                max-width: 100%;
+            }
+            .icon-circle {
+                width: 90px;
+                height: 90px;
+            }
+            .icon-circle .emojis {
+                font-size: 38px;
+            }
+            .clue-tag {
+                font-size: 11px;
+                padding: 6px 11px;
+                border-radius: 16px;
+            }
+            .icon-hint {
+                font-size: 11px;
+            }
+            .questions-section {
+                padding: 20px 18px 18px;
+                border-radius: var(--radius-md);
+            }
+            .question-label {
+                font-size: 13px;
+            }
+            .fill-input {
+                font-size: 13px;
+                padding: 10px 12px;
+            }
+            .option-item label {
+                font-size: 13px;
+                padding: 10px 14px;
+            }
+            .options-group {
+                gap: 8px;
+            }
+            .reveal-btn {
+                font-size: 14px;
+                padding: 12px 22px;
+                max-width: 220px;
+            }
+            .modal-dialog {
+                padding: 28px 16px 20px;
+                max-height: 85vh;
+                border-radius: var(--radius-lg);
+            }
+            .modal-title {
+                font-size: 17px;
+            }
+            .modal-clue-list li {
+                font-size: 13px;
+                padding: 7px 0 7px 18px;
+            }
+            .modal-close-btn {
+                top: 10px;
+                left: 10px;
+                width: 32px;
+                height: 32px;
+                font-size: 15px;
+            }
+            .truth-reveal-card {
+                padding: 18px 16px;
+            }
+            .truth-reveal-card h3 {
+                font-size: 16px;
+            }
+            .truth-reveal-card p {
+                font-size: 13px;
+                text-indent: 1.5em;
+            }
+            .result-banner {
+                font-size: 14px;
+                padding: 16px 18px;
+            }
+            .result-icon {
+                font-size: 30px;
+            }
+            .next-act-btn {
+                font-size: 14px;
+                padding: 10px 26px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+
+        <!-- ========== 线索散布区域 ========== -->
+        <div class="clue-cluster-area" id="clueClusterArea">
+            <!-- 散布词条 -->
+            <span class="clue-tag tag-style-1" style="top:6%; left:4%;">💧 水迹</span>
+            <span class="clue-tag tag-style-2" style="top:3%; left:31%;">📦 空餐盒</span>
+            <span class="clue-tag tag-style-3" style="top:10%; left:62%;">✨ 玻璃碎屑</span>
+            <span class="clue-tag tag-style-4" style="top:2%; left:78%;">🔨 铁质雕塑</span>
+            <span class="clue-tag tag-style-5" style="top:48%; left:2%;">🧤 橡胶手套</span>
+            <span class="clue-tag tag-style-6" style="top:55%; left:76%;">💉 针管</span>
+            <span class="clue-tag tag-style-7" style="top:72%; left:18%;">🧥 袖口污渍</span>
+            <span class="clue-tag tag-style-8" style="top:68%; left:60%;">☠️ 毒素反应</span>
+
+            <!-- 中心图标 -->
+            <div class="center-icon-wrapper" id="centerIcon" title="点击显示线索&证据">
+                <div class="icon-circle">
+                    <span class="emojis">
+                        <span style="font-size:1.05em;">🧠</span>
+                        <span class="bulb" style="font-size:0.85em; margin-left:-4px;">💡</span>
+                    </span>
+                </div>
+                <span class="icon-hint">点击显示"线索＆证据"</span>
+            </div>
+        </div>
+
+        <!-- ========== 题目区域 ========== -->
+        <div class="questions-section" id="questionsSection">
+            <!-- 第一题：填空题 -->
+            <div class="question-block">
+                <div class="question-label">
+                    <span class="q-num">1</span> 死者的死亡时间
+                </div>
+                <input
+                type="text"
+                class="fill-input"
+                id="answerTime"
+                placeholder="x：xx到x：xx之间"
+                autocomplete="off"
+                >
+            </div>
+
+            <!-- 第二题：选择题 -->
+            <div class="question-block">
+                <div class="question-label">
+                    <span class="q-num">2</span> 死者的死因
+                </div>
+                <div class="options-group" id="q2Options">
+                    <div class="option-item">
+                        <input type="radio" name="deathCause" id="q2a" value="A">
+                        <label for="q2a">A. 被重物砸伤致死</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" name="deathCause" id="q2b" value="B">
+                        <label for="q2b">B. 误食毒物中毒致死</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" name="deathCause" id="q2c" value="C">
+                        <label for="q2c">C. 注射过量药物致死</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" name="deathCause" id="q2d" value="D">
+                        <label for="q2d">D. 自杀</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 第三题：选择题 -->
+            <div class="question-block">
+                <div class="question-label">
+                    <span class="q-num">3</span> 凶手是___
+                </div>
+                <div class="options-group" id="q3Options">
+                    <div class="option-item">
+                        <input type="radio" name="murderer" id="q3a" value="A">
+                        <label for="q3a">A. 姚敏</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" name="murderer" id="q3b" value="B">
+                        <label for="q3b">B. 许安安</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" name="murderer" id="q3c" value="C">
+                        <label for="q3c">C. 余念</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" name="murderer" id="q3d" value="D">
+                        <label for="q3d">D. 刘启明</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" name="murderer" id="q3e" value="E">
+                        <label for="q3e">E. 殷锐（自杀）</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 真相还原按钮 -->
+            <button class="reveal-btn" id="revealBtn">🔍 真相还原</button>
+        </div>
+
+        <!-- ========== 结果区域（初始隐藏） ========== -->
+        <div class="result-section" id="resultSection">
+            <div class="result-banner" id="resultBanner"></div>
+            <div class="truth-reveal-card" id="truthRevealCard">
+                <h3>📜 真相重现</h3>
+                <p>五点二十分左右，刘启明潜入死者房间，在死者水杯中下毒后离开。</p>
+                <p>五点半左右，余念进入死者房间，用冰块和不规则的三棱锥摆件垫在铁质雕塑下，计划利用冰块融化后，雕塑重心不稳下落，砸中死者致其死亡。她带了橡胶手套，因此没有留下指纹，并在离开现场时带离了自己用于冻冰块的餐盒。</p>
+                <p>不巧的是，余念进入房间的一幕被刚刚离开还在附近的刘启明看到，后续他六点四十左右进入房间察觉了余念的计划打算嫁祸给她，于是他将死者的尸体摆放回座椅，等到雕塑下落砸中死者伪造出死者因砸伤致死的现场，并将沾有余念指纹的餐盒放回现场。</p>
+                <p>因此六点半左右许安安潜入死者房间时，只看到了死者的尸体，并没有看到死者被砸的现场。</p>
+                <p>所以真正的凶手是刘启明，死者在6：22到6：30之间因为饮用了被刘启明下毒的水，中毒死亡（误食毒物中毒致死）。</p>
+            </div>
+            <!-- 进入第三幕按钮（点击跳转page3.html） -->
+            <button class="next-act-btn" id="nextActBtn">进入第三幕 →</button>
+        </div>
+
+    </div>
+
+    <!-- ========== 弹窗：线索＆证据 ========== -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-dialog" id="modalDialog">
+            <button class="modal-close-btn" id="modalCloseBtn" title="关闭">✕</button>
+            <div class="modal-title">🔍 线索＆证据</div>
+            <ul class="modal-clue-list">
+                <li><strong>水迹：</strong>在书架上层边缘和书架前的地毯上有水迹</li>
+                <li><strong>空餐盒：</strong>表面提取到余念指纹，内部也残留的水渍</li>
+                <li><strong>玻璃碎屑：</strong>散落在地毯缝隙里，类似是水杯打碎后没有清理干净</li>
+                <li><strong>指纹：</strong>未提取到刘启明与余念的指纹</li>
+                <li><strong>铁质雕塑：</strong>与后脑钝器伤吻合，底部有少量血迹</li>
+                <li><strong>死者后脑伤口周围血迹极少</strong></li>
+                <li><strong>毒素反应：</strong>用醋滴入死者的唾液样本，出现颜色变化，属于典型毒素反应</li>
+                <li><strong>六点半左右：</strong>六点半左右，许安安不在房间</li>
+                <li><strong>姚敏上楼的录像：</strong>六点零二分上楼，六点二十二分从楼梯口下来</li>
+                <li><strong>刘启明上楼的录像：</strong>五点二十分和六点四十分，上楼两次</li>
+                <li><strong>橡胶手套：</strong>均为内侧干净，外侧有微量水渍，无指纹可提取</li>
+                <li><strong>针管：</strong>内部液体待查，针管为医用规格</li>
+                <li><strong>袖口沾有污渍的外套：</strong>袖口内侧有深色污渍，经醋滴测试变色（具有某种毒性）</li>
+                <li><span class="arrow-hint">"我走的时候他还好好的"</span> → 6点22分后遇害</li>
+                <li><span class="arrow-hint">"发现他已经倒在地上"</span> → 在六点半之前遇害</li>
+                <li><span class="arrow-hint">"没有注意到"</span> → 许安安并没有看到死者的具体死因</li>
+                <li><span class="arrow-hint">"那个餐盒，有人把它放回去了！"</span> → 余念认为有人在嫁祸给她</li>
+                <li><span class="arrow-hint">"他被砸死了"</span> → 刘启明注意到殷锐是被砸死的</li>
+                <li><span class="arrow-hint">"余念五点多进了殷锐房间，手里拿着餐盒"</span> → 刘启明注意到了余念拿了餐盒，并认为她是凶手</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // ========== DOM元素引用 ==========
+            const centerIcon = document.getElementById('centerIcon');
+            const modalOverlay = document.getElementById('modalOverlay');
+            const modalCloseBtn = document.getElementById('modalCloseBtn');
+            const modalDialog = document.getElementById('modalDialog');
+            const clueTags = document.querySelectorAll('.clue-tag');
+            const questionsSection = document.getElementById('questionsSection');
+            const resultSection = document.getElementById('resultSection');
+            const resultBanner = document.getElementById('resultBanner');
+            const revealBtn = document.getElementById('revealBtn');
+            const answerTimeInput = document.getElementById('answerTime');
+            const nextActBtn = document.getElementById('nextActBtn');
+
+            // ========== 弹窗交互 ==========
+            function openModal() {
+                modalOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                modalDialog.focus();
+            }
+
+            function closeModal() {
+                modalOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+                centerIcon.focus({ preventScroll: true });
+            }
+
+            centerIcon.addEventListener('click', (e) => {
+                e.stopPropagation();
+                openModal();
+            });
+
+            modalCloseBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                closeModal();
+            });
+
+            modalOverlay.addEventListener('click', function(e) {
+                if (e.target === modalOverlay) {
+                    closeModal();
+                }
+            });
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
+                    closeModal();
+                }
+            });
+
+            modalDialog.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+
+            // ========== 第一题判断逻辑 ==========
+            function isTimeAnswerCorrect(inputStr) {
+                if (!inputStr || !inputStr.trim()) return false;
+                let normalized = inputStr.replace(/：/g, ':').replace(/\s+/g, '');
+                const idx22 = normalized.indexOf('6:22');
+                const idx30 = normalized.indexOf('6:30');
+                if (idx22 !== -1 && idx30 !== -1 && idx22 < idx30) return true;
+                const idx22dot = normalized.indexOf('6.22');
+                const idx30dot = normalized.indexOf('6.30');
+                if (idx22dot !== -1 && idx30dot !== -1 && idx22dot < idx30dot) return true;
+                const idx22dash = normalized.indexOf('6-22');
+                const idx30dash = normalized.indexOf('6-30');
+                if (idx22dash !== -1 && idx30dash !== -1 && idx22dash < idx30dash) return true;
+                return false;
+            }
+
+            function getSelectedRadioValue(radioName) {
+                const selected = document.querySelector(`input[name="${radioName}"]:checked`);
+                return selected ? selected.value : null;
+            }
+
+            // ========== 真相还原按钮点击 ==========
+            revealBtn.addEventListener('click', function() {
+                const timeAnswer = answerTimeInput.value;
+                const q1Correct = isTimeAnswerCorrect(timeAnswer);
+                const q2Answer = getSelectedRadioValue('deathCause');
+                const q3Answer = getSelectedRadioValue('murderer');
+                const q2Correct = (q2Answer === 'B');
+                const q3Correct = (q3Answer === 'D');
+
+                const allThreeCorrect = q1Correct && q2Correct && q3Correct;
+                const q3CorrectButOtherWrong = q3Correct && !allThreeCorrect;
+                const q3Wrong = !q3Correct;
+
+                // 隐藏词条
+                clueTags.forEach(tag => {
+                    tag.classList.add('hidden-tag');
+                });
+
+                // 隐藏题目区域
+                questionsSection.classList.add('hidden-section');
+
+                // 滚动到结果区域
+                setTimeout(() => {
+                    resultSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 150);
+
+                // 构建结果提示
+                let bannerHTML = '';
+                let bannerClass = '';
+
+                if (allThreeCorrect) {
+                    bannerClass = 'result-perfect';
+                    bannerHTML = '<span class="result-icon">🏆</span> 全部答对！感谢你是超级大侦探！';
+                } else if (q3CorrectButOtherWrong) {
+                    bannerClass = 'result-close';
+                    bannerHTML = '<span class="result-icon">😼</span> 虽然有点小瑕疵，但是你抓到了真凶≡ω≡';
+                } else if (q3Wrong) {
+                    bannerClass = 'result-wrong';
+                    bannerHTML = '<span class="result-icon">😰</span> 糟糕Σ( ° △ °|||)︴，凶手搞错了！';
+                }
+
+                resultBanner.className = 'result-banner ' + bannerClass;
+                resultBanner.innerHTML = bannerHTML;
+
+                // 显示结果区域
+                resultSection.classList.add('visible');
+                resultSection.style.display = 'flex';
+
+                // 重触发动画
+                resultSection.style.animation = 'none';
+                resultSection.offsetHeight;
+                resultSection.style.animation = 'fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards';
+
+                // 禁用题目交互
+                revealBtn.disabled = true;
+                revealBtn.textContent = '✅ 已还原';
+                revealBtn.style.opacity = '0.65';
+                revealBtn.style.cursor = 'not-allowed';
+                revealBtn.style.pointerEvents = 'none';
+
+                answerTimeInput.disabled = true;
+                document.querySelectorAll('input[name="deathCause"], input[name="murderer"]').forEach(radio => {
+                    radio.disabled = true;
+                });
+                document.querySelectorAll('#q2Options .option-item label, #q3Options .option-item label').forEach(label => {
+                    label.style.opacity = '0.6';
+                    label.style.cursor = 'not-allowed';
+                    label.style.pointerEvents = 'none';
+                });
+            });
+
+            // ========== “进入第三幕”按钮跳转 ==========
+            nextActBtn.addEventListener('click', function() {
+                window.location.href = 'page3.html';
+            });
+
+            // 词条也可点击打开弹窗
+            clueTags.forEach(tag => {
+                tag.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    openModal();
+                });
+                tag.style.cursor = 'pointer';
+                tag.title = '点击查看完整线索';
+            });
+
+            console.log('🕵️ 侦探推理页面已更新：点击“进入第三幕”将跳转至 page3.html');
+        })();
+    </script>
+</body>
+</html>

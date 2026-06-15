@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第二幕 识途 - 民宿杀人事件</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        wood: {
+                            900: '#1a120b',
+                            800: '#2d1f14',
+                            700: '#3d2a1a',
+                            600: '#4d3520',
+                            500: '#5d4026',
+                        },
+                        // 第二幕使用青绿色系，与第一幕暖黄色区分
+                        jade: {
+                            500: '#2dd4bf',
+                            400: '#5eead4',
+                            300: '#99f6e4',
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['"Noto Serif SC"', 'serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow {
+                text-shadow: 0 0 10px rgba(45, 212, 191, 0.5);
+            }
+            .text-shadow-lg {
+                text-shadow: 0 0 20px rgba(45, 212, 191, 0.7), 0 0 40px rgba(45, 212, 191, 0.4);
+            }
+            .bg-wood-pattern {
+                background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWExMjBiIi8+PGxpbmUgeDE9IjAiIHkxPSIyMCIgeDI9IjEwMCIgeTI9IjIwIiBzdHJva2U9IiMyZDFmMTQiIHN0cm9rZS13aWR0aD0iMSIvPjxsaW5lIHgxPSIwIiB5MT0iNDAiIHgyPSIxMDAiIHkyPSI0MCIgc3Ryb2tlPSIjMmQxZjE0IiBzdHJva2Utd2lkdGg9IjEiLz48bGluZSB4MT0iMCIgeTE9IjYwIiB4Mj0iMTAwIiB5Mj0iNjAiIHN0cm9rZT0iIzJkMWYxNCIgc3Ryb2tlLXdpZHRoPSIxIi8+PGxpbmUgeDE9IjAiIHkxPSI4MCIgeDI9IjEwMCIgeTI9IjgwIiBzdHJva2U9IiMyZDFmMTQiIHN0cm9rZS13aWR0aD0iMSIvPjwvc3ZnPg==');
+            }
+            .jade-flicker {
+                animation: flicker 3s infinite alternate;
+            }
+            @keyframes flicker {
+                0%, 100% { opacity: 1; }
+                50% { opacity: 0.8; }
+                75% { opacity: 0.9; }
+                25% { opacity: 0.85; }
+            }
+            .fade-in {
+                animation: fadeIn 1.5s ease-in forwards;
+            }
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            .rain {
+                position: absolute;
+                width: 1px;
+                height: 100px;
+                background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0.3));
+                animation: rain 1s linear infinite;
+            }
+            @keyframes rain {
+                0% { transform: translateY(-100px); }
+                100% { transform: translateY(100vh); }
+            }
+        }
+    </style>
+</head>
+<body class="bg-wood-pattern min-h-screen text-gray-200 font-serif overflow-x-hidden relative">
+    <!-- 雨滴效果 -->
+    <div id="rain-container" class="fixed inset-0 pointer-events-none z-0"></div>
+    
+    <!-- 主容器 -->
+    <div class="container mx-auto px-4 py-12 md:py-20 relative z-10">
+        <div class="max-w-3xl mx-auto">
+            <!-- 幕标题 -->
+            <div class="text-center mb-12 fade-in" style="animation-delay: 0.2s;">
+                <h1 class="text-3xl md:text-5xl font-bold text-jade-400 text-shadow-lg mb-4 jade-flicker">
+                    第二幕 识途
+                </h1>
+                <div class="w-24 h-1 bg-jade-500 mx-auto rounded-full opacity-70"></div>
+            </div>
+            
+            <!-- 剧情介绍卡片 -->
+            <div class="bg-wood-800/80 backdrop-blur-sm rounded-lg p-6 md:p-8 mb-8 shadow-2xl border border-wood-600 fade-in" style="animation-delay: 0.5s;">
+                <div class="flex items-center mb-4">
+                    <i class="fa fa-search-plus text-jade-400 mr-3 text-xl"></i>
+                    <h2 class="text-xl md:text-2xl font-semibold text-jade-300">案件进展</h2>
+                </div>
+                <p class="leading-relaxed text-gray-300 mb-6">
+                    每个嫌疑人竟然都和死者有着千丝万缕的联系，看来只能通过搜证和审讯来识破凶手的诡计了。作为侦探，我一定要找出真正的凶手！
+                </p>
+                
+                <!-- 提示信息 -->
+                <div class="bg-wood-700/60 rounded-lg p-4 border-l-4 border-jade-500">
+                    <p class="text-jade-300 text-sm leading-relaxed">
+                        <i class="fa fa-exclamation-circle mr-2"></i>
+                        <strong>温馨提示：</strong>下个页面不要用手机自带的返回键，会直接退出去的(*/ω*)
+                    </p>
+                </div>
+            </div>
+            
+            <!-- 开始搜证按钮 -->
+            <div class="text-center fade-in" style="animation-delay: 0.8s;">
+                <a href="page2-0.html" class="inline-block bg-jade-500 hover:bg-jade-400 text-wood-900 font-bold py-4 px-12 rounded-lg text-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-jade-500/30">
+                    开始搜证
+                    <i class="fa fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 页脚 -->
+    <footer class="absolute bottom-4 w-full text-center text-gray-500 text-sm z-10">
+        <p>© 2026 民宿杀人事件 | 网页解密游戏</p>
+    </footer>
+    
+    <script>
+        // 创建雨滴效果
+        function createRain() {
+            const rainContainer = document.getElementById('rain-container');
+            const rainCount = 50;
+            
+            for (let i = 0; i < rainCount; i++) {
+                const rain = document.createElement('div');
+                rain.classList.add('rain');
+                rain.style.left = Math.random() * 100 + '%';
+                rain.style.animationDuration = (Math.random() * 0.5 + 0.5) + 's';
+                rain.style.animationDelay = Math.random() * 2 + 's';
+                rain.style.opacity = Math.random() * 0.5 + 0.2;
+                rainContainer.appendChild(rain);
+            }
+        }
+        
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            createRain();
+        });
+    </script>
+</body>
+</html>

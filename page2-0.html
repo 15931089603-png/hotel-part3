@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>民宿谋杀案 - 解密游戏</title>
+  <style>
+    :root {
+      --bg: #1a1a1a;
+      --text: #e0d8c8;
+      --accent: #c9a96e;
+      --wechat-bg: #ededed;
+      --wechat-self: #95ec69;
+      --board-bg: #1a3c17;
+      --paper: #f5f0e8;
+      --pin: #c0392b;
+      --sidebar-bg: #252520;
+      --sidebar-width: 320px;
+      --nav-height: 50px;
+      --highlight-bg: #ffe082;
+      --highlight-border: #f0a500;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      background: #0d0d0d;
+      color: var(--text);
+      height: 100vh;
+      overflow: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .guide-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.82); z-index: 9999; display: flex; align-items: center; justify-content: center; flex-direction: column; transition: opacity 0.5s; }
+    .guide-overlay.hidden { opacity: 0; pointer-events: none; }
+    .guide-card { background: #2a2218; border: 2px solid var(--accent); border-radius: 16px; padding: 30px 36px; max-width: 650px; width: 90%; text-align: center; color: #f0e6d2; }
+    .guide-card h2 { font-size: 1.8em; color: var(--accent); margin-bottom: 10px; }
+    .guide-sections { display: flex; flex-direction: column; gap: 16px; margin: 20px 0; text-align: left; }
+    .guide-item { background: #1e1a12; border-radius: 10px; padding: 16px; border:1px solid #4a3828; }
+    .guide-item .icon-text { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+    .guide-item .icon-text span { font-size: 1.2em; }
+    .guide-item h4 { color: var(--accent); font-size: 1em; }
+    .guide-item p { font-size: 0.9em; color: #c8b898; line-height: 1.5; }
+    .guide-btn { background: var(--accent); color: #1a1208; border: none; padding: 12px 40px; border-radius: 25px; font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 1em; }
+    .top-nav {
+      position: fixed; top:0; left:0; right: var(--sidebar-width); height: var(--nav-height);
+      background: #1c1c18; display: flex; align-items: center; z-index: 100;
+      border-bottom: 1px solid #3a3028; padding: 0 16px; gap:4px;
+    }
+    .top-nav .logo { font-weight: bold; color: var(--accent); margin-right: 16px; }
+    .nav-btn { background: transparent; border: none; color: #9a8a70; padding: 0 14px; height: 100%; cursor: pointer; font-size: 0.9em; }
+    .nav-btn.active { color: var(--accent); font-weight: bold; border-bottom: 3px solid var(--accent); }
+    .hint-btn { margin-left: auto; color: #c9a96e; font-size: 1.1em; }
+    .hint-btn.active-hint { color: #f0c060; text-shadow: 0 0 8px rgba(240,192,96,0.5); }
+    .main-content { position: fixed; top: var(--nav-height); left:0; right: var(--sidebar-width); bottom:0; overflow-y: auto; padding: 16px; }
+    .panel { display: none; animation: fadeIn 0.3s; }
+    .panel.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .interrogation-container { height: 100%; background: #e0ddd5; border-radius: 8px; overflow: hidden; }
+    .contact-list-screen, .chat-screen { height: 100%; display: flex; flex-direction: column; }
+    .contact-list-screen { background: #f5f5f5; }
+    .list-header { padding: 16px; font-weight: bold; background: #fafafa; text-align: center; color: #333; }
+    .contact-item { display: flex; align-items: center; padding: 14px 16px; cursor: pointer; border-bottom: 1px solid #eee; gap: 12px; }
+    .contact-avatar { width: 44px; height: 44px; border-radius: 6px; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+    .contact-name { font-weight: bold; color: #333; }
+    .contact-preview { font-size: 0.75em; color: #999; }
+    .chat-header { padding: 14px; background: #f8f8f8; text-align: center; font-weight: bold; color: #333; position: relative; }
+    .back-btn { position: absolute; left: 12px; background: none; border: none; font-size: 1.2em; cursor: pointer; }
+    .chat-messages { flex:1; overflow-y: auto; padding: 16px; background: #ededed; display: flex; flex-direction: column; gap: 10px; }
+    .chat-bubble { max-width: 75%; padding: 10px 14px; border-radius: 8px; font-size: 0.9em; line-height: 1.6; word-break: break-word; }
+    .chat-bubble.other { align-self: flex-start; background: #fff; color: #333; }
+    .chat-bubble.self { align-self: flex-end; background: var(--wechat-self); color: #1a1a1a; }
+    .sender-label { font-size: 0.7em; opacity: 0.7; margin-bottom: 4px; font-weight: bold; }
+    .chat-input-area { padding: 10px 16px; background: #f8f8f8; border-top:1px solid #d9d9d9; display: flex; flex-wrap: wrap; gap:8px; }
+    .question-option { background: #fff; border:1px solid #c9c9c9; padding:8px 14px; border-radius:18px; cursor:pointer; font-size:0.85em; }
+    .chat-divider { text-align: center; font-size:0.75em; color:#aaa; padding:8px 0; }
+    .clue-text, .evidence-text { cursor: pointer; transition: background 0.2s, border 0.2s; }
+    .clue-text.collected, .evidence-text.collected {
+      background: var(--highlight-bg);
+      border: 1px solid var(--highlight-border);
+      border-radius: 3px;
+      padding: 0 2px;
+      cursor: default;
+      animation: clueGlow 0.6s;
+    }
+    @keyframes clueGlow { 0%,100%{ box-shadow:0 0 0px var(--highlight-border); } 50%{ box-shadow:0 0 12px var(--highlight-border); } }
+    .hint-highlight {
+      background: rgba(255, 235, 150, 0.45);
+      border-bottom: 1px dashed #d4a853;
+      border-radius: 2px;
+      padding: 0 2px;
+      cursor: pointer;
+    }
+    .typing-indicator { align-self: flex-start; background: #fff; padding: 12px 16px; border-radius: 12px; display: flex; gap: 4px; margin-bottom: 4px; }
+    .typing-indicator span { width: 8px; height: 8px; background: #888; border-radius: 50%; animation: typingBounce 1.4s infinite ease-in-out; }
+    .typing-indicator span:nth-child(1) { animation-delay: 0s; } .typing-indicator span:nth-child(2) { animation-delay: 0.2s; } .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typingBounce { 0%,80%,100%{ transform: scale(0.6); opacity: 0.4; } 40%{ transform: scale(1); opacity: 1; } }
+    .investigation-container { display: flex; flex-direction: column; gap: 12px; padding-bottom: 20px; }
+    .location-accordion { background: #faf7f0; border-radius: 10px; border: 1px solid #d6c8a8; overflow: hidden; }
+    .location-title { background: #f0e8d5; padding: 14px 20px; font-weight: bold; font-size: 1em; color: #3a2e1e; cursor: pointer; border-bottom: 1px solid #d6c8a8; display: flex; justify-content: space-between; align-items: center; }
+    .location-title::after { content: '▼'; font-size: 0.8em; transition: transform 0.3s; }
+    .location-accordion.open .location-title::after { transform: rotate(180deg); }
+    .location-content { display: none; padding: 16px 20px; background: #fffef9; color: #2e2412; font-size: 0.95em; line-height: 1.9; word-break: break-word; }
+    .location-accordion.open .location-content { display: block; }
+    .sub-locations { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+    .sub-loc-btn { background: #e8dcc8; border: 1px solid #b8a070; color: #3a2e1e; padding: 6px 16px; border-radius: 20px; cursor: pointer; font-size: 0.85em; transition: 0.2s; }
+    .search-result { background: #fffef9; border-left: 4px solid #c9a96e; padding: 10px 14px; margin-top: 8px; border-radius: 4px; line-height: 1.8; }
+    .search-result img { max-width: 100%; border-radius: 8px; margin-top: 12px; display: block; }
+    .image-caption { text-align: center; font-size: 0.8em; color: #7a6a50; margin-top: 4px; font-style: italic; }
+    .relation-board { background: var(--board-bg); border-radius:8px; border:6px solid #3d2e1a; height:100%; display:flex; flex-direction:column; padding:12px; overflow-y:auto; }
+    .board-title { text-align:center; color:#e8dcc8; font-size:0.9em; margin-bottom:8px; }
+    .suspect-grid { display: grid; grid-template-columns: repeat(2,1fr); gap:12px; margin-bottom:12px; }
+    .suspect-card-board { background: var(--paper); border-radius:4px; padding:12px 8px; box-shadow:3px 3px 8px rgba(0,0,0,0.4); position:relative; text-align:center; font-weight:bold; color:#2a1a08; font-size:0.85em; min-height:80px; cursor:pointer; }
+    .suspect-card-board.victim-card { background:#f0e8d8; border:2px solid #8b0000; grid-column:span 2; font-size:1em; }
+    .pin { width:12px; height:12px; background:var(--pin); border-radius:50%; position:absolute; top:-6px; left:50%; transform:translateX(-50%); }
+    .motive-tag { font-size:0.65em; font-weight:normal; opacity:0.8; }
+    .placed-evidence { margin-top:6px; background:#fffef5; border:1px solid #c9a050; border-radius:3px; padding:2px 6px; font-size:0.7em; }
+    .evidence-pool-area { background:rgba(0,0,0,0.3); border-radius:6px; padding:8px; display:flex; flex-wrap:wrap; gap:6px; border:1px dashed #5a5a40; }
+    .evidence-chip { background:#fffef5; border:1px solid #b89a50; padding:6px 10px; border-radius:4px; font-size:0.75em; cursor:pointer; color:#2a1a08; }
+    .evidence-chip.selected { border:2px solid #f0a500; background:var(--highlight-bg); }
+    .sidebar { position: fixed; top:0; right:0; width: var(--sidebar-width); height:100%; background: var(--sidebar-bg); z-index:200; border-left:2px solid #3a3028; display:flex; flex-direction:column; transition: transform 0.3s; }
+    .sidebar.collapsed { transform: translateX(calc(var(--sidebar-width) - 36px)); }
+    .sidebar-toggle { position:absolute; left:-30px; top:50%; transform:translateY(-50%); width:30px; height:60px; background:#252520; border:2px solid #3a3028; border-right:none; border-radius:8px 0 0 8px; cursor:pointer; color:var(--accent); writing-mode:vertical-lr; display:flex; align-items:center; justify-content:center; font-size:0.8em; }
+    .sidebar-header { padding:14px; border-bottom:1px solid #3a3028; text-align:center; color:var(--accent); font-weight:bold; }
+    .sidebar-list { flex:1; overflow-y:auto; padding:10px; }
+    .sidebar-item { background:#1e1e1a; padding:10px 12px; margin-bottom:6px; font-size:0.8em; border-radius:4px; word-break:break-word; line-height:1.6; }
+    .sidebar-item.evidence { border-left:3px solid #e67e22; }
+    .sidebar-item.clue { border-left:3px solid #3498db; }
+    .sidebar-item .extend-text { font-size:0.75em; opacity:0.85; margin-top:6px; padding-left:8px; border-left:2px solid #5a6a40; }
+    .sidebar-footer { padding:12px; border-top:1px solid #3a3028; text-align:center; }
+    .progress-text { font-size:0.8em; color:#b8a878; }
+    .enter-reasoning-btn { background:#4a3a20; color:#8a7a60; border:none; padding:10px 20px; border-radius:20px; cursor:not-allowed; font-weight:bold; margin-top:6px; }
+    .enter-reasoning-btn.unlocked { background:var(--accent); color:#1a1208; cursor:pointer; animation:pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{box-shadow:0 0 10px rgba(200,160,80,0.4);} 50%{box-shadow:0 0 25px rgba(240,180,60,0.7);} }
+    .sidebar-float-btn { display: none; position: fixed; bottom: 20px; right: 20px; width: 56px; height: 56px; background: var(--accent); color: #1a1208; border-radius: 50%; box-shadow: 0 4px 16px rgba(0,0,0,0.4); z-index: 300; cursor: pointer; border: none; font-size: 1.4em; font-weight: bold; align-items: center; justify-content: center; transition: transform 0.2s; }
+    @media (max-width: 768px) {
+      :root { --sidebar-width: 0px; }
+      .top-nav { right:0; padding:0 8px; }
+      .main-content { right:0; }
+      .sidebar { width: 85vw; max-width: 340px; right: -85vw; transition: right 0.3s; transform: none; }
+      .sidebar.open { right: 0; }
+      .sidebar-toggle { display: none; }
+      .nav-btn { font-size:0.8em; padding:0 8px; }
+      .suspect-grid { grid-template-columns:1fr 1fr; }
+      .sidebar-float-btn { display: flex; }
+    }
+  </style>
+</head>
+<body>
+<div class="guide-overlay" id="guideOverlay"><div class="guide-card"><h2>🔍 民宿谋杀案</h2><div class="guide-sections"><div class="guide-item"><div class="icon-text"><span>💬</span><h4>审讯室</h4></div><p>与嫌疑人对话，获取证词，二次审讯的证词中会有线索，点击正确的线索文字标记高亮并收集。</p></div><div class="guide-item"><div class="icon-text"><span>🔎</span><h4>搜证与侦查</h4></div><p>点击不同地点搜索线索，点击文字标记高亮并收集证据。</p></div><div class="guide-item"><div class="icon-text"><span>🕸️</span><h4>人物关系图</h4></div><p>将收集到的证据拖拽到对应嫌疑人处，解锁审讯问题。</p></div><div class="guide-item"><div class="icon-text"><span>📋</span><h4>线索＆证据</h4></div><p>右侧面板显示你收集到的所有线索和证据，可随时查看。全部收集后，点击按键进入推理！</p></div></div><button class="guide-btn" onclick="closeGuide()">开始调查</button></div></div>
+<nav class="top-nav" id="topNav">
+  <span class="logo">🏠 民宿谋杀案</span>
+  <button class="nav-btn active" data-panel="panel-interrogation">💬审讯</button>
+  <button class="nav-btn" data-panel="panel-investigation">🔎搜证</button>
+  <button class="nav-btn" data-panel="panel-relation">🕸️关系图</button>
+  <button class="nav-btn hint-btn" id="hintButton">💡提示</button>
+</nav>
+<div class="main-content" id="mainContent">
+  <div class="panel active" id="panel-interrogation"><div class="interrogation-container" id="interrogationContainer"><div class="contact-list-screen" id="contactListScreen"><div class="list-header">📋 嫌疑人列表</div><div id="contactList"></div></div><div class="chat-screen" id="chatScreen" style="display:none;"><div class="chat-header"><button class="back-btn" id="backToContacts">← 返回</button><span id="chatHeaderName"></span></div><div class="chat-messages" id="chatMessages"></div><div class="chat-input-area" id="chatInputArea"></div></div></div></div>
+  <div class="panel" id="panel-investigation"><div class="investigation-container" id="investigationContainer"></div></div>
+  <div class="panel" id="panel-relation"><div class="relation-board" id="relationBoard"><div class="board-title">📌 殷锐谋杀案 · 关系图</div><div class="suspect-grid" id="suspectGrid"></div><div class="evidence-pool-area" id="evidencePoolArea"></div></div></div>
+</div>
+<div class="sidebar" id="sidebar"><div class="sidebar-toggle" id="sidebarToggle">线索&证据</div><div class="sidebar-header">📋 线索＆证据</div><div class="sidebar-list" id="sidebarList"></div><div class="sidebar-footer"><div class="progress-text">收集：<span id="progressCount">0</span>/19</div><button class="enter-reasoning-btn" id="enterReasoningBtn" disabled>进入推理 →</button></div></div>
+<button class="sidebar-float-btn" id="floatSidebarBtn" title="线索&证据">📋</button>
+
+<script>
+(function() {
+  const state = {
+    currentPanel: 'panel-interrogation', currentSuspect: 'yaomin', sidebarOpen: false,
+    collectedItems: {}, unlockedQuestions: { yaomin:[], xuanan:[], yunian:[], liuqiming:[] },
+    askedQuestions: { yaomin:new Set(), xuanan:new Set(), yunian:new Set(), liuqiming:new Set() },
+    evidencePlacements: {},
+    selectedEvidence: null,
+    xuananQ9Asked: false, xuananQ5Asked: false,
+    liuqimingQ8Asked: false, liuqimingQ4_10Asked: false,
+    activeConversation: null,
+    hintActive: false
+  };
+  const suspectNames = { yaomin:'姚敏', xuanan:'许安安', yunian:'余念', liuqiming:'刘启明' };
+  const suspectMotives = {
+    yaomin:'被死者威胁压榨，抢夺科研成果',
+    xuanan:'因揭露死者，遭粉丝网暴',
+    yunian:'爱犬被死者蓄意撞死',
+    liuqiming:'借贷炒股倾家荡产'
+  };
+  const evidenceSuspectMap = {
+    '⑥':'yaomin',
+    '⑤':'xuanan',
+    '⑨':'xuanan',
+    '①':'yunian',
+    '⑦': ['yunian', 'liuqiming'],
+    '⑧':'liuqiming',
+    '④':'liuqiming',
+    '⑩':'liuqiming',
+    '③': ['yunian', 'liuqiming']
+  };
+  const evidenceQuestionMap = {
+    '⑥':{s:'yaomin',q:'q_yaomin_1'},
+    '⑤':{s:'xuanan',q:'q_xuanan_1'},
+    '⑨':{s:'xuanan',q:'q_xuanan_2'},
+    '①':{s:'yunian',q:'q_yunian_1'},
+    '⑦':{s:'yunian',q:'q_yunian_1', extraCheck: (sid) => sid==='liuqiming' && (state.evidencePlacements['③']||[]).includes('liuqiming') && (state.evidencePlacements['⑦']||[]).includes('liuqiming')},
+    '⑧':{s:'liuqiming',q:'q_liuqiming_1'},
+    '④':{s:'liuqiming',q:'q_liuqiming_2'},
+    '⑩':{s:'liuqiming',q:'q_liuqiming_2'},
+    '③':{s:'yunian',q:'q_yunian_1', extraCheck: (sid) => sid==='liuqiming' && (state.evidencePlacements['③']||[]).includes('liuqiming') && (state.evidencePlacements['⑦']||[]).includes('liuqiming')}
+  };
+  const $ = (id) => document.getElementById(id);
+  const $guide = $('guideOverlay'), $sidebar = $('sidebar'), $sidebarToggle = $('sidebarToggle'), $floatBtn = $('floatSidebarBtn');
+  const $sidebarList = $('sidebarList'), $progressCount = $('progressCount'), $enterBtn = $('enterReasoningBtn');
+  const $contactListScreen = $('contactListScreen'), $chatScreen = $('chatScreen'), $chatMessages = $('chatMessages'), $chatInput = $('chatInputArea'), $chatHeaderName = $('chatHeaderName');
+  const $hintButton = $('hintButton');
+
+  window.closeGuide = () => { $guide.classList.add('hidden'); setTimeout(()=>$guide.style.display='none',500); };
+  function toggleSidebar() { if(window.innerWidth<=768) $sidebar.classList.toggle('open'); else { state.sidebarOpen=!state.sidebarOpen; $sidebar.classList.toggle('collapsed',!state.sidebarOpen); } }
+  $sidebarToggle.addEventListener('click', toggleSidebar); $floatBtn.addEventListener('click', toggleSidebar);
+
+  function addToSidebar(id,type,label,extend){ if(state.collectedItems[id]) return; state.collectedItems[id]={type,label,extend,timestamp:Date.now()}; renderSidebar(); updateProgress(); }
+  function renderSidebar(){ const items=Object.entries(state.collectedItems).sort((a,b)=>a[1].timestamp-b[1].timestamp); $sidebarList.innerHTML = items.length ? items.map(([id,it])=>`<div class="sidebar-item ${it.type}"><strong>${it.type==='evidence'?'🔎证据':'💡线索'}</strong> ${it.label}${it.extend?`<div class="extend-text">→ ${it.extend}</div>`:''}</div>`).join('') : '<div style="color:#6a6a50;text-align:center;padding:20px;">暂无</div>'; }
+  function updateProgress(){ const cnt=Object.keys(state.collectedItems).length; $progressCount.textContent=cnt; if(cnt>=19){$enterBtn.classList.add('unlocked');$enterBtn.disabled=false;} else{$enterBtn.classList.remove('unlocked');$enterBtn.disabled=true;} }
+  $enterBtn.addEventListener('click',()=>{ if(Object.keys(state.collectedItems).length>=19) window.location.href='page2-1.html'; });
+
+  function applyHintToElement(el){
+    if(state.hintActive && !el.classList.contains('collected')) el.classList.add('hint-highlight');
+    else el.classList.remove('hint-highlight');
+  }
+  function refreshAllHints(){ document.querySelectorAll('.clue-text, .evidence-text').forEach(el => applyHintToElement(el)); }
+  $hintButton.addEventListener('click', ()=>{ state.hintActive = !state.hintActive; if(state.hintActive) $hintButton.classList.add('active-hint'); else $hintButton.classList.remove('active-hint'); refreshAllHints(); });
+
+  document.querySelectorAll('.nav-btn').forEach(btn=>{ btn.addEventListener('click',()=>{ if(btn.id==='hintButton') return; document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); state.currentPanel=btn.dataset.panel; document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active')); $(btn.dataset.panel).classList.add('active'); if(btn.dataset.panel==='panel-investigation') renderInvestigation(); if(btn.dataset.panel==='panel-relation') renderRelationBoard(); }); });
+
+  const firstData = {
+    yaomin:[{from:'self',text:'请说一下你今天下午到晚上的时间线。'},{from:'other',text:'下午三点到六点在工坊做手工，基本没离开过。六点结束后去餐厅吃晚饭，想到老师没来，就帮他取了一份送到房间。'},{from:'self',text:'你进房间时看到了什么？'},{from:'other',text:'老师坐在桌前看书，我把饭放在桌上就出来了。前后也就一两分钟。'},{from:'self',text:'之后呢？'},{from:'other',text:'回餐厅继续吃饭，然后回房间休息。快八点的时候听到外面吵闹，才知道出事了。'},{from:'self',text:'你和殷锐关系如何？'},{from:'other',text:'就是普通的师生关系。他对我要求比较严格，但都是为了我好。'}],
+    xuanan:[{from:'self',text:'下午三点到六点你在哪里？'},{from:'other',text:'在工坊做手工，后来头有点疼就提前走了，大概五点半左右回房间休息。'},{from:'self',text:'晚餐呢？'},{from:'other',text:'不太舒服就没去吃，一直待在房间里。'},{from:'self',text:'你认识殷锐吗？'},{from:'other',text:'听说过，他是有名的教授，但我和他不熟。'},{from:'self',text:'你整个傍晚都没有离开过房间？'},{from:'other',text:'没有。'}],
+    yunian:[{from:'self',text:'下午三点到六点你在哪里？'},{from:'other',text:'在工坊学手工，一直待到六点结束。'},{from:'self',text:'中途有没有离开过？'},{from:'other',text:'可能去过一次洗手间吧，不太记得了。'},{from:'self',text:'六点之后呢？'},{from:'other',text:'去餐厅吃饭，然后回房间。快八点听到动静出来看。'},{from:'self',text:'你和殷锐有什么过节吗？'},{from:'other',text:'过节谈不上，不算很熟。'},{from:'self',text:'你的狗是怎么死的？'},{from:'other',text:'（表情微变）……被车撞的。'},{from:'self',text:'殷锐撞的，对吧？'},{from:'other',text:'是。但那是一个意外，已经过去了。'}],
+    liuqiming:[{from:'self',text:'请你复述一下今天下午到晚上的行程。'},{from:'other',text:'三点到六点在工坊做手工。中途我离开过一次，大概四点多吧，回房间拿了一下东西。六点去餐厅吃饭，然后回房间看书。大概八点听说出事了。'},{from:'self',text:'六点半到七点半之间你在哪里？'},{from:'other',text:'在房间，一个人。'},{from:'self',text:'有人能证明吗？'},{from:'other',text:'没有。'}]
+  };
+
+  const secondData = {
+    q_yaomin_1:{ question:'监控显示，你六点零二分端着晚餐上楼，但直到六点二十二分才从楼梯口下来。送个饭要不了二十分钟。', responses:[{from:'other',text:'（沉默）……'},{from:'self',text:'这二十分钟里发生了什么？',follow:true},{from:'other',text:'……我进去的时候他正在看文件，我把饭放下，他又开始说延毕的事。说今年的成果不够，论文还得改，让我继续帮他做新项目。'},{from:'self',text:'所以你们起了冲突。',follow:true},{from:'other',text:'他单方面训我。我忍不住顶了几句，他说如果我不配合，就别想毕业。我很愤怒，但我没有碰他。'},{from:'self',text:'那你为什么一开始说只待了一两分钟？',follow:true},{from:'other',text:'因为我说不清。监控拍到我在上面待了那么久，我怎么解释？我说只是被训话，你们会信吗？但我真的只是被训完就走了，<span class="clue-text" data-clue-id="clue_yaomin_1" data-label="我走的时候他还好好的" data-extend="6点22分后遇害">我走的时候他还好好的</span>。',clue:true}] },
+    q_xuanan_2:{ question:'我们在你包里发现了这个。一个针管，里面装了不明液体。你说你傍晚不舒服在房间休息，包里为什么带着这个？', responses:[{from:'other',text:'……那是我自己的药。'}] },
+    q_xuanan_1:{ question:'保洁员周姐说，六点半左右去你房间打扫，你那会儿根本不在房间。', responses:[{from:'other',text:'（长久的沉默）……我去找殷锐了。大概是六点半。'}] },
+    q_xuanan_extra:{ question:'针管里装的到底是什么？', responses:[{from:'other',text:'强效镇静剂。我本来是想趁他不备注射进去。半年前他的粉丝网暴我，我得了严重的抑郁症，每天靠吃药才能睡着。我在这个团里见到他，那些事全涌上来了。'},{from:'self',text:'所以你杀了他？',follow:true},{from:'other',text:'没有。我到的时候门没锁，推门进去，<span class="clue-text" data-clue-id="clue_xuanan_1" data-label="发现他已经倒在地上" data-extend="在六点半之前遇害">发现他已经倒在地上</span>。我探了鼻息，已经没有呼吸了。',clue:true},{from:'self',text:'你当时有没有看到他后脑的伤？或者注意到他身边有雕塑？',follow:true},{from:'other',text:'<span class="clue-text" data-clue-id="clue_xuanan_2" data-label="没有注意到" data-extend="许安安并没有看到死者的具体死因">没有注意到</span>，他面朝下趴在桌子上，我没有翻动他，也没有仔细看。我探了鼻息确认他死了就赶紧走了。我没杀人。',clue:true},{from:'self',text:'你没有声张？',follow:true},{from:'other',text:'我不敢。我拿着针管出现在一个死人房间里，怎么解释？我悄悄关上门回去了。我去的时候他已经死了，别的我什么都不知道。'}] },
+    q_yunian_1:{ question:'我们在殷锐房间里发现了这个餐盒，上面有你的指纹。', responses:[{from:'other',text:'（看到餐盒，瞪大眼睛，非常惊讶）这不可能。……我明明带走了。它不可能在殷锐房间里。'},{from:'self',text:'你说你带走了，所以你确实带着这个餐盒进入过殷锐的房间？',follow:true},{from:'other',text:'（死死盯着餐盒，表情困惑而震惊）……是的，我进去过。<span class="clue-text" data-clue-id="clue_yunian_1" data-label="那个餐盒，有人把它放回去了！" data-extend="余念认为有人在嫁祸给她">那个餐盒，有人把它放回去了！</span>',clue:true},{from:'self',text:'你去过殷锐的房间，但是门把手上并没有你的指纹，我们在餐厅垃圾桶里发现了橡胶手套，你带着手套进入死者房间？',follow:true},{from:'other',text:'（长久的沉默后，情绪渐渐平复）这些并不能证明是我杀了殷锐，如果你们没有可以直接证明我犯罪的证据，我拒绝回答问题。'}] },
+    q_liuqiming_1:{ question:'我从监控里看到，你五点多并没有回房间而是上了二楼，你当时上二楼，到底去做什么？', responses:[
+      {from:'other',text:'（沉默片刻）……好吧，我说实话。我是去找殷锐的。'},
+      {from:'self',text:'找他做什么？',follow:true},
+      {from:'other',text:'我之前因为一些事和他有过节，想找他谈谈。但我到楼梯口的时候看到余念进了他房间，就改了主意，下楼了。她当时鬼鬼祟祟的，她是不是就是凶手啊。'},
+      {from:'self',text:'这个再说，我们更关心的是六点四十分。监控拍到你在那个时间又上了二楼。',follow:true},
+      {from:'other',text:'……是。我上去了。我承认，我进了殷锐的房间。我想了想还是有应该和他谈清楚。'},
+      {from:'self',text:'既然你进了房间，为什么门把手上没有你的指纹？你戴了手套？',follow:true, conditionEvidence: ['③','⑦']},
+      {from:'other',text:'那是我在房间里挑拣从山上采摘的野果时带了忘记摘了。但是我推门进去的时候，看到殷锐倒在桌子上，他后脑有血，雕塑掉在地上<span class="clue-text" data-clue-id="clue_liuqiming_1" data-label="他被砸死了" data-extend="刘启明注意到殷锐是被砸死的">他已经被砸死了</span>。',clue:true},
+      {from:'self',text:'然后呢？',follow:true},
+      {from:'other',text:'我当时吓到了，赶紧走了。我怕被怀疑，所以一开始没说。但人不是我杀的——我进去的时候，他已经被砸死了。'},
+      {from:'self',text:'你怎么确定是被砸死的？',follow:true},
+      {from:'other',text:'雕塑上有血，他后脑有伤，不是砸死的是什么？你们应该去查那个放雕塑的人。<span class="clue-text" data-clue-id="clue_liuqiming_2" data-label="余念五点多进了殷锐房间，手里拿着餐盒" data-extend="刘启明注意到了余念拿了餐盒，并认为她是凶手">余念五点多进了殷锐房间，手里拿着餐盒</span>，形迹非常可疑，肯定是她干的。',clue:true}
+    ]},
+    q_liuqiming_2:{ question:'你的外套袖口上有一块污渍。我用醋滴上去，颜色变了——这是某种植物毒素的典型反应。我对死者的唾液样本做了同样的测试，出现了相同的颜色变化。你怎么解释？', responses:[{from:'other',text:'……那是山上采药的时候沾到的。至于别的，我不知道，跟我没关系。'}] }
+  };
+
+  function renderContactList(){ $('contactList').innerHTML = Object.entries(suspectNames).map(([id,name])=>`<div class="contact-item" data-suspect="${id}"><div class="contact-avatar" style="background:${id==='yaomin'?'#5b7fa5':id==='xuanan'?'#9b6fa3':id==='yunian'?'#6d8c6d':'#b87a5c'}">${name[0]}</div><div class="contact-info"><div class="contact-name">${name}</div><div class="contact-preview">${suspectMotives[id].substring(0,12)}…</div></div></div>`).join(''); $('contactList').addEventListener('click',e=>{ const item=e.target.closest('.contact-item'); if(item) openChat(item.dataset.suspect); }); }
+  function openChat(sid){ state.currentSuspect=sid; state.activeConversation=null; $contactListScreen.style.display='none'; $chatScreen.style.display='flex'; $chatHeaderName.textContent=suspectNames[sid]; renderChatContent(sid); }
+  $('backToContacts').addEventListener('click',()=>{ $chatScreen.style.display='none'; $contactListScreen.style.display='flex'; });
+
+  function appendBubble(from,text,clue=false){
+    const div=document.createElement('div'); div.className='chat-bubble '+(from==='self'?'self':'other');
+    div.innerHTML=(from==='self'?'<div class="sender-label">侦探</div>':'<div class="sender-label">'+suspectNames[state.currentSuspect]+'</div>')+text;
+    $chatMessages.appendChild(div);
+    if(clue) bindClueClicks(div);
+    scrollToBottom();
+  }
+  function appendDivider(t){ const d=document.createElement('div'); d.className='chat-divider'; d.textContent=t; $chatMessages.appendChild(d); scrollToBottom(); }
+  function bindClueClicks(container){
+    container.querySelectorAll('.clue-text, .evidence-text').forEach(span=>{
+      const id = span.dataset.clueId || span.dataset.evId;
+      if(state.collectedItems[id]){ span.classList.add('collected'); return; }
+      span.addEventListener('click',()=>{
+        if(state.collectedItems[id]) return;
+        span.classList.add('collected');
+        addToSidebar(id, span.dataset.clueId?'clue':'evidence', span.dataset.label, span.dataset.extend);
+      });
+      applyHintToElement(span);
+    });
+  }
+  function scrollToBottom(){ $chatMessages.scrollTop = $chatMessages.scrollHeight; }
+  function showTypingIndicator(){ const div=document.createElement('div'); div.className='typing-indicator'; div.innerHTML='<span></span><span></span><span></span>'; $chatMessages.appendChild(div); scrollToBottom(); }
+  function removeTypingIndicator(){ const indicator=$chatMessages.querySelector('.typing-indicator'); if(indicator) indicator.remove(); }
+
+  function renderChatContent(sid){
+    $chatMessages.innerHTML=''; $chatInput.innerHTML='';
+    firstData[sid].forEach(m=>appendBubble(m.from,m.text));
+    const asked = state.askedQuestions[sid];
+    if(asked.size > 0) appendDivider('— 二次审讯 —');
+    asked.forEach(q=>{
+      const data=secondData[q]; if(!data) return;
+      appendBubble('self',data.question);
+      data.responses.forEach(r=>{
+        if(r.follow) appendBubble('self',r.text);
+        else appendBubble('other',r.text, r.clue||false);
+      });
+    });
+    if(sid==='xuanan' && state.xuananQ9Asked && state.xuananQ5Asked && !asked.has('q_xuanan_extra')){
+      state.askedQuestions['xuanan'].add('q_xuanan_extra');
+      const extra=secondData['q_xuanan_extra'];
+      appendBubble('self',extra.question);
+      extra.responses.forEach(r=>{
+        if(r.follow) appendBubble('self',r.text);
+        else appendBubble('other',r.text, r.clue||false);
+      });
+    }
+    renderInputOptions(sid);
+    scrollToBottom();
+  }
+
+  function checkEvidenceCondition(conditionList){
+    if(!conditionList) return true;
+    return conditionList.every(evId => {
+      const placements = state.evidencePlacements[evId] || [];
+      return placements.includes(state.currentSuspect);
+    });
+  }
+
+  async function startConversation(qKey){
+    if(state.activeConversation) return;
+    const sid=state.currentSuspect;
+    const data=secondData[qKey]; if(!data) return;
+    const steps = data.responses.filter(r=>!r.system);
+    state.activeConversation = { qKey, steps, index: 0, sid };
+    renderInputOptions(sid);
+    appendBubble('self', data.question);
+    await processNextStep();
+  }
+  async function processNextStep(){
+    const conv=state.activeConversation; if(!conv) return;
+    const { steps, index } = conv;
+    if(index >= steps.length){ finishConversation(); return; }
+    const step = steps[index];
+    if(step.conditionEvidence && !checkEvidenceCondition(step.conditionEvidence)){
+      appendDivider('线索不足，无法继续追问');
+      finishConversation();
+      return;
+    }
+    if(step.from === 'other'){
+      showTypingIndicator();
+      await new Promise(r=>setTimeout(r, 2000+Math.random()*1000));
+      removeTypingIndicator();
+      appendBubble('other', step.text, step.clue||false);
+      conv.index = index + 1;
+      await new Promise(r=>setTimeout(r,300));
+      if(conv.index < steps.length && steps[conv.index].from === 'self'){
+        renderInputOptions(conv.sid);
+      } else { await processNextStep(); }
+    }
+  }
+  function continueConversation(followText){
+    const conv=state.activeConversation; if(!conv) return;
+    const step = conv.steps[conv.index];
+    if(step && step.from==='self' && step.follow){
+      appendBubble('self', step.text);
+      conv.index++;
+      processNextStep();
+      renderInputOptions(conv.sid);
+    }
+  }
+  function finishConversation(){
+    const conv=state.activeConversation; if(!conv) return;
+    const sid=conv.sid;
+    state.askedQuestions[sid].add(conv.qKey);
+    if(conv.qKey==='q_xuanan_2') state.xuananQ9Asked=true;
+    if(conv.qKey==='q_xuanan_1') state.xuananQ5Asked=true;
+    if(conv.qKey==='q_liuqiming_1') state.liuqimingQ8Asked=true;
+    if(conv.qKey==='q_liuqiming_2') state.liuqimingQ4_10Asked=true;
+    state.activeConversation = null;
+    if(sid==='xuanan' && state.xuananQ9Asked && state.xuananQ5Asked && !state.askedQuestions['xuanan'].has('q_xuanan_extra')){
+      setTimeout(()=> startConversation('q_xuanan_extra'), 500);
+    } else { renderInputOptions(sid); }
+  }
+
+  function renderInputOptions(sid){
+    $chatInput.innerHTML='';
+    if(state.activeConversation && state.activeConversation.sid === sid){
+      const conv=state.activeConversation;
+      const next=conv.steps[conv.index];
+      if(next && next.from==='self' && next.follow){
+        const btn=document.createElement('button'); btn.className='question-option';
+        btn.textContent = next.text.length>25? next.text.substring(0,23)+'…' : next.text;
+        btn.addEventListener('click',()=> continueConversation(next.text));
+        $chatInput.appendChild(btn); return;
+      } else { $chatInput.innerHTML='<span style="color:#aaa;">…</span>'; return; }
+    }
+    const available = state.unlockedQuestions[sid].filter(q=>!state.askedQuestions[sid].has(q));
+    if(sid==='xuanan' && state.xuananQ9Asked && state.xuananQ5Asked && !state.askedQuestions['xuanan'].has('q_xuanan_extra')){
+      available.push('q_xuanan_extra');
+    }
+    if(!available.length){ $chatInput.innerHTML='<span style="color:#aaa;">暂无新问题</span>'; return; }
+    available.forEach(qKey=>{
+      const btn=document.createElement('button'); btn.className='question-option';
+      btn.textContent = secondData[qKey]?.question.substring(0,22)+'…';
+      btn.addEventListener('click',()=> startConversation(qKey));
+      $chatInput.appendChild(btn);
+    });
+  }
+
+  function unlockQuestion(suspect,qKey){ if(!state.unlockedQuestions[suspect].includes(qKey)){ state.unlockedQuestions[suspect].push(qKey); if(state.currentPanel==='panel-interrogation' && $chatScreen.style.display==='flex' && state.currentSuspect===suspect) renderInputOptions(suspect); } }
+
+  const invData = {
+    '现场':{sub:{'书架':'书架正对死者座椅位置的上层边缘有少量<span class="evidence-text" data-ev-id="water" data-type="clue" data-label="水迹" data-extend="在书架上层边缘和书架前的地毯上有水迹">水迹</span>，书架下方的地毯有大片水渍，地毯纤维潮湿。','桌子':'死者餐桌上放有一份没吃完的晚餐、桌子后方掉落了一个<span class="evidence-text" data-ev-id="①" data-type="evidence" data-label="①空餐盒" data-extend="表面提取到余念指纹，内部也残留的水渍">空餐盒</span>。','地毯':'在地毯纤维中发现少量透明<span class="evidence-text" data-ev-id="②" data-type="evidence" data-label="②玻璃碎屑" data-extend="散落在地毯缝隙里，类似是水杯打碎后没有清理干净">玻璃碎屑</span>，桌子前方发现一个掉落的铁质雕塑。','房门':'死者房间门把手为黄铜材质，表面提取到以下<span class="evidence-text" data-ev-id="③" data-type="evidence" data-label="③指纹" data-extend="未提取到刘启明与余念的指纹">指纹</span>：殷锐本人、民宿老板、姚敏、许安安。未提取到刘启明与余念的指纹。','尸体':{text:'死者殷锐被发现于民宿二楼房间内，面朝下倒在餐桌上。后脑有明显被重物砸过的痕迹，尸体旁散落一个<span class="evidence-text" data-ev-id="sculpture" data-type="clue" data-label="铁质雕塑" data-extend="与后脑钝器伤吻合，底部有少量血迹">铁质雕塑</span>（原本应放置在置物架上）。<span class="evidence-text" data-ev-id="blood_clue" data-type="clue" data-label="死者后脑伤口周围血迹极少">死者后脑伤口周围血迹极少</span>。用醋滴入死者的唾液样本，出现颜色变化，属于典型<span class="evidence-text" data-ev-id="④" data-type="evidence" data-label="毒素反应" data-extend="用醋滴入死者的唾液样本，出现颜色变化，属于典型毒素反应">毒素反应</span>。',image:'picture2-1.jpg',caption:'作者倾情手绘现场图'}}},
+    '人证':{sub:{'保洁阿姨':'保洁阿姨：我下午主要在打扫公共区域。大概<span class="evidence-text" data-ev-id="⑤" data-type="evidence" data-label="⑤六点半左右" data-extend="六点半左右，许安安不在房间">六点半左右</span>，我去二楼打扫许安安的房间，她当时不在屋里，打扫好之后我就下楼吃饭了，没再去过二楼。','民宿老板':'殷锐这个人挺有意思的，聊起天来什么都能谈。他前两天听说我常去后山钓鱼，特别感兴趣，问我能不能带他去。今天下午大家去工坊学手艺，他就来找我，说想跟我去钓鱼。我想着反正他也交了钱，客人有兴致就带他去吧。我们大概三点十分出发的，在后山溪边钓了一下午，五点四十左右一起回来的。这事我没跟其他人提过，他好像也没说。回来之后他去自己房间，我就去厨房盯着晚餐了。后来七点五十我上楼送水果，才发现出事了。'}},
+    '走廊监控':{text:'监控录像显示：<br><span class="evidence-text" data-ev-id="⑥" data-type="evidence" data-label="⑥姚敏上楼的录像" data-extend="六点零二分上楼，六点二十二分从楼梯口下来">姚敏六点零二分上楼，六点二十二分从楼梯口下来</span>。<br><span class="evidence-text" data-ev-id="⑧" data-type="evidence" data-label="⑧刘启明上楼的录像" data-extend="四点半和六点四十，上楼两次">刘启明五点二十分和六点四十分，上楼两次</span>。'},
+    '餐厅':{text:'在厨余垃圾桶中发现<span class="evidence-text" data-ev-id="⑦" data-type="evidence" data-label="⑦橡胶手套" data-extend="均为内侧干净，外侧有微量水渍，无指纹可提取">两对橡胶手套</span>，均为内侧干净，外侧有微量水渍，无指纹可提取。'},
+    '姚敏的房间':{text:'没有什么可疑的东西捏≡ω≡'},'许安安的房间':{text:'许安安随身包中发现<span class="evidence-text" data-ev-id="⑨" data-type="evidence" data-label="⑨针管" data-extend="内部液体待查，针管为医用规格">针管（含不明液体）</span>，针管为医用规格。'},'余念的房间':{text:'没有什么可疑的东西捏≡ω≡'},'刘启明的房间':{text:'在刘启明行李中发现一件<span class="evidence-text" data-ev-id="⑩" data-type="evidence" data-label="⑩袖口沾有污渍的外套" data-extend="袖口内侧有深色污渍，经醋滴测试变色（具有某种毒性）">袖口沾有污渍的外套</span>，袖口内侧有深色污渍，经醋滴测试变色。'},
+    '酒店平面图':{image:'picture2-2.jpg',caption:'民宿平面图'}
+  };
+
+  function renderInvestigation(){ const container=$('investigationContainer'); container.innerHTML=''; Object.entries(invData).forEach(([locName,locData])=>{ const accordion=document.createElement('div'); accordion.className='location-accordion'; const title=document.createElement('div'); title.className='location-title'; title.textContent=locName; const content=document.createElement('div'); content.className='location-content'; title.addEventListener('click',()=>{accordion.classList.toggle('open');}); if(locData.sub){ const subDiv=document.createElement('div'); subDiv.className='sub-locations'; Object.entries(locData.sub).forEach(([subName,subData])=>{ const btn=document.createElement('button'); btn.className='sub-loc-btn'; btn.textContent=subName; btn.addEventListener('click',(e)=>{ e.stopPropagation(); if(typeof subData==='string') showSearchResult(content,subData); else showSearchResult(content,subData.text||'',subData.image,subData.caption); }); subDiv.appendChild(btn); }); content.appendChild(subDiv); } else if(locData.text||locData.image){ title.addEventListener('click',()=>{ if(accordion.classList.contains('open')&&!content.querySelector('.search-result')) showSearchResult(content,locData.text||'',locData.image,locData.caption); }); } accordion.appendChild(title); accordion.appendChild(content); container.appendChild(accordion); }); }
+  function showSearchResult(container,text,img,caption){ const existing=container.querySelector('.search-result'); if(existing) existing.remove(); const div=document.createElement('div'); div.className='search-result'; let html=text||''; if(img){ html+=`<img src="${img}" alt="${caption||'图片'}" onerror="this.style.display='none'">`; if(caption) html+=`<div class="image-caption">${caption}</div>`; } div.innerHTML=html; container.appendChild(div); div.querySelectorAll('.evidence-text').forEach(span=>{ if(state.collectedItems[span.dataset.evId]){ span.classList.add('collected'); return; } span.addEventListener('click',(e)=>{ e.stopPropagation(); span.classList.add('collected'); addToSidebar(span.dataset.evId, span.dataset.type, span.dataset.label, span.dataset.extend); if(state.currentPanel==='panel-relation') renderRelationBoard(); }); applyHintToElement(span); }); }
+
+  function renderRelationBoard(){
+    const grid=$('suspectGrid'),pool=$('evidencePoolArea');
+    grid.innerHTML='';
+    const victim=document.createElement('div'); victim.className='suspect-card-board victim-card'; victim.innerHTML='<div class="pin"></div>殷锐（死者）'; grid.appendChild(victim);
+    ['yaomin','xuanan','yunian','liuqiming'].forEach(sid=>{
+      const card=document.createElement('div'); card.className='suspect-card-board'; card.dataset.suspect=sid;
+      card.innerHTML=`<div class="pin"></div>${suspectNames[sid]}<div class="motive-tag">${suspectMotives[sid]}</div>`;
+      Object.entries(state.evidencePlacements).forEach(([evId, placements]) => {
+        if(placements.includes(sid) && state.collectedItems[evId]){
+          const tag=document.createElement('div'); tag.className='placed-evidence'; tag.textContent=state.collectedItems[evId].label; card.appendChild(tag);
+        }
+      });
+      card.addEventListener('click',()=>{
+        if(state.selectedEvidence){
+          const evId=state.selectedEvidence;
+          const validTargets = Array.isArray(evidenceSuspectMap[evId]) ? evidenceSuspectMap[evId] : [evidenceSuspectMap[evId]];
+          if(validTargets.includes(sid)){
+            if(!state.evidencePlacements[evId]) state.evidencePlacements[evId] = [];
+            if(!state.evidencePlacements[evId].includes(sid)){
+              state.evidencePlacements[evId].push(sid);
+              checkUnlock(evId,sid);
+            }
+            renderRelationBoard();
+            if(state.currentPanel==='panel-interrogation' && state.currentSuspect===sid) renderInputOptions(sid);
+          } else {
+            alert('证据与嫌疑人不对应！');
+          }
+          state.selectedEvidence=null;
+          renderRelationBoard();
+        }
+      });
+      grid.appendChild(card);
+    });
+    const allEv=['①','②','③','④','⑤','⑥','⑦','⑧','⑨','⑩'];
+    const unplaced = allEv.filter(id => {
+      if (!state.collectedItems[id]) return false;
+      const placements = state.evidencePlacements[id] || [];
+      const maxPlacements = Array.isArray(evidenceSuspectMap[id]) ? evidenceSuspectMap[id].length : 1;
+      return placements.length < maxPlacements;
+    });
+    pool.innerHTML='<span style="color:#8a7a60;font-size:0.7em;">证据卡片（点击选中，再点嫌疑人）</span>';
+    unplaced.forEach(evId=>{
+      const chip=document.createElement('div'); chip.className='evidence-chip'+(state.selectedEvidence===evId?' selected':''); chip.textContent=state.collectedItems[evId].label;
+      chip.addEventListener('click',(e)=>{ e.stopPropagation(); state.selectedEvidence=state.selectedEvidence===evId?null:evId; renderRelationBoard(); });
+      pool.appendChild(chip);
+    });
+    if(!unplaced.length && Object.keys(state.evidencePlacements).length===0) pool.innerHTML+='<span style="color:#8a7a60;">收集证据后出现卡片</span>';
+  }
+  function checkUnlock(evId,sid){
+    const map = evidenceQuestionMap[evId];
+    if(!map) return;
+    if(map.q==='q_yunian_1'){
+      if((state.evidencePlacements['①']||[]).includes('yunian') && (state.evidencePlacements['⑦']||[]).includes('yunian')) unlockQuestion('yunian','q_yunian_1');
+    } else if(map.q==='q_liuqiming_2'){
+      if((state.evidencePlacements['④']||[]).includes('liuqiming') && (state.evidencePlacements['⑩']||[]).includes('liuqiming')) unlockQuestion('liuqiming','q_liuqiming_2');
+    } else if(map.extraCheck && map.extraCheck(sid)){
+      unlockQuestion(sid, map.q);
+    } else if(!map.extraCheck) {
+      unlockQuestion(sid, map.q);
+    }
+  }
+
+  renderContactList(); renderInvestigation(); updateProgress(); renderSidebar();
+})();
+</script>
+</body>
+</html>
