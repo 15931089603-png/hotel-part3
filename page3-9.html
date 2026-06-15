@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>惊门 - 文字冒险游戏</title>
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --text: #c4b998;
+            --text-bright: #e0d5b7;
+            --red: #8b1a1a;
+            --red-bright: #b52020;
+            --gold: #8a7a4a;
+            --gold-bright: #b8a060;
+            --panel-bg: #111108;
+            --border: #2a2218;
+            --border-active: #5a4030;
+            --modal-bg: #0d0c08;
+            --option-bg: #1a1810;
+            --option-hover: #221d14;
+            --calendar-bg: #f5f0e0;
+            --calendar-text: #3a2a10;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Georgia', 'Noto Serif SC', 'SimSun', 'STSong', serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image:
+                radial-gradient(ellipse at center, rgba(30, 20, 10, 0.6) 0%, rgba(0, 0, 0, 0.95) 70%),
+                url("data:image/svg+xml,%3Csvg width='400' height='400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+            background-size: cover, 300px 300px;
+            padding: 20px;
+            overflow-y: auto;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 650px;
+            background: var(--panel-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 24px 20px 20px;
+            position: relative;
+            box-shadow:
+                0 0 80px rgba(0, 0, 0, 0.7),
+                0 0 20px rgba(20, 10, 0, 0.4),
+                inset 0 1px 0 rgba(60, 40, 20, 0.1);
+            min-height: 420px;
+            display: flex;
+            flex-direction: column;
+            transition: border-color 0.8s ease;
+        }
+
+        .game-container.tense {
+            border-color: var(--border-active);
+            box-shadow:
+                0 0 100px rgba(0, 0, 0, 0.8),
+                0 0 30px rgba(80, 20, 10, 0.5),
+                0 0 60px rgba(139, 26, 26, 0.25),
+                inset 0 1px 0 rgba(60, 40, 20, 0.1);
+            animation: pulseBorder 3s ease-in-out infinite;
+        }
+
+        @keyframes pulseBorder {
+            0%,
+            100% {
+                border-color: var(--border-active);
+            }
+            50% {
+                border-color: #6b2a1a;
+            }
+        }
+
+        .game-title-area {
+            text-align: center;
+            margin-bottom: 8px;
+            opacity: 0.75;
+            font-size: 0.8rem;
+            letter-spacing: 6px;
+            color: var(--gold);
+            text-transform: uppercase;
+        }
+
+        .game-text {
+            flex: 1;
+            line-height: 1.9;
+            font-size: 1.05rem;
+            letter-spacing: 0.4px;
+            color: var(--text);
+            padding: 8px 4px 12px;
+            position: relative;
+            min-height: 160px;
+            max-height: 58vh;
+            overflow-y: auto;
+            transition: color 0.5s;
+            scroll-behavior: smooth;
+            border-bottom: 1px solid rgba(42, 34, 24, 0.3);
+            margin-bottom: 10px;
+        }
+
+        .game-text .scene-text-block {
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed rgba(42, 34, 24, 0.25);
+        }
+        .game-text .scene-text-block:last-child {
+            border-bottom: none;
+            margin-bottom: 4px;
+        }
+
+        .game-text .highlight {
+            color: var(--red-bright);
+            font-weight: bold;
+        }
+        .game-text .gold-text {
+            color: var(--gold-bright);
+        }
+        .game-text .italic-text {
+            font-style: italic;
+            opacity: 0.85;
+        }
+        .game-text .clickable-inline {
+            color: #d4a840;
+            cursor: pointer;
+            text-decoration: underline;
+            text-underline-offset: 4px;
+            text-decoration-style: dotted;
+            transition: color 0.3s, text-shadow 0.3s;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        .game-text .clickable-inline:hover {
+            color: #f0c860;
+            text-shadow: 0 0 12px rgba(200, 150, 40, 0.6);
+            text-decoration-style: solid;
+        }
+
+        .options-area {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+            padding-top: 6px;
+            min-height: 50px;
+        }
+
+        .option-btn {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 12px 16px;
+            background: var(--option-bg);
+            border: 1px solid var(--border);
+            color: var(--text-bright);
+            font-family: inherit;
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .option-btn:hover {
+            background: var(--option-hover);
+            border-color: var(--border-active);
+            color: #e8dcc8;
+            box-shadow: 0 0 15px rgba(139, 26, 26, 0.2);
+            padding-left: 20px;
+        }
+        .option-btn:active {
+            background: #1f1a10;
+            border-color: #6b3a20;
+            transform: scale(0.985);
+            transition: all 0.08s ease;
+        }
+        .option-btn .opt-label {
+            font-weight: bold;
+            color: var(--gold-bright);
+            margin-right: 6px;
+            letter-spacing: 1px;
+        }
+        .option-btn.disabled-opt {
+            opacity: 0.35;
+            pointer-events: none;
+            text-decoration: line-through;
+            text-decoration-color: rgba(139, 26, 26, 0.5);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.82);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.25s ease;
+            padding: 20px;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-dialog {
+            background: var(--modal-bg);
+            border: 2px solid var(--border-active);
+            border-radius: 6px;
+            padding: 26px 22px 20px;
+            max-width: 480px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.9), 0 0 30px rgba(139, 26, 26, 0.4);
+            animation: modalIn 0.3s cubic-bezier(0.2, 0.8, 0.3, 1);
+        }
+        @keyframes modalIn {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .modal-dialog .modal-text {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: var(--text-bright);
+            margin-bottom: 16px;
+            letter-spacing: 0.3px;
+        }
+        .modal-dialog .modal-text.bad-end {
+            color: #c44;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        .modal-btn {
+            display: inline-block;
+            padding: 11px 32px;
+            background: var(--red);
+            color: #e8d8c8;
+            border: 1px solid #5a2018;
+            font-family: inherit;
+            font-size: 0.95rem;
+            cursor: pointer;
+            border-radius: 3px;
+            letter-spacing: 2px;
+            transition: all 0.3s;
+            font-weight: bold;
+            margin: 4px;
+        }
+        .modal-btn:hover {
+            background: var(--red-bright);
+            box-shadow: 0 0 20px rgba(180, 30, 20, 0.5);
+            letter-spacing: 3px;
+        }
+        .modal-btn:disabled {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .calendar-modal {
+            background: var(--calendar-bg);
+            border: 3px solid #5a3a10;
+            border-radius: 8px;
+            padding: 20px 16px 16px;
+            max-width: 380px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(100, 60, 20, 0.5);
+            color: var(--calendar-text);
+            font-family: 'Georgia', 'SimSun', serif;
+            animation: modalIn 0.35s cubic-bezier(0.2, 0.8, 0.3, 1);
+        }
+        .calendar-modal .calendar-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin-bottom: 6px;
+            color: #3a1a08;
+        }
+        .calendar-modal .calendar-subtitle {
+            font-size: 0.8rem;
+            color: #6b4a28;
+            margin-bottom: 14px;
+            letter-spacing: 1px;
+        }
+        .calendar-modal .calendar-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 8px;
+        }
+        .calendar-date-btn {
+            padding: 10px 16px;
+            background: #fffef8;
+            border: 2px solid #c4a878;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.95rem;
+            color: #3a2a10;
+            transition: all 0.3s;
+            letter-spacing: 1px;
+            font-weight: bold;
+            min-width: 100px;
+        }
+        .calendar-date-btn:hover {
+            background: #fdf3d0;
+            border-color: #8b5e30;
+            box-shadow: 0 0 10px rgba(139, 94, 48, 0.3);
+            transform: translateY(-2px);
+        }
+        .calendar-date-btn.correct-flash {
+            background: #ffe8a0 !important;
+            border-color: #c8960c !important;
+            animation: flashGold 0.6s ease 3;
+        }
+        @keyframes flashGold {
+            0%, 100% { box-shadow: 0 0 5px rgba(200, 150, 12, 0.4); }
+            50% { box-shadow: 0 0 30px rgba(200, 150, 12, 0.9); }
+        }
+        .calendar-date-btn.wrong-fade {
+            opacity: 0.3;
+            pointer-events: none;
+            text-decoration: line-through;
+            transition: all 0.5s ease;
+            border-style: dashed;
+        }
+        .calendar-feedback {
+            margin-top: 8px;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            min-height: 20px;
+            transition: all 0.3s;
+        }
+        .calendar-feedback.success {
+            color: #2a7a20;
+            font-weight: bold;
+        }
+        .calendar-feedback.fail {
+            color: #8b3a3a;
+            font-style: italic;
+        }
+
+        .vinyl-control {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            z-index: 80;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+        .vinyl-control.visible {
+            display: flex;
+        }
+        .vinyl-disc {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #2a2a2a 0%, #0d0d0d 40%, #1a1a1a 50%, #080808 70%, #111 100%);
+            border: 3px solid #333;
+            cursor: pointer;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(80, 60, 30, 0.3);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .vinyl-disc:hover {
+            border-color: #5a4030;
+            box-shadow: 0 4px 28px rgba(0, 0, 0, 0.8), 0 0 15px rgba(139, 100, 40, 0.4);
+            transform: scale(1.06);
+        }
+        .vinyl-disc:active {
+            transform: scale(0.94);
+            transition: all 0.08s ease;
+        }
+        .vinyl-disc .disc-center {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #c4a060;
+            box-shadow: 0 0 6px rgba(180, 140, 60, 0.5);
+            z-index: 2;
+        }
+        .vinyl-disc.playing .disc-center {
+            animation: discPulse 1.5s ease-in-out infinite;
+        }
+        @keyframes discPulse {
+            0%, 100% { box-shadow: 0 0 6px rgba(180, 140, 60, 0.5); }
+            50% { box-shadow: 0 0 18px rgba(200, 160, 50, 0.9); }
+        }
+        .vinyl-disc .disc-grooves {
+            position: absolute;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 1px solid rgba(60, 50, 35, 0.5);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .vinyl-disc .disc-grooves::after {
+            content: '';
+            position: absolute;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            border: 1px solid rgba(50, 42, 30, 0.4);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .vinyl-label {
+            font-size: 0.7rem;
+            color: #8a7a5a;
+            letter-spacing: 1px;
+            text-align: center;
+            opacity: 0.8;
+            max-width: 80px;
+            line-height: 1.3;
+        }
+        .vinyl-track-switch {
+            font-size: 0.65rem;
+            color: #b8a060;
+            cursor: pointer;
+            letter-spacing: 1px;
+            text-align: center;
+            padding: 4px 10px;
+            border: 1px solid rgba(100, 80, 40, 0.4);
+            border-radius: 10px;
+            transition: all 0.3s;
+            background: rgba(0, 0, 0, 0.5);
+        }
+        .vinyl-track-switch:hover {
+            border-color: #b8a060;
+            color: #d4c080;
+            box-shadow: 0 0 10px rgba(180, 140, 60, 0.3);
+        }
+        .vinyl-track-switch.hidden {
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .game-container {
+                padding: 18px 12px 14px;
+                min-height: 340px;
+            }
+            .game-text {
+                font-size: 0.95rem;
+                line-height: 1.75;
+                max-height: 50vh;
+            }
+            .option-btn {
+                font-size: 0.9rem;
+                padding: 11px 14px;
+            }
+            .modal-dialog {
+                padding: 18px 14px 16px;
+                max-width: 92vw;
+            }
+            .vinyl-control {
+                bottom: 16px;
+                right: 12px;
+            }
+            .vinyl-disc {
+                width: 48px;
+                height: 48px;
+                border-width: 2px;
+            }
+            .vinyl-disc .disc-center {
+                width: 10px;
+                height: 10px;
+            }
+            .vinyl-disc .disc-grooves {
+                width: 36px;
+                height: 36px;
+            }
+            .vinyl-disc .disc-grooves::after {
+                width: 24px;
+                height: 24px;
+            }
+            .vinyl-label {
+                font-size: 0.6rem;
+                max-width: 60px;
+            }
+            .calendar-date-btn {
+                padding: 8px 12px;
+                font-size: 0.85rem;
+                min-width: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-container" id="gameContainer">
+        <div class="game-title-area" id="gameTitle">▸ 惊 门 ◂</div>
+        <div class="game-text" id="gameText"></div>
+        <div class="options-area" id="optionsArea"></div>
+    </div>
+
+    <div class="modal-overlay" id="modalOverlay" style="display:none;">
+        <div id="modalContent"></div>
+    </div>
+
+    <div class="vinyl-control" id="vinylControl">
+        <div class="vinyl-disc" id="vinylDisc" title="点击播放/暂停">
+            <div class="disc-grooves"></div>
+            <div class="disc-center"></div>
+        </div>
+        <div class="vinyl-label" id="vinylLabel">唱片机</div>
+        <div class="vinyl-track-switch hidden" id="vinylTrackSwitch" title="切换曲目">切换曲目</div>
+    </div>
+
+    <audio id="audioCharlie" preload="auto" loop>
+        <source src="Charlie Clouser - Main Titles.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="audioMickey" preload="auto" loop>
+        <source src="mickey house.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="audioGrotto" preload="auto" loop>
+        <source src="Audiomachine - The Grotto.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="audioEnd" preload="auto" loop>
+        <source src="music end.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        (function() {
+            const gameContainer = document.getElementById('gameContainer');
+            const gameText = document.getElementById('gameText');
+            const optionsArea = document.getElementById('optionsArea');
+            const modalOverlay = document.getElementById('modalOverlay');
+            const modalContent = document.getElementById('modalContent');
+            const vinylControl = document.getElementById('vinylControl');
+            const vinylDisc = document.getElementById('vinylDisc');
+            const vinylLabel = document.getElementById('vinylLabel');
+            const vinylTrackSwitch = document.getElementById('vinylTrackSwitch');
+            const audioCharlie = document.getElementById('audioCharlie');
+            const audioMickey = document.getElementById('audioMickey');
+            const audioGrotto = document.getElementById('audioGrotto');
+            const audioEnd = document.getElementById('audioEnd');
+
+            const state = {
+                phase: 'start',
+                hasKey: false,
+                hasRecordPlayer: false,
+                hasVinyl: false,
+                calendarSolved: false,
+                currentTrack: 'charlie',
+                isPlaying: true,
+                vinylRoomCompleted: false,
+                abbaClicks: [],
+                spiralGuidanceActive: false,
+                addedScenes: new Set(),
+                restoreFn: null,
+            };
+
+            let allAudios = [audioCharlie, audioMickey, audioGrotto, audioEnd];
+
+            function stopAllAudio() {
+                allAudios.forEach(a => {
+                    a.pause();
+                    a.currentTime = 0;
+                });
+            }
+
+            function playTrack(trackId) {
+                stopAllAudio();
+                state.currentTrack = trackId;
+                state.isPlaying = true;
+                const map = {
+                    'charlie': audioCharlie,
+                    'mickey': audioMickey,
+                    'grotto': audioGrotto,
+                    'end': audioEnd,
+                };
+                const audio = map[trackId];
+                if (audio) {
+                    audio.play().catch(() => {
+                        // 自动播放被阻止，将状态设为未播放
+                        state.isPlaying = false;
+                    });
+                }
+                if (trackId === 'none') {
+                    state.isPlaying = false;
+                    stopAllAudio();
+                }
+                updateVinylUI();
+            }
+
+            function pauseCurrentTrack() {
+                allAudios.forEach(a => a.pause());
+                state.isPlaying = false;
+                updateVinylUI();
+            }
+
+            function resumeCurrentTrack() {
+                if (state.currentTrack === 'none') return;
+                state.isPlaying = true;
+                const map = {
+                    'charlie': audioCharlie,
+                    'mickey': audioMickey,
+                    'grotto': audioGrotto,
+                    'end': audioEnd,
+                };
+                const audio = map[state.currentTrack];
+                if (audio) {
+                    audio.play().catch(() => {
+                        state.isPlaying = false;
+                    });
+                }
+                updateVinylUI();
+            }
+
+            function togglePlayPause() {
+                if (state.isPlaying) pauseCurrentTrack();
+                else resumeCurrentTrack();
+            }
+
+            function isMusicPlaying() {
+                return state.isPlaying && state.currentTrack !== 'none';
+            }
+
+            function updateVinylUI() {
+                if (!state.hasRecordPlayer) {
+                    vinylControl.classList.remove('visible');
+                    return;
+                }
+                vinylControl.classList.add('visible');
+                if (state.isPlaying && state.currentTrack !== 'none') {
+                    vinylDisc.classList.add('playing');
+                } else {
+                    vinylDisc.classList.remove('playing');
+                }
+                const names = {
+                    'charlie': 'Charlie Clouser - Main Titles',
+                    'mickey': 'mickey house',
+                    'grotto': 'Audiomachine - The Grotto',
+                    'end': 'music end',
+                    'none': '静音',
+                };
+                vinylLabel.textContent = names[state.currentTrack] || '唱片机';
+                vinylTrackSwitch.classList.toggle('hidden', !state.hasVinyl);
+            }
+
+            function cycleTrack() {
+                if (!state.hasVinyl) return;
+                const cycle = ['charlie', 'mickey', 'none'];
+                const idx = cycle.indexOf(state.currentTrack);
+                const next = cycle[(idx + 1) % cycle.length];
+                if (next === 'none') {
+                    stopAllAudio();
+                    state.currentTrack = 'none';
+                    state.isPlaying = false;
+                } else {
+                    playTrack(next);
+                }
+                updateVinylUI();
+                if (state.currentTrack === 'mickey' && state.phase === 'vinyl_room' && !state.vinylRoomCompleted) {
+                    setTimeout(() => triggerMickeyChoice(), 400);
+                }
+            }
+
+            function appendGameText(sceneId, html) {
+                if (!state.addedScenes.has(sceneId)) {
+                    state.addedScenes.add(sceneId);
+                    const div = document.createElement('div');
+                    div.className = 'scene-text-block';
+                    div.innerHTML = html;
+                    gameText.appendChild(div);
+                    gameText.scrollTop = gameText.scrollHeight;
+                }
+            }
+
+            function clearOptions() {
+                optionsArea.innerHTML = '';
+            }
+
+            function addOption(label, text, callback, disabled = false) {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn' + (disabled ? ' disabled-opt' : '');
+                btn.innerHTML = `<span class="opt-label">${label}</span>${text}`;
+                if (!disabled) btn.addEventListener('click', callback);
+                optionsArea.appendChild(btn);
+            }
+
+            function setGameTitle(title) {
+                document.getElementById('gameTitle').textContent = title;
+            }
+
+            function showModal(text, isBadEnd = false, onContinue = null) {
+                modalContent.innerHTML = `
+                    <div class="modal-dialog">
+                        <div class="modal-text${isBadEnd ? ' bad-end' : ''}">${text}</div>
+                        <button class="modal-btn" id="modalContinueBtn">继续 →</button>
+                    </div>
+                `;
+                modalOverlay.style.display = 'flex';
+                document.getElementById('modalContinueBtn').addEventListener('click', () => {
+                    closeModal();
+                    if (onContinue) onContinue();
+                });
+            }
+
+            function closeModal() {
+                modalOverlay.style.display = 'none';
+                modalContent.innerHTML = '';
+            }
+
+            function showCalendarModal() {
+                modalContent.innerHTML = `
+                    <div class="calendar-modal" id="calendarModal">
+                        <div class="calendar-title">📅 日历</div>
+                        <div class="calendar-subtitle">星期日 · 选择日期来改变这一天</div>
+                        <div class="calendar-grid">
+                            <button class="calendar-date-btn" data-date="4月30日">4月30日</button>
+                            <button class="calendar-date-btn" data-date="1月11日">1月11日</button>
+                            <button class="calendar-date-btn" data-date="4月13日">4月13日</button>
+                        </div>
+                        <div class="calendar-feedback" id="calendarFeedback"></div>
+                        <button class="modal-btn" id="calendarContinueBtn" style="display:none; margin-top:12px;">继续 →</button>
+                    </div>
+                `;
+                modalOverlay.style.display = 'flex';
+
+                const dateBtns = modalContent.querySelectorAll('.calendar-date-btn');
+                const feedbackEl = modalContent.querySelector('#calendarFeedback');
+                const continueBtn = modalContent.querySelector('#calendarContinueBtn');
+
+                dateBtns.forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const chosen = this.getAttribute('data-date');
+                        if (chosen === '4月30日') {
+                            this.classList.add('correct-flash');
+                            feedbackEl.textContent = '调休！只要让这个星期日是五一的前一天，那就会触发邪恶的调休了！成功进入房间。';
+                            feedbackEl.className = 'calendar-feedback success';
+                            dateBtns.forEach(b => b.style.pointerEvents = 'none');
+                            state.calendarSolved = true;
+                            continueBtn.style.display = 'inline-block';
+                        } else {
+                            feedbackEl.textContent = '好像没什么变化捏～';
+                            feedbackEl.className = 'calendar-feedback fail';
+                            this.classList.add('wrong-fade');
+                            this.style.pointerEvents = 'none';
+                        }
+                    });
+                });
+
+                continueBtn.addEventListener('click', () => {
+                    closeModal();
+                    enterJingmenRoom();
+                });
+            }
+
+            function showStartScene(skipText = false) {
+                setGameTitle('▸ 惊 门 ◂');
+                const sceneId = 'start';
+                if (!skipText) {
+                    appendGameText(sceneId, `
+                        <p>子时的钟声乍然敲响，你眼前一黑，再睁眼时已经身处一座昏暗的<span class="highlight">半成品楼房</span>中，整个空间回荡着阴森的音乐声。</p>
+                        <p class="italic-text">时间紧迫，必须在阵法成功前找到出去的方法！</p>
+                    `);
+                }
+                state.phase = 'start';
+                state.restoreFn = () => showStartScene(true);
+                gameContainer.classList.remove('tense');
+                clearOptions();
+                addOption('A.', '向左走', () => showCorridorScene());
+                addOption('B.', '向右走', () => {
+                    showModal('大门紧锁，没有钥匙很难进入右侧的房间。', false, () => showStartScene(true));
+                });
+                addOption('C.', '上二楼', () => {
+                    showModal('整个二楼都笼罩在伸手不见五指的黑暗中，你无法前进。', false, () => showStartScene(true));
+                });
+            }
+
+            function showCorridorScene(skipText = false) {
+                setGameTitle('▸ 走廊尽头 ◂');
+                const sceneId = 'corridor';
+                if (!skipText) {
+                    appendGameText(sceneId, `
+                        <p>黑洞洞的走廊尽头，有一间<span class="highlight">虚掩着门</span>的房间，靠近能听到里面有人活动的声音。</p>
+                        <p>房门上挂着日历，最新的一页上写着<span class="gold-text">星期日</span>，看来房间的主人们正在度过周末。</p>
+                    `);
+                }
+                state.phase = 'corridor';
+                state.restoreFn = () => showCorridorScene(true);
+                gameContainer.classList.add('tense');
+                clearOptions();
+                addOption('A.', '进入', () => {
+                    showModal('你打扰了不可名状的存在，永远留在了这里……', true, () => showCorridorScene(true));
+                });
+                addOption('B.', '不进', () => {
+                    showCalendarPrompt();
+                });
+            }
+
+            function showCalendarPrompt(skipText = false) {
+                const sceneId = 'calendar_prompt';
+                if (!skipText) {
+                    appendGameText(sceneId, `
+                        <p>得想个办法让里面的东西离开。能触碰到的<span class="highlight">只有门上的日历</span>。</p>
+                        <p class="italic-text">怎么才能让里面的东西在星期日离开房间呢？</p>
+                    `);
+                }
+                state.phase = 'calendar_prompt';
+                state.restoreFn = () => showCalendarPrompt(true);
+                gameContainer.classList.add('tense');
+                clearOptions();
+                addOption('📅', '查看日历', () => {
+                    showCalendarModal();
+                });
+            }
+
+            function enterJingmenRoom(skipText = false) {
+                setGameTitle('▸ 惊 门 ◂');
+                const sceneId = 'jingmen';
+                if (!skipText) {
+                    appendGameText(sceneId, `
+                        <p>和设想的不同，整个房间只有正中央的一张桌子，上面摆放着一个<span class="gold-text">正在播放的唱片机</span>。</p>
+                        <p>四周的墙壁上黑色红色的油漆画满了涂鸦，气氛非常诡异。</p>
+                        <p class="italic-text">看来这里是八门中的<span class="highlight">"惊门"</span>，代表着恐惧、惊吓。想办法打破恐怖的气氛或许是破局之法。</p>
+                        <p class="gold-text">▼ 获得道具 <strong>"唱片机"</strong> —— 现在可以控制音乐了。</p>
+                    `);
+                }
+                state.phase = 'jingmen';
+                state.hasRecordPlayer = true;
+                state.restoreFn = () => enterJingmenRoom(true);
+                updateVinylUI();
+                gameContainer.classList.add('tense');
+                clearOptions();
+                addOption('B.', '向右走', () => {
+                    showModal('大门紧锁，没有钥匙很难进入右侧的房间。', false, () => enterJingmenRoom(true));
+                });
+                addOption('C.', '上二楼', () => {
+                    if (isMusicPlaying()) {
+                        showModal('整个二楼都笼罩在伸手不见五指的黑暗中，你无法前进。', false, () => enterJingmenRoom(true));
+                    } else {
+                        showUpstairsLightScene();
+                    }
+                });
+            }
+
+            function showUpstairsLightScene(skipText = false) {
+                setGameTitle('▸ 二楼 ◂');
+                const sceneId = 'upstairs_light';
+                if (!skipText) {
+                    appendGameText(sceneId, `
+                        <p>音乐声停止了，诡异的氛围得到了缓解。</p>
+                        <p>二楼虽然没有开灯，但是借着窗外透进来的光，可以<span class="gold-text">看清近处的路</span>。</p>
+                    `);
+                }
+                state.phase = 'upstairs_light';
+                state.restoreFn = () => showUpstairsLightScene(true);
+                gameContainer.classList.remove('tense');
+                clearOptions();
+                addOption('A.', '向左走', () => {
+                    showModal('你一直向前走，怎么也走不到尽头。突然你发现了什么，抬头看去，你已经顺着螺旋的坡道下到了深不可测的地底……', true, () => showUpstairsLightScene(true));
+                });
+                addOption('B.', '向右走', () => {
+                    showVinylRoomScene();
+                });
+            }
+
+            function showVinylRoomScene(skipText = false) {
+                setGameTitle('▸ 老旧房间 ◂');
+                const sceneId = 'vinyl_room';
+                if (!skipText) {
+                    appendGameText(sceneId, `
+                        <p>推开门，你走进了一个带着点地下室气味的房间。</p>
+                        <p>"大屁股"电视，木制的书架上摆满了碟片，沙发、茶几上散落着玩具和杂志，一张<span class="gold-text">黑胶唱片</span>摆在电视机顶上。</p>
+                        <p class="italic-text">虽然略显老旧，但看得出这些东西在当年价格不菲。整个空间像一张老照片，安静但不流动。</p>
+                        <p class="gold-text">▼ 获得道具 <strong>"黑胶唱片"</strong> —— 可以在唱片机中切换歌曲。</p>
+                    `);
+                }
+                state.phase = 'vinyl_room';
+                state.hasVinyl = true;
+                state.restoreFn = () => showVinylRoomScene(true);
+                updateVinylUI();
+                gameContainer.classList.remove('tense');
+                clearOptions();
+                if (!state.vinylRoomCompleted) {
+                    addOption('💿', '操作唱片机切换曲目', () => cycleTrack());
+                } else {
+                    addOption('A.', '向左走', () => {
+                        showModal('你一直向前走，怎么也走不到尽头。突然你发现了什么，抬头看去，你已经顺着螺旋的坡道下到了深不可测的地底……', true, () => showVinylRoomScene(true));
+                    });
+                    addOption('B.', '去一楼右侧', () => {
+                        if (!state.hasKey) {
+                            showModal('大门紧锁，没有钥匙很难进入右侧的房间。', false, () => showVinylRoomScene(true));
+                        } else {
+                            enterMusicBoxRoom();
+                        }
+                    });
+                }
+            }
+
+            function triggerMickeyChoice() {
+                if (state.vinylRoomCompleted || state.phase !== 'vinyl_room') return;
+                state.phase = 'mickey_choice';
+                modalContent.innerHTML = `
+                    <div class="modal-dialog" style="border-color:#c8960c;">
+                        <div class="modal-text" style="color:#f0d060;letter-spacing:1px;">
+                            🎵 <strong>请选择你的妙妙工具</strong> <span style="font-size:0.75rem;opacity:0.7;">（米老鼠音）</span>
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px;">
+                            <button class="modal-btn mickey-opt" data-choice="A" style="background:#3a3020;border-color:#6b5a30;">A. 劳斯莱斯·幻影</button>
+                            <button class="modal-btn mickey-opt" data-choice="B" style="background:#3a3020;border-color:#6b5a30;">B. 布加迪威龙</button>
+                            <button class="modal-btn mickey-opt" data-choice="C" style="background:#3a3020;border-color:#6b5a30;">C. 加长林肯</button>
+                            <button class="modal-btn mickey-opt" data-choice="D" style="background:#3a3020;border-color:#b8a060;">D. 一把钥匙</button>
+                        </div>
+                        <div class="calendar-feedback" id="mickeyFeedback" style="min-height:18px;"></div>
+                    </div>
+                `;
+                modalOverlay.style.display = 'flex';
+                const mickeyOpts = modalContent.querySelectorAll('.mickey-opt');
+                const feedbackEl = modalContent.querySelector('#mickeyFeedback');
+
+                mickeyOpts.forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const choice = this.getAttribute('data-choice');
+                        if (choice === 'D') {
+                            state.hasKey = true;
+                            state.vinylRoomCompleted = true;
+                            feedbackEl.textContent = '🔑 获得道具 "一把钥匙"！';
+                            feedbackEl.className = 'calendar-feedback success';
+                            mickeyOpts.forEach(b => b.style.pointerEvents = 'none');
+                            this.style.background = '#5a8a30';
+                            this.style.borderColor = '#8bc060';
+                            setTimeout(() => {
+                                closeModal();
+                                showPostKeyScene();
+                            }, 1200);
+                        } else {
+                            feedbackEl.textContent = '你犯了贪婪之罪，留在这里喂鬼吧 ¯\\_(°_o)_/¯';
+                            feedbackEl.className = 'calendar-feedback fail';
+                            this.classList.add('wrong-fade');
+                            this.style.pointerEvents = 'none';
+                        }
+                    });
+                });
+            }
+
+            function showPostKeyScene(skipText = false) {
+                const sceneId = 'post_key';
+                if (!skipText) {
+                    appendGameText(sceneId, `
+                        <p>你获得了<span class="gold-text">一把钥匙</span>。</p>
+                        <p class="italic-text">离开了房间后，你站在走廊中，面前是两个方向。</p>
+                    `);
+                }
+                state.phase = 'vinyl_room_done';
+                state.restoreFn = () => showPostKeyScene(true);
+                gameContainer.classList.remove('tense');
+                clearOptions();
+                addOption('A.', '向左走', () => {
+                    showModal('你一直向前走，怎么也走不到尽头。突然你发现了什么，抬头看去，你已经顺着螺旋的坡道下到了深不可测的地底……', true, () => showPostKeyScene(true));
+                });
+                addOption('B.', '去一楼右侧', () => {
+                    if (!state.hasKey) {
+                        showModal('大门紧锁，没有钥匙很难进入右侧的房间。', false, () => showPostKeyScene(true));
+                    } else {
+                        enterMusicBoxRoom();
+                    }
+                });
+            }
+
+            function enterMusicBoxRoom(skipText = false) {
+                playTrack('grotto');
+                setGameTitle('▸ 右侧房间 ◂');
+                const sceneId = 'musicbox';
+                if (!skipText) {
+                    appendGameText(sceneId, `
+                        <p>你用钥匙打开了门锁，门<span class="highlight">吱呀</span>一声打开。</p>
+                        <p>房间中央一个巨大的<span class="gold-text">八音盒</span>，红衣黑发的女孩背对着你。</p>
+                        <p>刺耳的音乐声响起，八音盒缓缓转动，借着煞白的月光，你看到长发之间，竟然是<span class="highlight">周老板</span>的脸！</p>
+                    `);
+                }
+                state.phase = 'musicbox';
+                state.restoreFn = () => enterMusicBoxRoom(true);
+                gameContainer.classList.add('tense');
+                clearOptions();
+                addOption('A.', '留在原地', () => {
+                    showModal('你被拖进了房间内，大门轰然关闭，你被永远留在了这里……', true, () => enterMusicBoxRoom(true));
+                });
+                addOption('B.', '转身就跑', () => {
+                    enterSpiralStaircase();
+                });
+            }
+
+            function enterSpiralStaircase(skipText = false) {
+                setGameTitle('▸ 旋转楼梯 ◂');
+                const sceneId = 'spiral';
+                if (!skipText) {
+                    appendGameText(sceneId, `
+                        <p>你闷头向前跑，一路上了二楼，再回过神来时，你发现自己正身处一个贴着墙的<span class="highlight">旋转楼梯</span>。</p>
+                        <p>向上向下都看不到尽头，中间是深不见底的<span class="highlight">深渊</span>。</p>
+                        <p>就在绝望之际，你突然听到深渊之下传来了空灵的琴声……</p>
+                        <p><span class="clickable-inline" id="guidanceLink">✦ 点击获得指引 ✦</span></p>
+                    `);
+                }
+                state.phase = 'spiral_staircase';
+                state.spiralGuidanceActive = false;
+                state.abbaClicks = [];
+                state.restoreFn = () => enterSpiralStaircase(true);
+                gameContainer.classList.add('tense');
+                clearOptions();
+                setTimeout(() => {
+                    const link = document.getElementById('guidanceLink');
+                    if (link) link.addEventListener('click', activateSpiralGuidance);
+                }, 100);
+            }
+
+            function activateSpiralGuidance() {
+                if (state.spiralGuidanceActive) return;
+                state.spiralGuidanceActive = true;
+                playTrack('end');
+                const sceneId = 'spiral_active';
+                appendGameText(sceneId, `
+                    <p>空灵的琴声从深渊之下传来，在楼梯间回荡……</p>
+                    <p class="italic-text">向上还是向下？琴声似乎在指引着什么。</p>
+                    <p style="font-size:0.75rem;color:#8a7a5a;">（提示：可以多次点击同一个选项）</p>
+                `);
+                state.phase = 'spiral_staircase_active';
+                state.restoreFn = () => activateSpiralGuidance();
+                gameContainer.classList.add('tense');
+                clearOptions();
+                addOption('A.', '向上', () => recordABBAClick('A'));
+                addOption('B.', '向下', () => recordABBAClick('B'));
+            }
+
+            function recordABBAClick(choice) {
+                state.abbaClicks.push(choice);
+                if (state.abbaClicks.length > 5) state.abbaClicks.shift();
+                const target = ['A', 'B', 'B', 'A', 'B'];
+                if (state.abbaClicks.length === 5 && state.abbaClicks.every((v, i) => v === target[i])) {
+                    window.location.href = 'page3-10.html';
+                    return;
+                }
+                gameContainer.style.borderColor = '#6b3a20';
+                setTimeout(() => { gameContainer.style.borderColor = ''; }, 200);
+            }
+
+            vinylDisc.addEventListener('click', () => {
+                if (!state.hasRecordPlayer) return;
+                togglePlayPause();
+            });
+            vinylTrackSwitch.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (!state.hasVinyl) return;
+                cycleTrack();
+            });
+
+            modalOverlay.addEventListener('click', function(e) {
+                if (e.target === modalOverlay) {
+                    const hasSpecial = modalContent.querySelector('.calendar-modal') ||
+                        modalContent.querySelector('.mickey-opt');
+                    if (!hasSpecial) closeModal();
+                }
+            });
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    const hasSpecial = modalContent.querySelector('.calendar-modal') ||
+                        modalContent.querySelector('.mickey-opt');
+                    if (!hasSpecial && modalOverlay.style.display === 'flex') closeModal();
+                }
+                if (e.key === ' ' && state.hasRecordPlayer && modalOverlay.style.display === 'none') {
+                    e.preventDefault();
+                    togglePlayPause();
+                }
+            });
+
+            // 页面可见性变化时尝试恢复播放
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'visible' && !state.isPlaying && state.currentTrack !== 'none') {
+                    // 用户可能从其他标签页返回，尝试重新播放当前曲目
+                    const map = {
+                        'charlie': audioCharlie,
+                        'mickey': audioMickey,
+                        'grotto': audioGrotto,
+                        'end': audioEnd,
+                    };
+                    const audio = map[state.currentTrack];
+                    if (audio) {
+                        audio.play().then(() => {
+                            state.isPlaying = true;
+                            updateVinylUI();
+                        }).catch(() => {});
+                    }
+                }
+            });
+
+            function init() {
+                // 尝试自动播放
+                audioCharlie.play().then(() => {
+                    state.isPlaying = true;
+                    state.currentTrack = 'charlie';
+                }).catch(() => {
+                    state.isPlaying = false;
+                    // 添加一次性用户交互监听以启动播放
+                    const resume = () => {
+                        if (!state.isPlaying && state.currentTrack === 'charlie') {
+                            playTrack('charlie');
+                        }
+                        document.removeEventListener('click', resume);
+                        document.removeEventListener('touchstart', resume);
+                    };
+                    document.addEventListener('click', resume, { once: true });
+                    document.addEventListener('touchstart', resume, { once: true });
+                });
+                updateVinylUI();
+                showStartScene();
+            }
+            init();
+            console.log('🔮 惊门 - 修改版已就绪');
+            console.log('📀 音乐文件：Charlie Clouser - Main Titles.mp3, mickey house.mp3, Audiomachine - The Grotto.mp3, music end.mp3');
+            console.log('🎯 旋转楼梯解谜序列：ABBAB → page3-10.html');
+        })();
+    </script>
+</body>
+</html>

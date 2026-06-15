@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>夜探牛油果大厦（1）- 星星爱探险</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Tailwind 配置 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FE2C55',
+                        dark: '#121212',
+                        'dark-light': '#1E1E1E',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .scrollbar-hide {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+            }
+            .scrollbar-hide::-webkit-scrollbar {
+                display: none;
+            }
+            .text-shadow {
+                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+            }
+            .animate-heart {
+                animation: heartBeat 0.6s ease-in-out;
+            }
+            @keyframes heartBeat {
+                0% { transform: scale(1); }
+                25% { transform: scale(1.3); }
+                50% { transform: scale(0.9); }
+                75% { transform: scale(1.2); }
+                100% { transform: scale(1); }
+            }
+        }
+    </style>
+</head>
+<body class="bg-black text-white font-sans overflow-hidden h-screen">
+    <!-- 主容器 -->
+    <div class="relative h-full w-full max-w-md mx-auto">
+        <!-- 视频播放器 -->
+        <video 
+            id="videoPlayer"
+            class="absolute inset-0 w-full h-full object-cover"
+            src="video.mp4"
+            loop
+            playsinline
+            webkit-playsinline
+        ></video>
+        
+        <!-- 视频点击播放/暂停遮罩 -->
+        <div id="playPauseOverlay" class="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 pointer-events-none">
+            <div class="bg-black/40 rounded-full p-6">
+                <i class="fa fa-play text-4xl"></i>
+            </div>
+        </div>
+        
+        <!-- 顶部导航栏 -->
+        <div class="absolute top-0 left-0 right-0 z-10 p-4 flex items-center justify-between bg-gradient-to-b from-black/70 to-transparent">
+            <a href="page3-1.html" class="text-white text-xl hover:text-primary transition-colors duration-300">
+                <i class="fa fa-arrow-left"></i>
+            </a>
+            <div class="text-white font-medium">
+                <span class="text-sm opacity-80">关注</span>
+                <span class="mx-3 font-bold">推荐</span>
+                <span class="text-sm opacity-80">同城</span>
+            </div>
+            <a href="#" class="text-white text-xl hover:text-primary transition-colors duration-300">
+                <i class="fa fa-search"></i>
+            </a>
+        </div>
+        
+        <!-- 右侧互动按钮 -->
+        <div class="absolute right-3 bottom-32 z-10 flex flex-col items-center space-y-6">
+            <!-- 头像 -->
+            <div class="relative">
+                <div class="w-12 h-12 rounded-full border-2 border-white overflow-hidden">
+                    <img src="https://picsum.photos/200/200?random=1" alt="星星爱探险" class="w-full h-full object-cover">
+                </div>
+                <div class="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-5 h-5 bg-primary rounded-full flex items-center justify-center text-xs">
+                    <i class="fa fa-plus"></i>
+                </div>
+            </div>
+            
+            <!-- 点赞按钮 -->
+            <button id="likeBtn" class="flex flex-col items-center group">
+                <div class="w-12 h-12 flex items-center justify-center rounded-full group-hover:bg-white/10 transition-colors duration-200">
+                    <i class="fa fa-heart-o text-2xl group-hover:scale-110 transition-transform duration-200"></i>
+                </div>
+                <span class="text-xs mt-1">12.5万</span>
+            </button>
+            
+            <!-- 评论按钮 -->
+            <button id="commentBtn" class="flex flex-col items-center group">
+                <div class="w-12 h-12 flex items-center justify-center rounded-full group-hover:bg-white/10 transition-colors duration-200">
+                    <i class="fa fa-comment-o text-2xl group-hover:scale-110 transition-transform duration-200"></i>
+                </div>
+                <span class="text-xs mt-1">3.2万</span>
+            </button>
+            
+            <!-- 转发按钮 -->
+            <button id="shareBtn" class="flex flex-col items-center group">
+                <div class="w-12 h-12 flex items-center justify-center rounded-full group-hover:bg-white/10 transition-colors duration-200">
+                    <i class="fa fa-share text-2xl group-hover:scale-110 transition-transform duration-200"></i>
+                </div>
+                <span class="text-xs mt-1">8.7万</span>
+            </button>
+            
+            <!-- 收藏按钮 -->
+            <button id="collectBtn" class="flex flex-col items-center group">
+                <div class="w-12 h-12 flex items-center justify-center rounded-full group-hover:bg-white/10 transition-colors duration-200">
+                    <i class="fa fa-bookmark-o text-2xl group-hover:scale-110 transition-transform duration-200"></i>
+                </div>
+                <span class="text-xs mt-1">5.1万</span>
+            </button>
+            
+            <!-- 音乐旋转图标 -->
+            <div class="w-12 h-12 rounded-full border-4 border-dark-light overflow-hidden animate-spin" style="animation-duration: 8s;">
+                <img src="https://picsum.photos/100/100?random=2" alt="音乐封面" class="w-full h-full object-cover">
+            </div>
+        </div>
+        
+        <!-- 底部信息区 -->
+        <div class="absolute bottom-0 left-0 right-0 z-10 p-4 pb-6 bg-gradient-to-t from-black/80 to-transparent">
+            <div class="pr-16">
+                <h2 class="text-lg font-bold text-shadow mb-2">@星星爱探险</h2>
+                <p class="text-sm text-shadow mb-3 line-clamp-2">夜探牛油果大厦（1）#探险 #城市探索 #牛油果大厦</p>
+                
+                <!-- 音乐信息 -->
+                <div class="flex items-center text-xs text-shadow">
+                    <i class="fa fa-music mr-2"></i>
+                    <marquee scrollamount="3" class="w-40">原声 - 星星爱探险</marquee>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 评论区弹窗 -->
+        <div id="commentModal" class="fixed inset-0 z-50 flex items-end justify-center pointer-events-none">
+            <div id="commentOverlay" class="absolute inset-0 bg-black/60 opacity-0 transition-opacity duration-300"></div>
+            <div id="commentContent" class="relative w-full max-w-md bg-dark-light rounded-t-2xl h-3/4 transform translate-y-full transition-transform duration-300 flex flex-col">
+                <!-- 评论区头部 -->
+                <div class="p-4 border-b border-gray-700 flex items-center justify-between">
+                    <h3 class="font-bold text-lg">3.2万条评论</h3>
+                    <button id="closeCommentBtn" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fa fa-times text-xl"></i>
+                    </button>
+                </div>
+                
+                <!-- 评论列表 -->
+                <div class="flex-1 overflow-y-auto scrollbar-hide p-4 space-y-6">
+                    <!-- 评论1 -->
+                    <div class="flex space-x-3">
+                        <img src="https://picsum.photos/100/100?random=3" alt="用户头像" class="w-10 h-10 rounded-full object-cover flex-shrink-0">
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between">
+                                <h4 class="text-sm text-gray-400">探险爱好者小明</h4>
+                                <button class="text-gray-400 hover:text-primary transition-colors">
+                                    <i class="fa fa-heart-o"></i>
+                                </button>
+                            </div>
+                            <p class="text-sm mt-1">哇去！这个牛油果大厦传闻可多了，这次选题可以！</p>
+                            <div class="text-xs text-gray-500 mt-1">2小时前</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 评论2 -->
+                    <div class="flex space-x-3">
+                        <img src="https://picsum.photos/100/100?random=4" alt="用户头像" class="w-10 h-10 rounded-full object-cover flex-shrink-0">
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between">
+                                <h4 class="text-sm text-gray-400">城市探索家</h4>
+                                <button class="text-gray-400 hover:text-primary transition-colors">
+                                    <i class="fa fa-heart-o"></i>
+                                </button>
+                            </div>
+                            <p class="text-sm mt-1">好看！爱看！</p>
+                            <div class="text-xs text-gray-500 mt-1">3小时前</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 评论3 -->
+                    <div class="flex space-x-3">
+                        <img src="https://picsum.photos/100/100?random=5" alt="用户头像" class="w-10 h-10 rounded-full object-cover flex-shrink-0">
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between">
+                                <h4 class="text-sm text-gray-400">怀旧的人</h4>
+                                <button class="text-gray-400 hover:text-primary transition-colors">
+                                    <i class="fa fa-heart-o"></i>
+                                </button>
+                            </div>
+                            <p class="text-sm mt-1">我去，我小时候就听说过这个地方。</p>
+                            <div class="text-xs text-gray-500 mt-1">5小时前</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 更多评论占位 -->
+                    <div class="flex space-x-3">
+                        <img src="https://picsum.photos/100/100?random=6" alt="用户头像" class="w-10 h-10 rounded-full object-cover flex-shrink-0">
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between">
+                                <h4 class="text-sm text-gray-400">胆小但爱看</h4>
+                                <button class="text-gray-400 hover:text-primary transition-colors">
+                                    <i class="fa fa-heart-o"></i>
+                                </button>
+                            </div>
+                            <p class="text-sm mt-1">看得我鸡皮疙瘩都起来了，太刺激了！</p>
+                            <div class="text-xs text-gray-500 mt-1">6小时前</div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-3">
+                        <img src="https://picsum.photos/100/100?random=7" alt="用户头像" class="w-10 h-10 rounded-full object-cover flex-shrink-0">
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between">
+                                <h4 class="text-sm text-gray-400">夜行者</h4>
+                                <button class="text-gray-400 hover:text-primary transition-colors">
+                                    <i class="fa fa-heart-o"></i>
+                                </button>
+                            </div>
+                            <p class="text-sm mt-1">期待下一集！一定要更新啊！</p>
+                            <div class="text-xs text-gray-500 mt-1">8小时前</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 评论输入框 -->
+                <div class="p-4 border-t border-gray-700">
+                    <div class="flex items-center space-x-3">
+                        <input 
+                            type="text" 
+                            placeholder="留下你的精彩评论..." 
+                            class="flex-1 bg-dark rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
+                        >
+                        <button class="bg-primary text-white rounded-full px-4 py-2 text-sm font-medium hover:bg-primary/90 transition-colors">
+                            发送
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 获取DOM元素
+        const videoPlayer = document.getElementById('videoPlayer');
+        const playPauseOverlay = document.getElementById('playPauseOverlay');
+        const likeBtn = document.getElementById('likeBtn');
+        const commentBtn = document.getElementById('commentBtn');
+        const shareBtn = document.getElementById('shareBtn');
+        const collectBtn = document.getElementById('collectBtn');
+        const commentModal = document.getElementById('commentModal');
+        const commentOverlay = document.getElementById('commentOverlay');
+        const commentContent = document.getElementById('commentContent');
+        const closeCommentBtn = document.getElementById('closeCommentBtn');
+        
+        // 视频播放/暂停功能
+        let isPlaying = false;
+        
+        videoPlayer.addEventListener('click', togglePlayPause);
+        
+        function togglePlayPause() {
+            if (videoPlayer.paused) {
+                videoPlayer.play();
+                isPlaying = true;
+                playPauseOverlay.querySelector('i').classList.remove('fa-play');
+                playPauseOverlay.querySelector('i').classList.add('fa-pause');
+            } else {
+                videoPlayer.pause();
+                isPlaying = false;
+                playPauseOverlay.querySelector('i').classList.remove('fa-pause');
+                playPauseOverlay.querySelector('i').classList.add('fa-play');
+            }
+            
+            // 显示播放/暂停图标
+            playPauseOverlay.style.opacity = '1';
+            playPauseOverlay.style.pointerEvents = 'none';
+            
+            setTimeout(() => {
+                playPauseOverlay.style.opacity = '0';
+            }, 500);
+        }
+        
+        // 自动播放
+        window.addEventListener('load', () => {
+            videoPlayer.play().then(() => {
+                isPlaying = true;
+            }).catch(err => {
+                console.log('自动播放失败:', err);
+            });
+        });
+        
+        // 点赞功能
+        let isLiked = false;
+        
+        likeBtn.addEventListener('click', () => {
+            const heartIcon = likeBtn.querySelector('i');
+            const likeCount = likeBtn.querySelector('span');
+            
+            if (!isLiked) {
+                heartIcon.classList.remove('fa-heart-o');
+                heartIcon.classList.add('fa-heart', 'text-primary', 'animate-heart');
+                likeCount.textContent = '12.6万';
+                isLiked = true;
+            } else {
+                heartIcon.classList.remove('fa-heart', 'text-primary', 'animate-heart');
+                heartIcon.classList.add('fa-heart-o');
+                likeCount.textContent = '12.5万';
+                isLiked = false;
+            }
+            
+            // 移除动画类以便下次点击时重新触发
+            setTimeout(() => {
+                heartIcon.classList.remove('animate-heart');
+            }, 600);
+        });
+        
+        // 双击点赞
+        let lastTap = 0;
+        videoPlayer.addEventListener('touchend', (e) => {
+            const currentTime = new Date().getTime();
+            const tapLength = currentTime - lastTap;
+            
+            if (tapLength < 300 && tapLength > 0) {
+                // 双击事件
+                if (!isLiked) {
+                    likeBtn.click();
+                }
+                
+                // 显示大爱心动画
+                showBigHeart(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+            }
+            
+            lastTap = currentTime;
+        });
+        
+        // 显示大爱心动画
+        function showBigHeart(x, y) {
+            const heart = document.createElement('div');
+            heart.innerHTML = '<i class="fa fa-heart text-primary text-6xl"></i>';
+            heart.style.position = 'absolute';
+            heart.style.left = `${x - 30}px`;
+            heart.style.top = `${y - 30}px`;
+            heart.style.pointerEvents = 'none';
+            heart.style.animation = 'heartBeat 0.8s ease-out forwards';
+            heart.style.opacity = '0';
+            
+            document.body.appendChild(heart);
+            
+            setTimeout(() => {
+                heart.style.opacity = '1';
+            }, 10);
+            
+            setTimeout(() => {
+                heart.remove();
+            }, 800);
+        }
+        
+        // 评论区功能
+        commentBtn.addEventListener('click', openCommentModal);
+        closeCommentBtn.addEventListener('click', closeCommentModal);
+        commentOverlay.addEventListener('click', closeCommentModal);
+        
+        function openCommentModal() {
+            commentModal.classList.remove('pointer-events-none');
+            commentOverlay.style.opacity = '1';
+            commentContent.style.transform = 'translateY(0)';
+            
+            // 暂停视频
+            if (!videoPlayer.paused) {
+                videoPlayer.pause();
+            }
+        }
+        
+        function closeCommentModal() {
+            commentOverlay.style.opacity = '0';
+            commentContent.style.transform = 'translateY(100%)';
+            
+            setTimeout(() => {
+                commentModal.classList.add('pointer-events-none');
+                // 恢复视频播放
+                if (isPlaying) {
+                    videoPlayer.play();
+                }
+            }, 300);
+        }
+        
+        // 收藏功能
+        let isCollected = false;
+        
+        collectBtn.addEventListener('click', () => {
+            const bookmarkIcon = collectBtn.querySelector('i');
+            const collectCount = collectBtn.querySelector('span');
+            
+            if (!isCollected) {
+                bookmarkIcon.classList.remove('fa-bookmark-o');
+                bookmarkIcon.classList.add('fa-bookmark', 'text-yellow-400');
+                collectCount.textContent = '5.2万';
+                isCollected = true;
+            } else {
+                bookmarkIcon.classList.remove('fa-bookmark', 'text-yellow-400');
+                bookmarkIcon.classList.add('fa-bookmark-o');
+                collectCount.textContent = '5.1万';
+                isCollected = false;
+            }
+        });
+        
+        // 分享功能
+        shareBtn.addEventListener('click', () => {
+            // 这里可以添加分享逻辑
+            alert('分享功能：可以分享到微信、微博、QQ等平台');
+        });
+    </script>
+</body>
+</html>

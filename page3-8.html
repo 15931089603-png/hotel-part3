@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, viewport-fit=cover">
+    <title>微信</title>
+    <style>
+        :root {
+            --wechat-green: #07C160;
+            --wechat-dark-green: #06AD56;
+            --bg-color: #EDEDED;
+            --white: #FFFFFF;
+            --chat-bg: #F5F5F5;
+            --bubble-self: #95EC69;
+            --bubble-other: #FFFFFF;
+            --text-primary: #1A1A1A;
+            --text-secondary: #6B6B6B;
+            --text-time: #B0B0B0;
+            --divider-color: #E6E6E6;
+            --transfer-border: #F0C060;
+            --transfer-bg: #FFF9F0;
+            --badge-red: #FA5151;
+            --nav-height: 44px;
+            --status-bar-height: 44px;
+            --search-height: 52px;
+            --tab-bar-height: 56px;
+            --safe-bottom: 34px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', 'Segoe UI', sans-serif;
+            background: #1a1a1a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .phone-frame {
+            width: 390px;
+            height: 844px;
+            background: #EDEDED;
+            border-radius: 36px;
+            overflow: hidden;
+            position: relative;
+            box-shadow:
+                0 0 0 3px #1a1a1a,
+                0 0 0 6px #2d2d2d,
+                0 0 0 8px #1a1a1a,
+                0 20px 60px rgba(0, 0, 0, 0.5),
+                0 0 120px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+        }
+
+        @media (max-width: 420px) {
+            .phone-frame {
+                width: 100vw;
+                height: 100vh;
+                border-radius: 0;
+                box-shadow: none;
+            }
+        }
+
+        /* 状态栏 */
+        .status-bar {
+            height: var(--status-bar-height);
+            background: #EDEDED;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 24px 0;
+            font-size: 13px;
+            font-weight: 600;
+            color: #1A1A1A;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 10;
+        }
+        .status-bar .time {
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        .status-icons {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+        }
+        .status-icons .battery {
+            width: 25px;
+            height: 12px;
+            border: 1.5px solid #1A1A1A;
+            border-radius: 3px;
+            padding: 2px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            margin-left: 2px;
+        }
+        .status-icons .battery::after {
+            content: '';
+            position: absolute;
+            right: -4px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 6px;
+            background: #1A1A1A;
+            border-radius: 0 2px 2px 0;
+        }
+        .status-icons .battery-fill {
+            width: 100%;
+            height: 100%;
+            background: #1A1A1A;
+            border-radius: 1px;
+        }
+        .signal-bars {
+            display: flex;
+            align-items: flex-end;
+            gap: 1.5px;
+            height: 11px;
+        }
+        .signal-bars span {
+            width: 2.5px;
+            background: #1A1A1A;
+            border-radius: 1px;
+        }
+        .signal-bars span:nth-child(1) {
+            height: 4px;
+        }
+        .signal-bars span:nth-child(2) {
+            height: 6px;
+        }
+        .signal-bars span:nth-child(3) {
+            height: 8px;
+        }
+        .signal-bars span:nth-child(4) {
+            height: 11px;
+        }
+
+        /* 主导航栏 */
+        .main-nav {
+            height: var(--nav-height);
+            background: #EDEDED;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 16px;
+            flex-shrink: 0;
+            position: relative;
+            border-bottom: 0.5px solid rgba(0, 0, 0, 0.08);
+            z-index: 9;
+        }
+        .main-nav .title {
+            font-size: 17px;
+            font-weight: 600;
+            color: #1A1A1A;
+            letter-spacing: 0.3px;
+            transition: all 0.25s ease;
+        }
+        .nav-back-btn {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 34px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border-radius: 50%;
+            transition: background 0.2s;
+            z-index: 20;
+            text-decoration: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .nav-back-btn:active {
+            background: rgba(0, 0, 0, 0.08);
+        }
+        .nav-back-btn svg {
+            width: 20px;
+            height: 20px;
+            color: #1A1A1A;
+        }
+        .nav-right-btn {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 34px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+        .nav-right-btn:active {
+            background: rgba(0, 0, 0, 0.08);
+        }
+        .nav-right-btn svg {
+            width: 18px;
+            height: 18px;
+            color: #1A1A1A;
+        }
+
+        /* 搜索栏 */
+        .search-bar-wrapper {
+            padding: 8px 14px;
+            background: #EDEDED;
+            flex-shrink: 0;
+        }
+        .search-bar {
+            height: 36px;
+            background: #FFFFFF;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+            border: 0.5px solid rgba(0, 0, 0, 0.06);
+            transition: background 0.2s;
+        }
+        .search-bar:active {
+            background: #F0F0F0;
+        }
+        .search-bar svg {
+            width: 15px;
+            height: 15px;
+            color: #8E8E93;
+        }
+        .search-bar span {
+            font-size: 14px;
+            color: #8E8E93;
+            letter-spacing: 0.2px;
+        }
+
+        /* 聊天列表 */
+        .chat-list-scroll {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            background: #FFFFFF;
+            -webkit-overflow-scrolling: touch;
+            scroll-behavior: smooth;
+        }
+        .chat-list-scroll::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+        }
+        .chat-list {
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 16px;
+            cursor: pointer;
+            transition: background 0.15s;
+            position: relative;
+            min-height: 70px;
+            gap: 12px;
+            border-bottom: 0.5px solid rgba(0, 0, 0, 0.04);
+            -webkit-tap-highlight-color: transparent;
+        }
+        .chat-item:active {
+            background: #ECECEC;
+        }
+        .chat-item:last-child {
+            border-bottom: none;
+        }
+
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 6px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 600;
+            color: #FFFFFF;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+        .avatar .avatar-text {
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+        .avatar::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(0, 0, 0, 0.05) 100%);
+            border-radius: 6px;
+        }
+
+        .chat-info {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .chat-info-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .chat-name {
+            font-size: 16px;
+            font-weight: 500;
+            color: #1A1A1A;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 65%;
+        }
+        .chat-time {
+            font-size: 12px;
+            color: #B0B0B0;
+            flex-shrink: 0;
+            letter-spacing: 0.2px;
+        }
+        .chat-preview {
+            font-size: 13.5px;
+            color: #8E8E93;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            letter-spacing: 0.2px;
+            line-height: 1.3;
+        }
+        .chat-preview.transfer-preview {
+            color: #C8960C;
+            font-weight: 500;
+        }
+
+        /* 聊天详情页 */
+        .chat-detail-view {
+            position: absolute;
+            inset: 0;
+            background: #F5F5F5;
+            display: flex;
+            flex-direction: column;
+            z-index: 50;
+            transform: translateX(100%);
+            transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border-radius: 36px;
+            overflow: hidden;
+        }
+        .chat-detail-view.active {
+            transform: translateX(0);
+        }
+        @media (max-width: 420px) {
+            .chat-detail-view {
+                border-radius: 0;
+            }
+        }
+        .detail-nav {
+            height: var(--nav-height);
+            background: #F5F5F5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 16px;
+            flex-shrink: 0;
+            position: relative;
+            border-bottom: 0.5px solid rgba(0, 0, 0, 0.08);
+            z-index: 10;
+        }
+        .detail-nav .detail-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: #1A1A1A;
+            letter-spacing: 0.3px;
+        }
+        .detail-back-btn {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 34px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border-radius: 50%;
+            transition: background 0.2s;
+            z-index: 20;
+        }
+        .detail-back-btn:active {
+            background: rgba(0, 0, 0, 0.08);
+        }
+        .detail-back-btn svg {
+            width: 20px;
+            height: 20px;
+            color: #1A1A1A;
+        }
+        .detail-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            -webkit-overflow-scrolling: touch;
+        }
+        .detail-messages::-webkit-scrollbar {
+            width: 0;
+        }
+
+        .msg-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            max-width: 85%;
+        }
+        .msg-row.self {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+        .msg-row.other {
+            align-self: flex-start;
+        }
+        .msg-avatar-small {
+            width: 36px;
+            height: 36px;
+            border-radius: 4px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: #FFF;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+        .msg-avatar-small::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(0, 0, 0, 0.04) 100%);
+            border-radius: 4px;
+        }
+        .msg-avatar-small .avatar-text-small {
+            position: relative;
+            z-index: 1;
+        }
+        .msg-bubble {
+            padding: 10px 14px;
+            border-radius: 4px 16px 16px 16px;
+            font-size: 15px;
+            line-height: 1.5;
+            letter-spacing: 0.3px;
+            word-break: break-word;
+            position: relative;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+        }
+        .msg-row.other .msg-bubble {
+            background: #FFFFFF;
+            color: #1A1A1A;
+            border-radius: 4px 16px 16px 16px;
+        }
+        .msg-row.self .msg-bubble {
+            background: #95EC69;
+            color: #1A1A1A;
+            border-radius: 16px 4px 16px 16px;
+        }
+        .msg-time-divider {
+            text-align: center;
+            font-size: 12px;
+            color: #B0B0B0;
+            padding: 8px 0;
+            letter-spacing: 0.2px;
+        }
+
+        /* 转账卡片 */
+        .transfer-card {
+            background: #FFF9F0;
+            border: 1.5px solid #F0C060;
+            border-radius: 10px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 180px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+        }
+        .transfer-card .transfer-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #F0C060;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .transfer-card .transfer-icon svg {
+            width: 20px;
+            height: 20px;
+            color: #FFF;
+        }
+        .transfer-card .transfer-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .transfer-card .transfer-label {
+            font-size: 13px;
+            color: #8E8E93;
+            letter-spacing: 0.2px;
+        }
+        .transfer-card .transfer-amount {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1A1A1A;
+            letter-spacing: 0.5px;
+        }
+        .transfer-card .transfer-status {
+            font-size: 12px;
+            color: #8E8E93;
+            margin-top: 2px;
+        }
+        .transfer-card.received {
+            border-color: #07C160;
+            background: #F0FFF5;
+        }
+        .transfer-card.refunded {
+            opacity: 0.6;
+            border-color: #D0D0D0;
+            background: #F8F8F8;
+        }
+        .transfer-card.refunded .transfer-amount {
+            text-decoration: line-through;
+            color: #999;
+        }
+
+        /* 系统消息 */
+        .system-msg {
+            text-align: center;
+            font-size: 12px;
+            color: #B0B0B0;
+            padding: 4px 0;
+            letter-spacing: 0.2px;
+        }
+
+        /* 图片/文件消息 */
+        .file-bubble {
+            background: #FFFFFF;
+            border-radius: 10px;
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 0.5px solid rgba(0, 0, 0, 0.08);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+        }
+        .file-bubble .file-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            background: #F0F0F0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .file-bubble .file-name {
+            font-size: 13px;
+            color: #1A1A1A;
+        }
+
+        /* 底部输入栏(装饰) */
+        .detail-input-bar {
+            height: 50px;
+            background: #F7F7F7;
+            display: flex;
+            align-items: center;
+            padding: 0 14px;
+            gap: 10px;
+            flex-shrink: 0;
+            border-top: 0.5px solid rgba(0, 0, 0, 0.08);
+        }
+        .detail-input-bar .input-placeholder {
+            flex: 1;
+            height: 34px;
+            background: #FFFFFF;
+            border-radius: 17px;
+            display: flex;
+            align-items: center;
+            padding: 0 14px;
+            font-size: 14px;
+            color: #B0B0B0;
+            letter-spacing: 0.2px;
+        }
+
+        /* 动画 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .chat-item {
+            animation: fadeInUp 0.35s ease forwards;
+        }
+        .chat-item:nth-child(1) {
+            animation-delay: 0.02s;
+        }
+        .chat-item:nth-child(2) {
+            animation-delay: 0.06s;
+        }
+        .chat-item:nth-child(3) {
+            animation-delay: 0.10s;
+        }
+        .chat-item:nth-child(4) {
+            animation-delay: 0.14s;
+        }
+        .chat-item:nth-child(5) {
+            animation-delay: 0.18s;
+        }
+        .chat-item:nth-child(6) {
+            animation-delay: 0.22s;
+        }
+
+        /* 未读红点 */
+        .unread-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #FA5151;
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="phone-frame" id="phoneFrame">
+        <!-- 状态栏 -->
+        <div class="status-bar">
+            <span class="time">21:37</span>
+            <div class="status-icons">
+                <div class="signal-bars">
+                    <span></span><span></span><span></span><span></span>
+                </div>
+                <span style="font-size:12px;">5G</span>
+                <div class="battery">
+                    <div class="battery-fill" style="width:75%;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 主导航栏 -->
+        <div class="main-nav" id="mainNav">
+            <a href="page3-7.html" class="nav-back-btn" title="返回" aria-label="返回上一页">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 4 7 12 15 20"></polyline>
+                </svg>
+            </a>
+            <span class="title" id="mainTitle">微信</span>
+            <div class="nav-right-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <circle cx="12" cy="5" r="1.5" fill="currentColor" stroke="none"></circle>
+                    <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"></circle>
+                    <circle cx="12" cy="19" r="1.5" fill="currentColor" stroke="none"></circle>
+                </svg>
+            </div>
+        </div>
+
+        <!-- 搜索栏 -->
+        <div class="search-bar-wrapper">
+            <div class="search-bar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <circle cx="11" cy="11" r="7.5"></circle>
+                    <line x1="17" y1="17" x2="21" y2="21"></line>
+                </svg>
+                <span>搜索</span>
+            </div>
+        </div>
+
+        <!-- 聊天列表 -->
+        <div class="chat-list-scroll" id="chatListScroll">
+            <div class="chat-list" id="chatList">
+                <!-- 聊天项将由JS动态生成 -->
+            </div>
+        </div>
+
+        <!-- 聊天详情页 -->
+        <div class="chat-detail-view" id="chatDetailView">
+            <div class="detail-nav">
+                <div class="detail-back-btn" id="detailBackBtn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 4 7 12 15 20"></polyline>
+                    </svg>
+                </div>
+                <span class="detail-title" id="detailTitle">聊天详情</span>
+            </div>
+            <div class="detail-messages" id="detailMessages">
+                <!-- 动态填充 -->
+            </div>
+            <div class="detail-input-bar">
+                <div class="input-placeholder">输入消息...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // ============ 头像颜色配置 ============
+            const avatarColors = {
+                '余念': { bg: '#F0976C', gradient: 'linear-gradient(135deg, #F0976C, #E8815A)' },
+                '殷锐': { bg: '#5B8DEF', gradient: 'linear-gradient(135deg, #5B8DEF, #4A7BD4)' },
+                '许安安': { bg: '#C77DFF', gradient: 'linear-gradient(135deg, #C77DFF, #B15EE8)' },
+                '风水-徐道长': { bg: '#8B5E3C', gradient: 'linear-gradient(135deg, #8B5E3C, #6B3F22)' },
+                '刘启明': { bg: '#6B7B8D', gradient: 'linear-gradient(135deg, #6B7B8D, #556270)' },
+                '姚敏': { bg: '#FF8A80', gradient: 'linear-gradient(135deg, #FF8A80, #F0625D)' },
+                // “我”的头像配置（名字改为“周”）
+                '我': { bg: '#4CAF50', gradient: 'linear-gradient(135deg, #4CAF50, #388E3C)' }
+            };
+
+            function getAvatarColor(name) {
+                if (avatarColors[name]) return avatarColors[name];
+                // 随机生成
+                const hues = [0, 25, 45, 120, 180, 210, 260, 290, 330];
+                const h = hues[Math.floor(Math.random() * hues.length)];
+                const s = 55 + Math.floor(Math.random() * 25);
+                const l = 48 + Math.floor(Math.random() * 15);
+                return {
+                    bg: `hsl(${h},${s}%,${l}%)`,
+                    gradient: `linear-gradient(135deg, hsl(${h},${s}%,${l}%), hsl(${h},${s-10}%,${l-12}%))`
+                };
+            }
+
+            function getInitial(name) {
+                if (!name) return '?';
+                // 如果是“我”，返回“周”
+                if (name === '我') return '周';
+                const trimmed = name.trim();
+                if (trimmed.includes('-')) {
+                    const parts = trimmed.split('-');
+                    return parts[1] ? parts[1].charAt(0) : trimmed.charAt(0);
+                }
+                return trimmed.charAt(0);
+            }
+
+            // ============ 聊天数据 ============
+            // 按最后聊天日期排序，离2026-07-01越近越靠上
+            const chatData = [{
+                id: 'yaomin',
+                name: '姚敏',
+                lastDate: '2026-06-05',
+                lastDateDisplay: '6月5日',
+                messages: [
+                    { type: 'text', from: 'self', content: '感谢您抽中了我们非遗文化体验活动的免费名额，这是我们的活动时间和安排，您时间方便吗。',
+                        date: '2026-06-05' },
+                    { type: 'file', from: 'self', content: '活动安排.pdf', date: '2026-06-05' },
+                    { type: 'text', from: 'other', content: '我天，我第一次抽到奖，方便方便！', date: '2026-06-05' },
+                ],
+                lastPreview: '我天，我第一次抽到奖，方便方便！',
+            }, {
+                id: 'yunian',
+                name: '余念',
+                lastDate: '2026-05-29',
+                lastDateDisplay: '5月29日',
+                messages: [
+                    { type: 'text', from: 'other', content: '您好，想咨询一下非遗文化体验活动。', date: '2026-05-01' },
+                    { type: 'text', from: 'self', content: '您好，这是活动介绍，您想了解哪方面。', date: '2026-05-02' },
+                    { type: 'file', from: 'self', content: '活动介绍.jpg', date: '2026-05-02' },
+                    { type: 'text', from: 'other', content: '我想知道这次活动的参与者名单。', date: '2026-05-02' },
+                    { type: 'text', from: 'self', content: '不好意思，我们得保护客人的隐私。', date: '2026-05-02' },
+                    { type: 'transfer', from: 'other', amount: '1000', status: 'refunded', date: '2026-05-02' },
+                    { type: 'system', content: '已退还 ¥1000.00', date: '2026-05-02' },
+                    { type: 'text', from: 'self', content: '这不是钱的问题。', date: '2026-05-02' },
+                    { type: 'text', from: 'other', content: '我只想问一个人。', date: '2026-05-02' },
+                    { type: 'transfer', from: 'other', amount: '5000', status: 'received', date: '2026-05-02' },
+                    { type: 'system', content: '已收款 ¥5000.00', date: '2026-05-02' },
+                    { type: 'text', from: 'self', content: '你要问谁。', date: '2026-05-02' },
+                    { type: 'text', from: 'other', content: '殷锐参加的是哪期活动。', date: '2026-05-02' },
+                    { type: 'text', from: 'self', content: '6月的第一期活动。', date: '2026-05-02' },
+                    { type: 'text', from: 'other', content: '好的，谢谢您。', date: '2026-05-29' },
+                ],
+                lastPreview: '好的，谢谢您。',
+            }, {
+                id: 'xuanan',
+                name: '许安安',
+                lastDate: '2026-05-12',
+                lastDateDisplay: '5月12日',
+                messages: [
+                    { type: 'text', from: 'self',
+                        content: '您好，想请您出一个视频推广一下我们这个民宿和旅行活动。', date: '2026-05-12' },
+                    { type: 'text', from: 'other', content: '但是我是财经类的博主，这个受众会不会不太合适。',
+                    date: '2026-05-12' },
+                    { type: 'text', from: 'self',
+                        content: '没关系，这边想先邀请您来实地参与一下我们六月第一期的活动，所有的费用我们全包，您参与后觉得合适我们再谈合作。',
+                        date: '2026-05-12' },
+                    { type: 'text', from: 'other', content: '那好吧。', date: '2026-05-12' },
+                ],
+                lastPreview: '那好吧。',
+            }, {
+                id: 'liuqiming',
+                name: '刘启明',
+                lastDate: '2026-05-08',
+                lastDateDisplay: '5月8日',
+                messages: [
+                    { type: 'file', from: 'self', content: '殷锐近期行程.pdf', date: '2026-05-08' },
+                    { type: 'text', from: 'other', content: '你是什么人，怎么有我微信？给我发这个是什么意思。',
+                    date: '2026-05-08' },
+                    { type: 'text', from: 'self', content: '你只要知道我是被他害的倾家荡产的万千受害者之一就行。',
+                    date: '2026-05-08' },
+                    { type: 'text', from: 'self', content: '至于发这个什么意思，懂的人自然懂。', date: '2026-05-08' },
+                ],
+                lastPreview: '至于发这个什么意思，懂的人自然懂。',
+            }, {
+                id: 'fengshui',
+                name: '风水-徐道长',
+                lastDate: '2026-05-03',
+                lastDateDisplay: '5月3日',
+                messages: [
+                    { type: 'text', from: 'self', content: '道长，最近那两个地下的感觉又不安生了。', date: '2025-01-04' },
+                    // 【修改】“拜个祭台” → “摆个祭台”
+                    { type: 'text', from: 'other', content: '你摆个祭台在楼前面，找几只鸡鸭现场杀了放上去，先压一压。',
+                    date: '2025-01-04' },
+                    { type: 'text', from: 'self', content: '道长，您之前说的一劳永逸的办法，我好像找到合适的人选了。',
+                        date: '2026-05-03' },
+                    { type: 'transfer', from: 'self', amount: '50000', status: 'received', date: '2026-05-03' },
+                    { type: 'text', from: 'self', content: '还得麻烦您指点。', date: '2026-05-03' },
+                    { type: 'system', content: '对方已收款 ¥50000.00', date: '2026-05-03' },
+                    { type: 'text', from: 'other',
+                        content: '按我之前说的布置符纸，子时一到，阵内的生灵死灵都会被困进八门之中，大阵每半个时辰旋转一次，四个时辰后，八门旋转回正位，阵成，届时所有生灵，死灵都将魂飞魄散。',
+                        date: '2026-05-03' },
+                    { type: 'text', from: 'other',
+                    content: '但是切记，八门中的任何一门出差错，整个阵法都会失败。', date: '2026-05-03' },
+                    { type: 'text', from: 'self', content: '我明白，道长。', date: '2026-05-03' },
+                ],
+                lastPreview: '我明白，道长。',
+            }, {
+                id: 'yinrui',
+                name: '殷锐',
+                lastDate: '2026-04-22',
+                lastDateDisplay: '4月22日',
+                messages: [
+                    { type: 'text', from: 'self', content: '您好这是咱们这次旅行活动的安排和注意事项。',
+                    date: '2026-04-22' },
+                    { type: 'file', from: 'self', content: '活动安排.pdf', date: '2026-04-22' },
+                    { type: 'text', from: 'other', content: '好的，能接机吗。', date: '2026-04-22' },
+                    { type: 'text', from: 'self', content: '当然，这边请您留一下姓名和电话。', date: '2026-04-22' },
+                    { type: 'text', from: 'other', content: '殷锐，15555555555', date: '2026-04-22' },
+                    { type: 'text', from: 'self', content: '好的，到时候会有专人联系您确认时间和碰面地点。',
+                    date: '2026-04-22' },
+                ],
+                lastPreview: '好的，到时候会有专人联系您确认时间和碰面地点。',
+            }];
+
+            // ============ 渲染聊天列表 ============
+            const chatListEl = document.getElementById('chatList');
+            const chatDetailView = document.getElementById('chatDetailView');
+            const detailMessages = document.getElementById('detailMessages');
+            const detailTitle = document.getElementById('detailTitle');
+            const detailBackBtn = document.getElementById('detailBackBtn');
+            const mainNav = document.getElementById('mainNav');
+            const mainTitle = document.getElementById('mainTitle');
+            const chatListScroll = document.getElementById('chatListScroll');
+            const searchBarWrapper = document.querySelector('.search-bar-wrapper');
+
+            function renderChatList() {
+                chatListEl.innerHTML = '';
+                chatData.forEach((chat, index) => {
+                    const colors = getAvatarColor(chat.name);
+                    const initial = getInitial(chat.name);
+                    const previewText = chat.lastPreview;
+                    const isTransferPreview = previewText.includes('转账') || previewText.includes(
+                        '收款') || previewText.includes('¥');
+
+                    const item = document.createElement('div');
+                    item.className = 'chat-item';
+                    item.setAttribute('data-chat-id', chat.id);
+                    item.innerHTML = `
+                    <div class="avatar" style="background:${colors.gradient};">
+                      <span class="avatar-text">${initial}</span>
+                    </div>
+                    <div class="chat-info">
+                      <div class="chat-info-top">
+                        <span class="chat-name">${chat.name}</span>
+                        <span class="chat-time">${chat.lastDateDisplay}</span>
+                      </div>
+                      <div class="chat-preview ${isTransferPreview ? 'transfer-preview' : ''}">${previewText}</div>
+                    </div>
+                  `;
+                    item.addEventListener('click', () => openChatDetail(chat));
+                    chatListEl.appendChild(item);
+                });
+            }
+
+            // ============ 打开聊天详情 ============
+            function openChatDetail(chat) {
+                detailTitle.textContent = chat.name;
+                detailMessages.innerHTML = '';
+                const colors = getAvatarColor(chat.name);
+                const selfColors = getAvatarColor('我');
+                const chatInitial = getInitial(chat.name);
+                // “我”的头像文字固定为“周”
+                const selfInitial = '周';
+
+                let lastDate = '';
+                chat.messages.forEach((msg, idx) => {
+                    // 日期分隔线
+                    if (msg.date && msg.date !== lastDate) {
+                        lastDate = msg.date;
+                        const dateDiv = document.createElement('div');
+                        dateDiv.className = 'msg-time-divider';
+                        const d = new Date(msg.date);
+                        const month = d.getMonth() + 1;
+                        const day = d.getDate();
+                        const year = d.getFullYear();
+                        dateDiv.textContent = year === 2026 ? `${month}月${day}日` :
+                            `${year}年${month}月${day}日`;
+                        detailMessages.appendChild(dateDiv);
+                    }
+
+                    if (msg.type === 'system') {
+                        const sysDiv = document.createElement('div');
+                        sysDiv.className = 'system-msg';
+                        sysDiv.textContent = msg.content;
+                        detailMessages.appendChild(sysDiv);
+                        return;
+                    }
+
+                    if (msg.type === 'transfer') {
+                        const row = document.createElement('div');
+                        row.className = `msg-row ${msg.from === 'self' ? 'self' : 'other'}`;
+
+                        const avatarSmall = document.createElement('div');
+                        avatarSmall.className = 'msg-avatar-small';
+                        avatarSmall.style.background = msg.from === 'self' ? selfColors.gradient :
+                            colors.gradient;
+                        // 【修改】小头像文字：自己显示“周”，对方显示对方首字
+                        avatarSmall.innerHTML =
+                            `<span class="avatar-text-small">${msg.from === 'self' ? selfInitial : chatInitial}</span>`;
+
+                        const card = document.createElement('div');
+                        let cardClass = 'transfer-card';
+                        if (msg.status === 'received') cardClass += ' received';
+                        if (msg.status === 'refunded') cardClass += ' refunded';
+                        card.className = cardClass;
+
+                        let statusText = '';
+                        if (msg.status === 'received') statusText = '已被领取';
+                        if (msg.status === 'refunded') statusText = '已退还';
+                        const amountNum = parseFloat(msg.amount).toFixed(2);
+
+                        card.innerHTML = `
+                      <div class="transfer-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                          <line x1="12" y1="5" x2="12" y2="19"></line>
+                          <polyline points="18 11 12 5 6 11"></polyline>
+                        </svg>
+                      </div>
+                      <div class="transfer-info">
+                        <div class="transfer-label">微信转账</div>
+                        <div class="transfer-amount">¥${amountNum}</div>
+                        ${statusText ? `<div class="transfer-status">${statusText}</div>` : ''}
+                      </div>
+                    `;
+                        row.appendChild(avatarSmall);
+                        row.appendChild(card);
+                        detailMessages.appendChild(row);
+                        return;
+                    }
+
+                    if (msg.type === 'file') {
+                        const row = document.createElement('div');
+                        row.className = `msg-row ${msg.from === 'self' ? 'self' : 'other'}`;
+
+                        const avatarSmall = document.createElement('div');
+                        avatarSmall.className = 'msg-avatar-small';
+                        avatarSmall.style.background = msg.from === 'self' ? selfColors.gradient :
+                            colors.gradient;
+                        // 【修改】小头像文字
+                        avatarSmall.innerHTML =
+                            `<span class="avatar-text-small">${msg.from === 'self' ? selfInitial : chatInitial}</span>`;
+
+                        const fileBubble = document.createElement('div');
+                        fileBubble.className = 'file-bubble';
+                        fileBubble.innerHTML = `
+                      <div class="file-icon">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8E8E93" stroke-width="2" stroke-linecap="round">
+                          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                          <polyline points="14 2 14 8 20 8"></polyline>
+                        </svg>
+                      </div>
+                      <span class="file-name">${msg.content}</span>
+                    `;
+                        row.appendChild(avatarSmall);
+                        row.appendChild(fileBubble);
+                        detailMessages.appendChild(row);
+                        return;
+                    }
+
+                    // 普通文本消息
+                    const row = document.createElement('div');
+                    row.className = `msg-row ${msg.from === 'self' ? 'self' : 'other'}`;
+
+                    const avatarSmall = document.createElement('div');
+                    avatarSmall.className = 'msg-avatar-small';
+                    avatarSmall.style.background = msg.from === 'self' ? selfColors.gradient : colors
+                        .gradient;
+                    // 【修改】小头像文字
+                    avatarSmall.innerHTML =
+                        `<span class="avatar-text-small">${msg.from === 'self' ? selfInitial : chatInitial}</span>`;
+
+                    const bubble = document.createElement('div');
+                    bubble.className = 'msg-bubble';
+                    bubble.textContent = msg.content;
+
+                    row.appendChild(avatarSmall);
+                    row.appendChild(bubble);
+                    detailMessages.appendChild(row);
+                });
+
+                // 滚动到底部
+                setTimeout(() => {
+                    detailMessages.scrollTop = detailMessages.scrollHeight;
+                }, 100);
+
+                // 显示详情页
+                chatDetailView.classList.add('active');
+            }
+
+            // ============ 关闭聊天详情 ============
+            function closeChatDetail() {
+                chatDetailView.classList.remove('active');
+            }
+
+            detailBackBtn.addEventListener('click', closeChatDetail);
+
+            // ============ 初始化 ============
+            renderChatList();
+
+            // ============ 更新状态栏时间 ============
+            function updateStatusTime() {
+                const now = new Date();
+                const h = now.getHours().toString().padStart(2, '0');
+                const m = now.getMinutes().toString().padStart(2, '0');
+                document.querySelector('.status-bar .time').textContent = `${h}:${m}`;
+            }
+            updateStatusTime();
+            setInterval(updateStatusTime, 30000);
+
+            // ============ 监听硬件返回键(安卓) ============
+            window.addEventListener('popstate', function(e) {
+                if (chatDetailView.classList.contains('active')) {
+                    closeChatDetail();
+                    e.preventDefault();
+                    history.pushState(null, '', window.location.href);
+                }
+            });
+
+            // 初始化历史状态
+            if (window.history && window.history.pushState) {
+                history.pushState(null, '', window.location.href);
+            }
+
+            console.log('✅ 微信聊天页面已就绪（头像已改为“周”，祭台文字已修改）');
+        })();
+    </script>
+</body>
+</html>

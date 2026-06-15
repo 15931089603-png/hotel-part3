@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>赫尔墨斯之眼论坛 - 主页</title>
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        secondary: '#64748b',
+                        accent: '#f59e0b',
+                        forum: {
+                            bg: '#f8fafc',
+                            card: '#ffffff',
+                            border: '#e2e8f0',
+                            text: '#1e293b',
+                            muted: '#64748b',
+                            dark: '#0f172a',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        serif: ['Georgia', 'serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .forum-shadow {
+                box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+            }
+            .card-hover {
+                transition: all 0.25s ease;
+            }
+            .card-hover:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px -8px rgba(0, 0, 0, 0.15);
+            }
+            .glow-text {
+                text-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+            }
+        }
+    </style>
+    <style>
+        /* 黑胶唱片按钮样式 */
+        .record-btn {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #3a3a3a 5%, #1a1a1a 40%, #222 60%, #0a0a0a 80%);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5), inset 0 0 8px rgba(255, 255, 255, 0.08);
+            cursor: pointer;
+            position: relative;
+            transition: box-shadow 0.25s, transform 0.25s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+        }
+        .record-btn::after {
+            content: '';
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #e53e3e;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.7), inset 0 1px 2px rgba(255, 255, 255, 0.3);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+        }
+        .record-btn:hover {
+            box-shadow: 0 6px 22px rgba(0, 0, 0, 0.65), inset 0 0 10px rgba(255, 255, 255, 0.12);
+            transform: scale(1.06);
+        }
+        .record-btn:active {
+            transform: scale(0.96);
+        }
+        /* 旋转动画 */
+        @keyframes recordSpin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        .record-spin {
+            animation: recordSpin 2.2s linear infinite;
+        }
+        /* BGM浮动容器 */
+        .bgm-container {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+        .bgm-tooltip {
+            font-size: 12px;
+            color: #4a5568;
+            background: rgba(255, 255, 255, 0.92);
+            padding: 3px 10px;
+            border-radius: 14px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            white-space: nowrap;
+            pointer-events: none;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+        .bgm-container:hover .bgm-tooltip {
+            opacity: 1;
+        }
+        /* 标签动画 */
+        .tag-hot {
+            animation: pulse-tag 2s ease-in-out infinite;
+        }
+        @keyframes pulse-tag {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.7;
+            }
+        }
+        /* 搜索栏聚焦光效 */
+        .search-glow:focus-within {
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25), 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-forum-bg text-forum-text min-h-screen flex flex-col">
+
+    <!-- 背景音乐音频元素 -->
+    <audio id="bgmAudio" loop preload="auto">
+        <source src="Charlie%20Clouser%20-%20Main%20Titles.mp3" type="audio/mpeg">
+        您的浏览器不支持音频播放。
+    </audio>
+
+    <!-- 顶部导航栏 -->
+    <header class="bg-white border-b border-forum-border sticky top-0 z-50 forum-shadow">
+        <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+            <!-- 左侧：返回按钮 + 论坛名称 -->
+            <div class="flex items-center space-x-3">
+                <a href="page3-1.html"
+                class="text-forum-muted hover:text-primary transition-colors p-1.5 rounded-full hover:bg-gray-100"
+                aria-label="返回上一页">
+                <i class="fa fa-arrow-left text-xl"></i>
+            </a>
+            <a href="#" class="flex items-center space-x-2 hover:opacity-80 transition-opacity">
+                <i class="fa fa-eye text-primary text-2xl"></i>
+                <h1 class="text-xl font-bold tracking-tight">赫尔墨斯之眼论坛</h1>
+            </a>
+        </div>
+        <!-- 右侧图标 -->
+        <div class="flex items-center space-x-3">
+            <button class="text-forum-muted hover:text-primary transition-colors p-1.5 rounded-full hover:bg-gray-100">
+                <i class="fa fa-bell text-lg"></i>
+            </button>
+            <button class="text-forum-muted hover:text-primary transition-colors p-1.5 rounded-full hover:bg-gray-100">
+                <i class="fa fa-user-circle text-lg"></i>
+            </button>
+        </div>
+    </div>
+</header>
+
+<!-- 主内容区域 -->
+<main class="flex-1 container mx-auto px-4 py-6 max-w-4xl">
+    <!-- 论坛标语 -->
+    <div class="text-center mb-8 mt-2">
+        <p class="text-forum-muted text-lg italic tracking-wide font-serif">
+            "最神秘的故事应有尽有"
+        </p>
+        <div class="w-16 h-0.5 bg-primary/40 mx-auto mt-3 rounded-full"></div>
+    </div>
+
+    <!-- 搜索栏（默认为空） -->
+    <div class="mb-10 search-glow transition-shadow duration-300 rounded-xl">
+        <div class="flex items-center bg-white rounded-xl border border-forum-border forum-shadow overflow-hidden">
+            <div class="flex-1 flex items-center px-4 py-3">
+                <i class="fa fa-search text-forum-muted mr-3 text-lg"></i>
+                <input
+                id="searchInput"
+                type="text"
+                value=""
+                placeholder="搜索论坛内容..."
+                class="w-full outline-none text-forum-text bg-transparent placeholder-forum-muted/60"
+                aria-label="搜索论坛">
+            </div>
+            <button
+            id="searchBtn"
+            class="bg-primary text-white px-6 py-3 font-medium hover:bg-primary/90 transition-colors flex items-center space-x-1.5 whitespace-nowrap">
+            <i class="fa fa-search"></i>
+            <span>搜索</span>
+        </button>
+    </div>
+</div>
+
+<!-- 热门讨论 -->
+<section class="mb-10">
+    <div class="flex items-center mb-5">
+        <i class="fa fa-fire text-accent text-xl mr-2 tag-hot"></i>
+        <h2 class="text-xl font-bold">热门讨论</h2>
+        <span class="ml-3 text-xs bg-accent/10 text-accent px-2.5 py-0.5 rounded-full font-medium">HOT</span>
+    </div>
+    <div class="grid gap-4">
+        <!-- 帖子1：翠玉录专区 -->
+        <div class="bg-forum-card rounded-xl p-5 forum-shadow card-hover cursor-pointer border border-transparent hover:border-primary/20">
+            <div class="flex items-start justify-between">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1.5">
+                        <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">#翠玉录专区#</span>
+                        <span class="text-xs text-forum-muted">· 2小时前</span>
+                    </div>
+                    <h3 class="font-semibold text-lg mb-1.5 hover:text-primary transition-colors">怎么用数学课本炼出贤者之石</h3>
+                    <p class="text-sm text-forum-muted leading-relaxed line-clamp-2">
+                        楼主用傅里叶变换推导出了炼金术的基本公式，声称只要把微积分课本泡在盐水里三天三夜，再配合特定频率的声波振荡，就能在书页间析出红色结晶……
+                    </p>
+                </div>
+                <div class="ml-4 flex items-center text-forum-muted text-xs space-x-3 shrink-0">
+                    <span class="flex items-center"><i class="fa fa-eye mr-1"></i> 3.2k</span>
+                    <span class="flex items-center"><i class="fa fa-comment mr-1"></i> 128</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 帖子2：灵异见闻 -->
+        <div class="bg-forum-card rounded-xl p-5 forum-shadow card-hover cursor-pointer border border-transparent hover:border-primary/20">
+            <div class="flex items-start justify-between">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1.5">
+                        <span class="text-xs font-bold text-purple-600 bg-purple-50 px-2 py-0.5 rounded">#灵异见闻#</span>
+                        <span class="text-xs text-forum-muted">· 5小时前</span>
+                    </div>
+                    <h3 class="font-semibold text-lg mb-1.5 hover:text-primary transition-colors">从出租车后视镜里看到了不存在的乘客</h3>
+                    <p class="text-sm text-forum-muted leading-relaxed line-clamp-2">
+                        深夜打车回家，司机突然问我“后面那位是你朋友吗”，可我明明是一个人上的车。后视镜里模糊映出一个穿红衣的身影，转头看后座却空空如也，司机当场脸色煞白……
+                    </p>
+                </div>
+                <div class="ml-4 flex items-center text-forum-muted text-xs space-x-3 shrink-0">
+                    <span class="flex items-center"><i class="fa fa-eye mr-1"></i> 5.7k</span>
+                    <span class="flex items-center"><i class="fa fa-comment mr-1"></i> 203</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 帖子3：现场探险 -->
+        <div class="bg-forum-card rounded-xl p-5 forum-shadow card-hover cursor-pointer border border-transparent hover:border-primary/20">
+            <div class="flex items-start justify-between">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1.5">
+                        <span class="text-xs font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded">#现场探险#</span>
+                        <span class="text-xs text-forum-muted">· 8小时前</span>
+                    </div>
+                    <h3 class="font-semibold text-lg mb-1.5 hover:text-primary transition-colors">牛油果大厦探险组队</h3>
+                    <p class="text-sm text-forum-muted leading-relaxed line-clamp-2">
+                        本周六晚上十点，召集5名胆大心细的探险者前往牛油果大厦，要求自备手电筒和备用电池。楼主已实地踩点三次，据说地下二层停车场的回声异常，拍墙能听到类似呼吸的回应……
+                    </p>
+                </div>
+                <div class="ml-4 flex items-center text-forum-muted text-xs space-x-3 shrink-0">
+                    <span class="flex items-center"><i class="fa fa-eye mr-1"></i> 4.1k</span>
+                    <span class="flex items-center"><i class="fa fa-comment mr-1"></i> 89</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 精选专栏 -->
+<section class="mb-10">
+    <div class="flex items-center mb-5">
+        <i class="fa fa-star text-primary text-xl mr-2"></i>
+        <h2 class="text-xl font-bold">精选专栏</h2>
+        <span class="ml-3 text-xs bg-primary/10 text-primary px-2.5 py-0.5 rounded-full font-medium">EDITOR'S PICK</span>
+    </div>
+    <div class="grid gap-4 md:grid-cols-2">
+        <!-- 专栏1：爆米花地产集团（可点击跳转，缩略内容已更新） -->
+        <a href="page3-6.html"
+        class="bg-forum-card rounded-xl p-5 forum-shadow card-hover border border-transparent hover:border-accent/40 block group relative overflow-hidden">
+        <!-- "爆"标签 -->
+        <span class="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-md tag-hot z-10">
+            爆
+        </span>
+        <div class="flex flex-col h-full">
+            <span class="text-xs text-forum-muted mb-2 flex items-center">
+                <i class="fa fa-pencil mr-1.5"></i> 签约作者：白垩.异闻录
+            </span>
+            <h3 class="font-bold text-lg mb-2 group-hover:text-primary transition-colors leading-snug">
+                爆米花地产集团双胞胎千金失踪案隐情
+            </h3>
+            <p class="text-sm text-forum-muted leading-relaxed flex-1 line-clamp-3">
+                工程受阻？民间秘术？当年的案件仿佛另有隐情。这次我亲身前往，探访那些亲历者，找出背后的真相
+            </p>
+            <div class="mt-3 flex items-center text-primary text-sm font-medium">
+                阅读全文 <i class="fa fa-arrow-right ml-1.5 text-xs group-hover:translate-x-1 transition-transform"></i>
+            </div>
+        </div>
+    </a>
+
+    <!-- 专栏2：霓虹游记 -->
+    <div class="bg-forum-card rounded-xl p-5 forum-shadow card-hover cursor-pointer border border-transparent hover:border-purple-300 block relative overflow-hidden">
+        <!-- "新"标签 -->
+        <span class="absolute top-3 right-3 bg-green-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-md z-10">
+            新
+        </span>
+        <div class="flex flex-col h-full">
+            <span class="text-xs text-forum-muted mb-2 flex items-center">
+                <i class="fa fa-pencil mr-1.5"></i> 签约作者：彼岸之镜
+            </span>
+            <h3 class="font-bold text-lg mb-2 hover:text-primary transition-colors leading-snug">
+                霓虹游记：古宅二楼，总是深夜传来脚步声……
+            </h3>
+            <p class="text-sm text-forum-muted leading-relaxed flex-1 line-clamp-3">
+                京都郊外一栋废弃町屋，每逢子时二楼便响起清晰的木屐声。作者连续七夜守候，拍到了令人毛骨悚然的影像证据。
+            </p>
+            <div class="mt-3 flex items-center text-purple-600 text-sm font-medium">
+                阅读全文 <i class="fa fa-arrow-right ml-1.5 text-xs"></i>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+
+<!-- 论坛公告 -->
+<section class="mb-6">
+    <div class="flex items-center mb-5">
+        <i class="fa fa-bullhorn text-forum-muted text-xl mr-2"></i>
+        <h2 class="text-xl font-bold">论坛公告</h2>
+    </div>
+    <div class="bg-forum-card rounded-xl p-6 forum-shadow border-l-4 border-amber-400">
+        <div class="flex items-start space-x-3">
+            <i class="fa fa-exclamation-triangle text-amber-500 text-xl mt-0.5 shrink-0"></i>
+            <div>
+                <p class="text-forum-text leading-relaxed mb-3">
+                    论坛的中国区服务器会在<strong class="text-red-600">农历七月十五</strong>进行维护，届时网站会关闭24小时，敬请谅解。
+                </p>
+                <p class="text-forum-muted text-sm flex items-center">
+                    <span class="w-8 h-px bg-forum-border mr-2"></span>
+                    三重伟大之神 敬上
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+</main>
+
+<!-- 页脚 -->
+<footer class="bg-white border-t border-forum-border py-6 mt-auto">
+    <div class="container mx-auto px-4 text-center text-forum-muted text-sm">
+        <p class="mb-1">© 2026 赫尔墨斯之眼论坛 - 探索未知，分享真相</p>
+        <p class="text-xs">Hermes' Eye Forum · Veritas in Tenebris</p>
+    </div>
+</footer>
+
+<!-- 旋转唱片BGM控制按钮（固定在右下角） -->
+<div class="bgm-container">
+    <span class="bgm-tooltip" id="bgmTooltip">🎵 正在播放</span>
+    <div class="record-btn" id="bgmRecordBtn" aria-label="音乐播放/暂停" role="button" tabindex="0">
+    </div>
+</div>
+
+<script>
+    (function() {
+        // ---------- 搜索跳转 ----------
+        const searchBtn = document.getElementById('searchBtn');
+        const searchInput = document.getElementById('searchInput');
+
+        function performSearch() {
+            const query = searchInput.value.trim();
+            // 输入包含“爆米花地产集团”时跳转至对应页面
+            if (query.includes('爆米花地产集团')) {
+                window.location.href = 'page3-6.html';
+            } else if (query.length > 0) {
+                // 其他关键词可在此扩展，目前仅提示
+                alert('请输入“爆米花地产集团”查看相关专栏。');
+            }
+        }
+
+        searchBtn.addEventListener('click', performSearch);
+        searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                performSearch();
+            }
+        });
+
+        // ---------- BGM 控制 ----------
+        const audio = document.getElementById('bgmAudio');
+        const recordBtn = document.getElementById('bgmRecordBtn');
+        const tooltip = document.getElementById('bgmTooltip');
+
+        function updateUI(isPlaying) {
+            if (isPlaying) {
+                recordBtn.classList.add('record-spin');
+                tooltip.textContent = '🎵 正在播放';
+            } else {
+                recordBtn.classList.remove('record-spin');
+                tooltip.textContent = '🔇 已暂停';
+            }
+        }
+
+        // 尝试自动播放（默认播放）
+        function attemptAutoPlay() {
+            const playPromise = audio.play();
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    updateUI(true);
+                }).catch(() => {
+                    // 自动播放被浏览器阻止，显示暂停状态
+                    updateUI(false);
+                });
+            }
+        }
+
+        // 点击唱片按钮切换播放/暂停
+        recordBtn.addEventListener('click', () => {
+            if (audio.paused) {
+                audio.play().then(() => {
+                    updateUI(true);
+                }).catch(() => {
+                    updateUI(false);
+                });
+            } else {
+                audio.pause();
+                updateUI(false);
+            }
+        });
+
+        // 键盘可访问性
+        recordBtn.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                recordBtn.click();
+            }
+        });
+
+        // 页面加载完成后尝试自动播放
+        window.addEventListener('load', () => {
+            attemptAutoPlay();
+        });
+
+        // 用户首次交互后若音频仍暂停，尝试恢复（解决某些浏览器策略）
+        document.addEventListener('click', function resumeOnInteraction() {
+            if (audio.paused && audio.readyState >= 2) {
+                audio.play().then(() => {
+                    updateUI(true);
+                }).catch(() => {});
+            }
+        }, { once: true });
+    })();
+</script>
+</body>
+</html>

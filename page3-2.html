@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>霸王龙浏览器</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        trex: {
+                            green: '#2E7D32',
+                            dark: '#1B5E20',
+                            light: '#4CAF50',
+                            yellow: '#FFC107'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .dino-shadow {
+                box-shadow: 0 4px 12px rgba(46, 125, 50, 0.2);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- 顶部导航栏 -->
+    <header class="bg-trex-green text-white shadow-md sticky top-0 z-20">
+        <div class="max-w-4xl mx-auto px-4 py-3 flex items-center">
+            <!-- 返回按钮 -->
+            <a href="page3-1.html" class="flex items-center text-white hover:text-trex-yellow transition-colors mr-6">
+                <i class="fa fa-arrow-left mr-2"></i>
+                返回
+            </a>
+            
+            <!-- 浏览器Logo -->
+            <div class="flex items-center mr-6">
+                <i class="fa fa-paw text-trex-yellow text-xl mr-2"></i>
+                <span class="text-xl font-bold">霸王龙浏览器</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要内容区 -->
+    <main class="max-w-4xl mx-auto px-4 py-12">
+        <!-- 搜索区域 -->
+        <div class="bg-white rounded-lg dino-shadow p-6 md:p-8 mb-8">
+            <div class="text-center mb-8">
+                <i class="fa fa-search text-6xl text-trex-green mb-4"></i>
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">全网搜索</h2>
+                <p class="text-gray-600">输入关键词，霸王龙帮你找到答案</p>
+            </div>
+            
+            <!-- 搜索框 -->
+            <div class="flex flex-col md:flex-row gap-4">
+                <input 
+                    type="text" 
+                    id="search-input" 
+                    placeholder="请输入搜索关键词..." 
+                    class="flex-1 px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:border-trex-green focus:ring-2 focus:ring-trex-green/20 text-lg"
+                    autocomplete="off"
+                >
+                <button 
+                    id="search-button" 
+                    class="px-8 py-3 bg-trex-green text-white rounded-lg hover:bg-trex-dark transition-colors font-medium text-lg flex items-center justify-center"
+                >
+                    <i class="fa fa-search mr-2"></i>
+                    搜索
+                </button>
+            </div>
+        </div>
+
+        <!-- 提示信息区域 -->
+        <div id="message-container" class="hidden">
+            <div class="bg-white rounded-lg dino-shadow p-6 text-center">
+                <i class="fa fa-meh-o text-5xl text-trex-yellow mb-4"></i>
+                <p class="text-xl font-medium text-gray-800 mb-2">搜不到捏Σ( ° △ °|||)︴</p>
+                <p class="text-gray-600">霸王龙也找不到这个内容，换个关键词试试吧</p>
+                <button 
+                    onclick="hideMessage()" 
+                    class="mt-4 px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+                >
+                    知道了
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-gray-100 py-6 mt-12">
+        <div class="max-w-4xl mx-auto px-4 text-center text-gray-500 text-sm">
+            <p>© 2026 霸王龙浏览器 极速安全</p>
+        </div>
+    </footer>
+
+    <script>
+        // 关键词与页面的映射表（已新增赫尔墨斯之眼）
+        const searchMap = {
+            '大樱桃民宿': 'page3-3',
+            '牛油果大厦': 'page3-4',
+            '赫尔墨斯之眼论坛': 'page3-5',
+            '赫尔墨斯之眼': 'page3-5'
+        };
+
+        // 搜索函数
+        function search() {
+            const input = document.getElementById('search-input');
+            const keyword = input.value.trim();
+            
+            if (!keyword) {
+                input.focus();
+                return;
+            }
+            
+            // 检查关键词是否在映射表中
+            if (searchMap.hasOwnProperty(keyword)) {
+                // 跳转到对应的页面
+                window.location.href = `${searchMap[keyword]}.html`;
+            } else {
+                // 显示找不到的提示
+                showMessage();
+            }
+        }
+
+        // 显示提示信息
+        function showMessage() {
+            document.getElementById('message-container').classList.remove('hidden');
+            // 滚动到提示区域
+            document.getElementById('message-container').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // 隐藏提示信息
+        function hideMessage() {
+            document.getElementById('message-container').classList.add('hidden');
+        }
+
+        // 绑定搜索按钮点击事件
+        document.getElementById('search-button').addEventListener('click', search);
+
+        // 绑定回车键事件
+        document.getElementById('search-input').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                search();
+            }
+        });
+    </script>
+</body>
+</html>

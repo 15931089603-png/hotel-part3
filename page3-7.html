@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>手机界面 - 私密模式</title>
+    <style>
+        :root {
+            --phone-width: 375px;
+            --phone-height: 720px;
+            --bg-gray: #5a5a5a;
+            --dark-bg: #1e1e1e;
+            --accent-green: #4caf84;
+            --accent-dino: #3a3d5c;
+            --text-light: #e0e0e0;
+            --text-muted: #aaaaaa;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #1a1a1a;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            overflow: hidden;
+        }
+        .phone-frame {
+            position: relative;
+            width: var(--phone-width);
+            height: var(--phone-height);
+            background: #111;
+            border-radius: 32px;
+            padding: 10px;
+            box-shadow:
+                0 0 0 3px #1a1a1a,
+                0 0 0 6px #2a2a2a,
+                0 0 0 9px #1a1a1a,
+                0 20px 60px rgba(0, 0, 0, 0.6),
+                0 8px 24px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            overflow: hidden;
+        }
+        .phone-screen {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-gray);
+            border-radius: 24px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .status-bar {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 8px 18px 4px 18px;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            background: transparent;
+            pointer-events: none;
+        }
+        .status-bar .icons {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .battery-icon {
+            display: flex;
+            align-items: center;
+            gap: 1px;
+        }
+        .battery-body {
+            width: 20px;
+            height: 10px;
+            border: 1.5px solid #fff;
+            border-radius: 2px;
+            padding: 1.5px;
+            display: flex;
+            align-items: center;
+        }
+        .battery-fill {
+            width: 75%;
+            height: 100%;
+            background: #fff;
+            border-radius: 1px;
+        }
+        .battery-cap {
+            width: 2.5px;
+            height: 4px;
+            background: #fff;
+            border-radius: 0 1px 1px 0;
+            margin-left: -0.5px;
+        }
+        /* 数字时钟容器 */
+        .clock-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 0 6px 0;
+            z-index: 9;
+            user-select: none;
+        }
+        .digital-clock-interactive {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 30px;
+            padding: 8px 22px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        .hour-part,
+        .minute-part {
+            font-size: 44px;
+            font-weight: 600;
+            color: #ffffff;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: transform 0.1s ease, text-shadow 0.2s ease;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+            -webkit-tap-highlight-color: transparent;
+            padding: 4px 8px;
+            border-radius: 12px;
+            line-height: 1;
+        }
+        .hour-part:active,
+        .minute-part:active {
+            transform: scale(0.92);
+            text-shadow: 0 1px 15px rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .separator {
+            font-size: 40px;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.8);
+            margin: 0 4px;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+            pointer-events: none;
+        }
+        .clock-hint {
+            color: rgba(255, 255, 255, 0.45);
+            font-size: 9px;
+            margin-top: 4px;
+            letter-spacing: 0.5px;
+        }
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #1a1a1a;
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 24px;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+            opacity: 1;
+            visibility: visible;
+        }
+        .loading-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .loading-text {
+            font-size: 20px;
+            font-weight: 500;
+            color: #cccccc;
+            letter-spacing: 1px;
+            animation: loadingPulse 1.6s ease-in-out infinite;
+            text-align: center;
+            white-space: nowrap;
+        }
+        @keyframes loadingPulse {
+            0%,
+            100% {
+                opacity: 0.5;
+                transform: scale(0.97);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.03);
+            }
+        }
+        .loading-dots::after {
+            content: '';
+            animation: dotsAnim 1.6s steps(4, end) infinite;
+        }
+        @keyframes dotsAnim {
+            0% {
+                content: '';
+            }
+            25% {
+                content: '.';
+            }
+            50% {
+                content: '..';
+            }
+            75% {
+                content: '...';
+            }
+            100% {
+                content: '';
+            }
+        }
+        .home-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            border-radius: 24px;
+            z-index: 10;
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1.2), opacity 0.35s ease;
+            transform: translateX(0);
+            opacity: 1;
+        }
+        .home-screen.slide-out {
+            transform: translateX(-40px);
+            opacity: 0.4;
+            pointer-events: none;
+        }
+        .home-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding-bottom: 50px;
+            position: relative;
+        }
+        .app-icons-row {
+            display: flex;
+            gap: 36px;
+            align-items: flex-start;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding: 0 30px;
+            margin-top: 8px;
+        }
+        .app-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: transform 0.18s ease, filter 0.18s ease;
+            -webkit-tap-highlight-color: transparent;
+            text-decoration: none;
+            position: relative;
+        }
+        .app-item:active {
+            transform: scale(0.9);
+            filter: brightness(1.2);
+        }
+        .app-item:active .app-icon-wrapper {
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+        }
+        .app-icon-wrapper {
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+            transition: box-shadow 0.2s ease, transform 0.18s ease;
+            flex-shrink: 0;
+        }
+        .app-icon-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .icon-chat-bg {
+            background: linear-gradient(145deg, #5dd693, #3ba872);
+        }
+        .icon-dino-bg {
+            background: linear-gradient(145deg, #4a4e75, #2c2f4a);
+        }
+        .app-name {
+            font-size: 11px;
+            color: #e8e8e8;
+            text-align: center;
+            max-width: 75px;
+            line-height: 1.35;
+            letter-spacing: 0.2px;
+            font-weight: 400;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        .app-name.long-name {
+            font-size: 10px;
+            max-width: 80px;
+            letter-spacing: 0.1px;
+        }
+        .privacy-label {
+            position: absolute;
+            bottom: 18px;
+            right: 20px;
+            font-size: 12px;
+            color: rgba(220, 220, 220, 0.7);
+            letter-spacing: 1.5px;
+            font-weight: 400;
+            pointer-events: none;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(200, 200, 200, 0.25);
+            padding: 5px 10px;
+            border-radius: 14px;
+            background: rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+        /* 黑胶唱片按钮 */
+        .vinyl-btn {
+            position: absolute;
+            bottom: 18px;
+            left: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #1a1a1a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5), inset 0 1px 3px rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 15;
+            transition: transform 0.2s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .vinyl-btn:active {
+            transform: scale(0.92);
+        }
+        .vinyl-disc {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle at center,
+                    #333 18%,
+                    #1a1a1a 19%,
+                    #222 35%,
+                    #111 36%,
+                    #222 55%,
+                    #111 56%,
+                    #1a1a1a 75%,
+                    #222 76%,
+                    #111 100%);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.4s ease;
+        }
+        .vinyl-btn.playing .vinyl-disc {
+            animation: spin 2s linear infinite;
+        }
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        .vinyl-label {
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #d44;
+            box-shadow: 0 0 4px rgba(0, 0, 0, 0.6);
+        }
+        .vinyl-label::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: #fff;
+        }
+        .browser-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #1c1c1e;
+            border-radius: 24px;
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+            transform: translateX(110%);
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.35s ease;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .browser-screen.active {
+            transform: translateX(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .browser-top-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px 8px 6px;
+            background: #1c1c1e;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            flex-shrink: 0;
+        }
+        .btn-back {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            transition: background 0.2s;
+            flex-shrink: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .btn-back:active {
+            background: rgba(255, 255, 255, 0.12);
+        }
+        .btn-back svg {
+            width: 20px;
+            height: 20px;
+            stroke: #fff;
+            stroke-width: 2.5;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .address-bar {
+            flex: 1;
+            height: 34px;
+            background: #2c2c2e;
+            border-radius: 17px;
+            display: flex;
+            align-items: center;
+            padding: 0 14px;
+            gap: 8px;
+            color: #8a8a8a;
+            font-size: 13px;
+            letter-spacing: 0.2px;
+            cursor: text;
+            min-width: 0;
+        }
+        .address-bar .lock-icon {
+            flex-shrink: 0;
+            width: 13px;
+            height: 13px;
+            opacity: 0.7;
+        }
+        .address-bar span {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: #7a7a7a;
+        }
+        .incognito-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #8a8a8a;
+            flex-shrink: 0;
+            opacity: 0.6;
+        }
+        .incognito-banner {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: #252528;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            flex-shrink: 0;
+        }
+        .incognito-banner .incog-icon {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+            opacity: 0.8;
+        }
+        .incognito-banner span {
+            font-size: 11px;
+            color: #b0b0b0;
+            letter-spacing: 0.3px;
+        }
+        .search-history-section {
+            flex: 1;
+            overflow-y: auto;
+            padding: 6px 0;
+        }
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 16px 6px 16px;
+        }
+        .history-header .title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #c0c0c0;
+            letter-spacing: 0.3px;
+        }
+        .history-header .clear-btn {
+            font-size: 11px;
+            color: #7a7a7a;
+            background: none;
+            border: none;
+            cursor: pointer;
+            letter-spacing: 0.2px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: color 0.2s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .history-header .clear-btn:active {
+            color: #ff6b6b;
+        }
+        .history-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .history-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: background 0.15s;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            -webkit-tap-highlight-color: transparent;
+        }
+        .history-item:active {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .history-item .clock-icon {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+            opacity: 0.55;
+            color: #999;
+        }
+        .history-item .query-text {
+            flex: 1;
+            font-size: 14px;
+            color: #d8d8d8;
+            letter-spacing: 0.3px;
+            font-weight: 400;
+        }
+        .history-item .delete-icon {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+            opacity: 0.35;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            color: #999;
+            padding: 4px;
+            box-sizing: content-box;
+        }
+        .history-item .delete-icon:active {
+            opacity: 0.8;
+            color: #ff6b6b;
+        }
+        .browser-footer-hint {
+            text-align: center;
+            padding: 14px;
+            font-size: 10px;
+            color: #555;
+            letter-spacing: 0.5px;
+            flex-shrink: 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        @media (max-width: 420px) {
+            .phone-frame {
+                width: 100vw;
+                height: 100vh;
+                border-radius: 0;
+                padding: 0;
+                box-shadow: none;
+                background: transparent;
+            }
+            .phone-screen {
+                border-radius: 0;
+            }
+            .loading-overlay {
+                border-radius: 0;
+            }
+            .home-screen {
+                border-radius: 0;
+            }
+            .browser-screen {
+                border-radius: 0;
+            }
+            body {
+                align-items: flex-start;
+            }
+        }
+        @media (max-height: 750px) and (max-width: 420px) {
+            .phone-frame {
+                height: 100vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-frame">
+        <div class="phone-screen" id="phoneScreen">
+            <!-- 加载覆盖层 -->
+            <div class="loading-overlay" id="loadingOverlay">
+                <div class="loading-text" id="loadingText">……载入私密模式<span class="loading-dots"></span></div>
+            </div>
+            <!-- 主屏幕 -->
+            <div class="home-screen" id="homeScreen">
+                <!-- 状态栏（时间已移除） -->
+                <div class="status-bar">
+                    <span class="icons">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="white"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C17.93 4.07 6.07 4.07 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-6-6l2 2c2.76-2.76 7.24-2.76 10 0l2-2C13.14 8.07 6.86 8.07 3 11z"/></svg>
+                        <span class="battery-icon">
+                            <span class="battery-body"><span class="battery-fill"></span></span>
+                            <span class="battery-cap"></span>
+                        </span>
+                    </span>
+                </div>
+
+                <!-- 数字时钟（可点击调节） -->
+                <div class="clock-area" id="clockArea">
+                    <div class="digital-clock-interactive" id="digitalClock">
+                        <span class="hour-part" id="hourDisplay">22</span>
+                        <span class="separator">:</span>
+                        <span class="minute-part" id="minuteDisplay">50</span>
+                    </div>
+                    <div class="clock-hint">点击数字调节 · 长按减小</div>
+                </div>
+
+                <!-- 应用图标区域 -->
+                <div class="home-content">
+                    <div class="app-icons-row">
+                        <!-- 聊天 -->
+                        <a class="app-item" href="page3-8.html" title="聊天" onclick="handleChatClick(event)">
+                            <div class="app-icon-wrapper icon-chat-bg">
+                                <img src="picture3-4.jpg" alt="聊天图标">
+                            </div>
+                            <span class="app-name">聊天</span>
+                        </a>
+                        <!-- 霸王龙浏览器-私密版 -->
+                        <div class="app-item" id="browserAppIcon" title="霸王龙浏览器-私密版" onclick="openBrowser()">
+                            <div class="app-icon-wrapper icon-dino-bg">
+                                <img src="picture22.jpg" alt="霸王龙浏览器图标">
+                            </div>
+                            <span class="app-name long-name">霸王龙浏览器<br>私密版</span>
+                        </div>
+                    </div>
+                    <!-- 唱片按钮 -->
+                    <div class="vinyl-btn" id="vinylBtn" title="播放/停止音乐">
+                        <div class="vinyl-disc">
+                            <div class="vinyl-label"></div>
+                        </div>
+                    </div>
+                    <div class="privacy-label">私密模式</div>
+                </div>
+            </div>
+            <!-- 浏览器页面 -->
+            <div class="browser-screen" id="browserScreen">
+                <div class="browser-top-bar">
+                    <button class="btn-back" onclick="closeBrowser()" aria-label="返回手机主界面" title="返回">
+                        <svg viewBox="0 0 24 24">
+                            <polyline points="15 4 7 12 15 20"/>
+                        </svg>
+                    </button>
+                    <div class="address-bar">
+                        <svg class="lock-icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#8a8a8a" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                            <path d="M7 11V7a5 5 0 0110 0v4"/>
+                        </svg>
+                        <span>搜索或输入网址</span>
+                        <span class="incognito-dot"></span>
+                    </div>
+                </div>
+                <div class="incognito-banner">
+                    <svg class="incog-icon" viewBox="0 0 24 24" fill="none" stroke="#b0b0b0" stroke-width="2">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
+                        <path d="M12 16v-4M12 8h.01"/>
+                    </svg>
+                    <span>私密浏览模式 · 搜索记录仅本次可见</span>
+                </div>
+                <div class="search-history-section">
+                    <div class="history-header">
+                        <span class="title">🔍 搜索记录</span>
+                        <button class="clear-btn" onclick="clearHistory()" title="清除搜索记录">清除记录</button>
+                    </div>
+                    <ul class="history-list" id="historyList">
+                        <li class="history-item" data-query="殷锐">
+                            <svg class="clock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            <span class="query-text">殷锐</span>
+                            <svg class="delete-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" onclick="deleteHistoryItem(event, this)"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                        </li>
+                        <li class="history-item" data-query="姚敏">
+                            <svg class="clock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            <span class="query-text">姚敏</span>
+                            <svg class="delete-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" onclick="deleteHistoryItem(event, this)"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                        </li>
+                        <li class="history-item" data-query="许安安">
+                            <svg class="clock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            <span class="query-text">许安安</span>
+                            <svg class="delete-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" onclick="deleteHistoryItem(event, this)"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                        </li>
+                        <li class="history-item" data-query="余念">
+                            <svg class="clock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            <span class="query-text">余念</span>
+                            <svg class="delete-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" onclick="deleteHistoryItem(event, this)"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                        </li>
+                        <li class="history-item" data-query="刘启明">
+                            <svg class="clock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            <span class="query-text">刘启明</span>
+                            <svg class="delete-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" onclick="deleteHistoryItem(event, this)"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                        </li>
+                    </ul>
+                </div>
+                <div class="browser-footer-hint">
+                    霸王龙浏览器 · 私密版 &nbsp;|&nbsp; 您的搜索隐私受到保护
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== 数字时钟交互模块 ==========
+        (function() {
+            const hourDisplay = document.getElementById('hourDisplay');
+            const minuteDisplay = document.getElementById('minuteDisplay');
+            const clockArea = document.getElementById('clockArea');
+
+            let hour = 22;
+            let minute = 50;
+            let hasJumped = false;
+
+            // 长按相关变量
+            let longPressTimer = null;
+            let longPressInterval = null;
+            let activePart = null;
+
+            function updateDisplay() {
+                hourDisplay.textContent = hour.toString().padStart(2, '0');
+                minuteDisplay.textContent = minute.toString().padStart(2, '0');
+            }
+
+            function checkTrigger() {
+                if (hasJumped) return;
+                // 改为23:00触发跳转
+                if (hour === 23 && minute === 0) {
+                    hasJumped = true;
+                    updateDisplay();
+                    hourDisplay.style.color = '#FFD966';
+                    minuteDisplay.style.color = '#FFD966';
+                    setTimeout(() => {
+                        window.location.href = 'page3-9.html';
+                    }, 500);
+                }
+            }
+
+            function incrementHour() {
+                if (hasJumped) return;
+                hour = (hour + 1) % 24;
+                updateDisplay();
+                checkTrigger();
+            }
+
+            function decrementHour() {
+                if (hasJumped) return;
+                hour = (hour - 1 + 24) % 24;
+                updateDisplay();
+                checkTrigger();
+            }
+
+            function incrementMinute() {
+                if (hasJumped) return;
+                minute = (minute + 1) % 60;
+                updateDisplay();
+                checkTrigger();
+            }
+
+            function decrementMinute() {
+                if (hasJumped) return;
+                minute = (minute - 1 + 60) % 60;
+                updateDisplay();
+                checkTrigger();
+            }
+
+            function clearLongPress() {
+                if (longPressTimer) {
+                    clearTimeout(longPressTimer);
+                    longPressTimer = null;
+                }
+                if (longPressInterval) {
+                    clearInterval(longPressInterval);
+                    longPressInterval = null;
+                }
+                activePart = null;
+            }
+
+            function startLongPress(part) {
+                clearLongPress();
+                activePart = part;
+                longPressTimer = setTimeout(() => {
+                    if (activePart === 'hour') {
+                        decrementHour();
+                    } else if (activePart === 'minute') {
+                        decrementMinute();
+                    }
+                    longPressInterval = setInterval(() => {
+                        if (activePart === 'hour') {
+                            decrementHour();
+                        } else if (activePart === 'minute') {
+                            decrementMinute();
+                        }
+                    }, 150);
+                }, 400);
+            }
+
+            function bindEvents(element, part) {
+                element.addEventListener('mousedown', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (hasJumped) return;
+                    startLongPress(part);
+                });
+
+                element.addEventListener('mouseup', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (hasJumped) {
+                        clearLongPress();
+                        return;
+                    }
+                    if (longPressTimer) {
+                        clearLongPress();
+                        if (part === 'hour') incrementHour();
+                        else if (part === 'minute') incrementMinute();
+                    } else {
+                        clearLongPress();
+                    }
+                });
+
+                element.addEventListener('mouseleave', (e) => {
+                    clearLongPress();
+                });
+
+                element.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (hasJumped) return;
+                    startLongPress(part);
+                });
+
+                element.addEventListener('touchend', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (hasJumped) {
+                        clearLongPress();
+                        return;
+                    }
+                    if (longPressTimer) {
+                        clearLongPress();
+                        if (part === 'hour') incrementHour();
+                        else if (part === 'minute') incrementMinute();
+                    } else {
+                        clearLongPress();
+                    }
+                });
+
+                element.addEventListener('touchcancel', (e) => {
+                    clearLongPress();
+                });
+            }
+
+            bindEvents(hourDisplay, 'hour');
+            bindEvents(minuteDisplay, 'minute');
+
+            clockArea.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+            clockArea.addEventListener('touchstart', (e) => {
+                e.stopPropagation();
+            });
+
+            updateDisplay();
+        })();
+
+        // ========== 音乐控制 ==========
+        const audio = new Audio('Charlie Clouser - Main Titles.mp3');
+        audio.loop = true;
+        audio.volume = 0.4;
+        const vinylBtn = document.getElementById('vinylBtn');
+        let musicPlaying = false;
+
+        function toggleMusic() {
+            if (musicPlaying) {
+                audio.pause();
+                vinylBtn.classList.remove('playing');
+                musicPlaying = false;
+            } else {
+                audio.play().then(() => {
+                    vinylBtn.classList.add('playing');
+                    musicPlaying = true;
+                }).catch(e => {
+                    console.warn('播放失败:', e);
+                });
+            }
+        }
+        vinylBtn.addEventListener('click', toggleMusic);
+
+        function tryAutoPlay() {
+            audio.play().then(() => {
+                vinylBtn.classList.add('playing');
+                musicPlaying = true;
+            }).catch(() => {
+                vinylBtn.classList.remove('playing');
+                musicPlaying = false;
+            });
+        }
+
+        // ========== 原有界面逻辑 ==========
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const loadingText = document.getElementById('loadingText');
+        const homeScreen = document.getElementById('homeScreen');
+        const browserScreen = document.getElementById('browserScreen');
+        const historyList = document.getElementById('historyList');
+        let isLoadingComplete = false;
+        let isBrowserOpen = false;
+
+        function initLoading() {
+            loadingOverlay.classList.remove('hidden');
+            loadingText.innerHTML = '……载入私密模式<span class="loading-dots"></span>';
+            setTimeout(() => {
+                loadingOverlay.classList.add('hidden');
+                isLoadingComplete = true;
+                tryAutoPlay();
+            }, 2000);
+        }
+
+        function openBrowser() {
+            if (!isLoadingComplete || isBrowserOpen) return;
+            isBrowserOpen = true;
+            homeScreen.classList.add('slide-out');
+            browserScreen.classList.add('active');
+            setTimeout(() => {
+                if (isBrowserOpen) homeScreen.style.pointerEvents = 'none';
+            }, 400);
+        }
+
+        function closeBrowser() {
+            if (!isBrowserOpen) return;
+            isBrowserOpen = false;
+            homeScreen.style.pointerEvents = 'auto';
+            homeScreen.classList.remove('slide-out');
+            browserScreen.classList.remove('active');
+        }
+
+        function deleteHistoryItem(event, deleteIcon) {
+            event.stopPropagation();
+            const item = deleteIcon.closest('.history-item');
+            if (!item) return;
+            item.style.transition = 'all 0.3s ease';
+            item.style.opacity = '0';
+            item.style.transform = 'translateX(30px)';
+            item.style.maxHeight = item.offsetHeight + 'px';
+            item.style.padding = '12px 16px';
+            setTimeout(() => {
+                item.style.maxHeight = '0';
+                item.style.padding = '0 16px';
+                item.style.margin = '0';
+                item.style.borderBottom = 'none';
+                item.style.overflow = 'hidden';
+            }, 200);
+            setTimeout(() => {
+                if (item.parentNode) item.parentNode.removeChild(item);
+                updateHistoryCount();
+            }, 500);
+        }
+
+        function clearHistory() {
+            const items = historyList.querySelectorAll('.history-item');
+            if (items.length === 0) return;
+            if (!confirm('确定要清除所有搜索记录吗？')) return;
+            items.forEach((item, index) => {
+                setTimeout(() => {
+                    item.style.transition = 'all 0.35s ease';
+                    item.style.opacity = '0';
+                    item.style.transform = 'translateX(40px)';
+                    item.style.maxHeight = item.offsetHeight + 'px';
+                    item.style.padding = '12px 16px';
+                }, index * 60);
+            });
+            const totalDelay = items.length * 60 + 400;
+            setTimeout(() => {
+                items.forEach(item => {
+                    if (item.parentNode) item.parentNode.removeChild(item);
+                });
+                updateHistoryCount();
+            }, totalDelay);
+        }
+
+        function updateHistoryCount() {
+            const remainingItems = historyList.querySelectorAll('.history-item');
+            const historyHeader = document.querySelector('.history-header .title');
+            if (historyHeader && remainingItems.length === 0) {
+                historyHeader.textContent = '📭 暂无搜索记录';
+                const clearBtn = document.querySelector('.history-header .clear-btn');
+                if (clearBtn) clearBtn.style.display = 'none';
+            } else if (historyHeader && remainingItems.length > 0) {
+                historyHeader.textContent = '🔍 搜索记录';
+                const clearBtn = document.querySelector('.history-header .clear-btn');
+                if (clearBtn) clearBtn.style.display = '';
+            }
+        }
+
+        function handleChatClick(event) {
+            if (!isLoadingComplete) {
+                event.preventDefault();
+                return;
+            }
+        }
+
+        function initHistoryItemClicks() {
+            historyList.addEventListener('click', function(e) {
+                const historyItem = e.target.closest('.history-item');
+                if (!historyItem) return;
+                if (e.target.closest('.delete-icon')) return;
+                const query = historyItem.dataset.query;
+                if (query) {
+                    alert(`搜索: ${query} (演示)`);
+                }
+            });
+        }
+
+        initHistoryItemClicks();
+        initLoading();
+    </script>
+</body>
+</html>

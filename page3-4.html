@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>#牛油果大厦# - 赫尔墨斯之眼论坛</title>
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        secondary: '#64748b',
+                        accent: '#f59e0b',
+                        forum: {
+                            bg: '#f8fafc',
+                            card: '#ffffff',
+                            border: '#e2e8f0',
+                            text: '#1e293b',
+                            muted: '#64748b'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .forum-shadow {
+                box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            }
+            .post-hover {
+                transition: all 0.2s ease;
+            }
+            .post-hover:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            }
+        }
+    </style>
+    <style>
+        /* 黑胶唱片按钮样式 */
+        .record-btn {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #333 5%, #111 40%, #222 60%, #0a0a0a 80%);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4), inset 0 0 6px rgba(255,255,255,0.1);
+            cursor: pointer;
+            position: relative;
+            transition: box-shadow 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .record-btn::after {
+            content: '';
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #e53e3e;
+            box-shadow: 0 0 4px rgba(0,0,0,0.6);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .record-btn:hover {
+            box-shadow: 0 6px 18px rgba(0,0,0,0.6), inset 0 0 8px rgba(255,255,255,0.15);
+        }
+        /* 旋转动画 */
+        @keyframes recordSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .record-spin {
+            animation: recordSpin 2s linear infinite;
+        }
+        /* BGM浮动容器 */
+        .bgm-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .bgm-tooltip {
+            font-size: 12px;
+            color: #4a5568;
+            background: rgba(255,255,255,0.9);
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin-bottom: 6px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+        .bgm-container:hover .bgm-tooltip {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-forum-bg text-forum-text min-h-screen">
+    <!-- 背景音乐音频元素 -->
+    <audio id="bgmAudio" loop preload="auto">
+        <source src="Charlie%20Clouser%20-%20Main%20Titles.mp3" type="audio/mpeg">
+        您的浏览器不支持音频播放。
+    </audio>
+
+    <!-- 顶部导航栏 -->
+    <header class="bg-white border-b border-forum-border sticky top-0 z-50 forum-shadow">
+        <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+            <!-- 左侧区域：返回按钮 + 论坛标题 -->
+            <div class="flex items-center space-x-3">
+                <a href="page3-1.html"
+                   class="text-forum-muted hover:text-primary transition-colors p-1 rounded-full hover:bg-gray-100"
+                   aria-label="返回">
+                    <i class="fa fa-arrow-left text-xl"></i>
+                </a>
+                <a href="page3-5.html" class="flex items-center space-x-2 hover:text-primary transition-colors">
+                    <i class="fa fa-eye text-primary text-xl"></i>
+                    <h1 class="text-xl font-bold">赫尔墨斯之眼论坛</h1>
+                </a>
+            </div>
+
+            <div class="flex items-center space-x-4">
+                <button class="text-forum-muted hover:text-primary transition-colors">
+                    <i class="fa fa-search"></i>
+                </button>
+                <button class="text-forum-muted hover:text-primary transition-colors">
+                    <i class="fa fa-bell"></i>
+                </button>
+                <button class="bg-primary text-white px-4 py-1.5 rounded-md hover:bg-primary/90 transition-colors">
+                    发帖
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 面包屑导航 -->
+    <div class="container mx-auto px-4 py-3">
+        <nav class="text-sm text-forum-muted">
+            <a href="page3-5.html" class="hover:text-primary">首页</a>
+            <span class="mx-2">/</span>
+            <a href="#" class="hover:text-primary">都市传说</a>
+            <span class="mx-2">/</span>
+            <span class="text-forum-text">#牛油果大厦#</span>
+        </nav>
+    </div>
+
+    <!-- 主要内容区域 -->
+    <main class="container mx-auto px-4 pb-12">
+        <div class="bg-forum-card rounded-lg p-6 mb-6 forum-shadow">
+            <h2 class="text-2xl font-bold mb-4">#牛油果大厦#</h2>
+            <div class="flex items-center text-sm text-forum-muted space-x-4">
+                <span><i class="fa fa-user mr-1"></i> 匿名用户</span>
+                <span><i class="fa fa-clock-o mr-1"></i> 2026-06-06 18:30</span>
+                <span><i class="fa fa-eye mr-1"></i> 1,247 次浏览</span>
+                <span><i class="fa fa-comment mr-1"></i> 10 条回复</span>
+            </div>
+        </div>
+
+        <div class="bg-forum-card rounded-lg p-6 mb-6 forum-shadow post-hover">
+            <div class="flex items-start space-x-4">
+                <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                    <i class="fa fa-user text-xl"></i>
+                </div>
+                <div class="flex-1">
+                    <div class="flex items-center mb-2">
+                        <span class="font-semibold mr-2">楼主</span>
+                        <span class="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded">楼主</span>
+                    </div>
+                    <div class="prose max-w-none">
+                        <p>说到牛油果大厦，就不得不提爆米花地产集团了。可能年纪小的网友不知道，之前爆米花地产集团也是如日中天，在牛油果大厦那边规划了一大片度假村。牛油果大厦算是最早竣工的几个项目，当时集团老板带着全家去那边度假，结果有一天双胞胎女儿出去玩了，好久没回来。一开始谁也没当回事觉得15，6岁的孩子了，不能真跑丢。结果到了晚上了也没回来，就开始着急了，怎么找也找不到，当时巡山队都派出去了，也没结果。这个案子当时影响挺大的，一直到最后也没个结果，算是一个悬案了。</p>
+                        <p class="mt-4">后来这个地方的传闻就越来越多了，有说晚上会在附近听见嘶吼声的，也有说听见哭声的，各种各样的说法都有。</p>
+                    </div>
+                    <div class="mt-4 flex items-center text-sm text-forum-muted space-x-4">
+                        <button class="hover:text-primary transition-colors">
+                            <i class="fa fa-thumbs-up mr-1"></i> 点赞 (42)
+                        </button>
+                        <button class="hover:text-primary transition-colors">
+                            <i class="fa fa-reply mr-1"></i> 回复
+                        </button>
+                        <button class="hover:text-primary transition-colors">
+                            <i class="fa fa-share-alt mr-1"></i> 分享
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="space-y-4">
+            <div class="bg-forum-card rounded-lg p-6 forum-shadow post-hover">
+                <div class="flex items-start space-x-4">
+                    <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-forum-muted">
+                        <i class="fa fa-user"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center">
+                                <span class="font-semibold mr-2">吃瓜群众一号</span>
+                                <span class="text-xs bg-gray-100 text-forum-muted px-2 py-0.5 rounded">1楼</span>
+                            </div>
+                            <span class="text-xs text-forum-muted">2026-06-06 18:35</span>
+                        </div>
+                        <div class="prose max-w-none">
+                            <p>前排吃瓜，这瓜保熟吗？👀</p>
+                        </div>
+                        <div class="mt-4 flex items-center text-sm text-forum-muted space-x-4">
+                            <button class="hover:text-primary transition-colors">
+                                <i class="fa fa-thumbs-up mr-1"></i> 点赞 (18)
+                            </button>
+                            <button class="hover:text-primary transition-colors">
+                                <i class="fa fa-reply mr-1"></i> 回复
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-forum-card rounded-lg p-6 forum-shadow post-hover">
+                <div class="flex items-start space-x-4">
+                    <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-forum-muted">
+                        <i class="fa fa-user"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center">
+                                <span class="font-semibold mr-2">怀旧党</span>
+                                <span class="text-xs bg-gray-100 text-forum-muted px-2 py-0.5 rounded">2楼</span>
+                            </div>
+                            <span class="text-xs text-forum-muted">2026-06-06 18:42</span>
+                        </div>
+                        <div class="prose max-w-none">
+                            <p>卧槽，爆米花地产……这名字现在提起来都一股子古早味了。当年他们家那度假村广告铺天盖地，"把家安在风景里"，结果现在成都市传说了。</p>
+                        </div>
+                        <div class="mt-4 flex items-center text-sm text-forum-muted space-x-4">
+                            <button class="hover:text-primary transition-colors">
+                                <i class="fa fa-thumbs-up mr-1"></i> 点赞 (35)
+                            </button>
+                            <button class="hover:text-primary transition-colors">
+                                <i class="fa fa-reply mr-1"></i> 回复
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-forum-card rounded-lg p-6 forum-shadow post-hover">
+                <div class="flex items-start space-x-4">
+                    <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-forum-muted">
+                        <i class="fa fa-user"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center">
+                                <span class="font-semibold mr-2">理性分析大师</span>
+                                <span class="text-xs bg-gray-100 text-forum-muted px-2 py-0.5 rounded">3楼</span>
+                            </div>
+                            <span class="text-xs text-forum-muted">2026-06-06 18:48</span>
+                        </div>
+                        <div class="prose max-w-none">
+                            <p>年纪小不懂事，但嘶吼声是什么鬼……山里野猪叫的吧？🐗</p>
+                        </div>
+                        <div class="mt-4 flex items-center text-sm text-forum-muted space-x-4">
+                            <button class="hover:text-primary transition-colors">
+                                <i class="fa fa-thumbs-up mr-1"></i> 点赞 (12)
+                            </button>
+                            <button class="hover:text-primary transition-colors">
+                                <i class="fa fa-reply mr-1"></i> 回复
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-forum-card rounded-lg p-6 forum-shadow post-hover">
+                <div class="flex items-start space-x-4">
+                    <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-forum-muted">
+                        <i class="fa fa-user"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center">
+                                <span class="font-semibold mr-2">本地居民</span>
+                                <span class="text-xs bg-gray-100 text-forum-muted px-2 py-0.5 rounded">4楼</span>
+                            </div>
+                            <span class="text-xs text-forum-muted">2026-06-06 18:55</span>
+                        </div>
+                        <div class="prose max-w-none">
+                            <p>楼上太年轻。我住牛油果大厦附近，晚上十点以后那边真没人敢走。不是迷信，是那种安静得渗人，偶尔一声动静能把你魂吓飞。</p>
+                        </div>
+                        <div class="mt-4 flex items-center text-sm text-forum-muted space-x-4">
+                            <button class="hover:text-primary transition-colors">
+                                <i class="fa fa-thumbs-up mr-1"></i> 点赞 (29)
+                            </button>
+                            <button class="hover:text-primary transition-colors">
+                                <i class="fa fa-reply mr-1"></i> 回复
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-forum-card rounded-lg p-6 forum-shadow post-hover">
+                <div class="flex items-start space-x-4">
+                    <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-forum-muted">
+                        <i class="fa fa-user"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center">
+                                <span class="font-semibold mr-2">内部人士</span>
+                                <span class="text-xs bg-gray-100 text-forum-muted px-2 py-0.5 rounded">5楼</span>
+                            </div>
+                            <span class="text-xs text-forum-muted">2026-06-06 19:03</span>
+                        </div>
+                        <div class="prose max-w-none">
+                            <p>讲个真的。我舅当年是巡山队的一个小队长，出过那个双胞胎的搜救任务。他后来喝醉了跟我爸说，她们俩失踪的那片林子里，有几棵树的树皮上有手指抓出来的血印子，高度就是十几岁孩子的身高。但顺着印子找过去，痕迹就凭空断了。队里一个老猎户当场脸就白了，说什么"这山收人了"，再也不肯往深处走。我舅从此不信鬼神，但每年清明节都会往那个方向烧纸。</p>
+                        </div>
+                        <div class="mt-4 flex items-center text-sm text-forum-muted space-x-4">
+                            <button class="hover:text-primary transition-colors">
+                                <i class="fa fa-thumbs-up mr-1"></i> 点赞 (67)
+                            </button>
+                            <button class="hover:text-primary transition-colors">
+                                <i class="fa fa-reply mr-1"></i> 回复
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-forum-card rounded-lg p-6 forum-shadow post-hover">
+                <div class="flex items-start space-x-4">
+                    <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-forum-muted">
+                        <i class="fa fa-user"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center">
+                                <span class="font-semibold mr-2">老街坊后代</span>
+                                <span class="text-xs bg-gray-100 text-forum-muted px-2 py-0.5 rounded">6楼</span>
+                            </div>
+                            <span class="text-xs text-forum-muted">2026-06-06 19:10</span>
+                        </div>
+                        <div class="prose max-w-none">
+                            <p>楼上说的那个抓痕我也听老街坊提过。我奶家以前就在山脚下，她说事发之后那一个星期，半夜总能听到山上有女人喊两个名字，喊一声停一下，像是在等回应。全村没人敢开门。后来村支书带着几个人上去看过，啥也没找到，但所有人都说越往山上走越觉得后背发凉，像有人趴在肩上喘气。</p>
+                        </div>
+                        <div class="mt-4 flex items-center text-sm text-forum-muted space-x-4">
+                            <button class="hover:text-primary transition-colors">
+                                <i class="fa fa-thumbs-up mr-1"></i> 点赞 (53)
+                            </button>
+                            <button class="hover:text-primary transition-colors">
+                                <i class="fa fa-reply mr-1"></i> 回复
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-forum-card rounded-lg p-6 forum-shadow post-hover">
+                <div class="flex items-start space-x-4">
+                    <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-forum-muted">
+                        <i class="fa fa-user"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center">
+                                <span class="font-semibold mr-2">摄影爱好者</span>
+                                <span class="text-xs bg-gray-100 text-forum-muted px-2 py-0.5 rounded">7楼</span>
+                            </div>
+                            <span class="text-xs text-forum-muted">2026-06-06 19:15</span>
+                        </div>
+                        <div class="prose max-w-none">
+                            <p>别说了别说了，我下周还约了人去那边拍照呢😱</p>
+                        </div>
+                        <div class="mt-4 flex items-center text-sm text-forum-muted space-x-4">
+                            <button class="hover:text-primary transition-colors">
+                                <i class="fa fa-thumbs-up mr-1"></i> 点赞 (9)
+                            </button>
+                            <button class="hover:text-primary transition-colors">
+                                <i class="fa fa-reply mr-1"></i> 回复
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-forum-card rounded-lg p-6 forum-shadow post-hover">
+                <div class="flex items-start space-x-4">
+                    <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-forum-muted">
+                        <i class="fa fa-user"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center">
+                                <span class="font-semibold mr-2">看热闹不嫌事大</span>
+                                <span class="text-xs bg-gray-100 text-forum-muted px-2 py-0.5 rounded">8楼</span>
+                            </div>
+                            <span class="text-xs text-forum-muted">2026-06-06 19:20</span>
+                        </div>
+                        <div class="prose max-w-none">
+                            <p>回7楼：带点护身符，拍完记得发论坛，我们帮你分析分析👻</p>
+                        </div>
+                        <div class="mt-4 flex items-center text-sm text-forum-muted space-x-4">
+                            <button class="hover:text-primary transition-colors">
+                                <i class="fa fa-thumbs-up mr-1"></i> 点赞 (24)
+                            </button>
+                            <button class="hover:text-primary transition-colors">
+                                <i class="fa fa-reply mr-1"></i> 回复
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-forum-card rounded-lg p-6 forum-shadow post-hover">
+                <div class="flex items-start space-x-4">
+                    <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-forum-muted">
+                        <i class="fa fa-user"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center">
+                                <span class="font-semibold mr-2">科学派</span>
+                                <span class="text-xs bg-gray-100 text-forum-muted px-2 py-0.5 rounded">9楼</span>
+                            </div>
+                            <span class="text-xs text-forum-muted">2026-06-06 19:28</span>
+                        </div>
+                        <div class="prose max-w-none">
+                            <p>理性讨论：会不会是掉进什么未封盖的管道或者深坑里了？当年工地那么多，出这种意外也不是没可能。但连巡山队都找不到……emmm。</p>
+                        </div>
+                        <div class="mt-4 flex items-center text-sm text-forum-muted space-x-4">
+                            <button class="hover:text-primary transition-colors">
+                                <i class="fa fa-thumbs-up mr-1"></i> 点赞 (16)
+                            </button>
+                            <button class="hover:text-primary transition-colors">
+                                <i class="fa fa-reply mr-1"></i> 回复
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-forum-card rounded-lg p-6 forum-shadow post-hover">
+                <div class="flex items-start space-x-4">
+                    <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-forum-muted">
+                        <i class="fa fa-user"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center">
+                                <span class="font-semibold mr-2">反向投资专家</span>
+                                <span class="text-xs bg-gray-100 text-forum-muted px-2 py-0.5 rounded">10楼</span>
+                            </div>
+                            <span class="text-xs text-forum-muted">2026-06-06 19:35</span>
+                        </div>
+                        <div class="prose max-w-none">
+                            <p>我就问一句：现在那边房价跌了没？跌了我冲一套（狗头）</p>
+                        </div>
+                        <div class="mt-4 flex items-center text-sm text-forum-muted space-x-4">
+                            <button class="hover:text-primary transition-colors">
+                                <i class="fa fa-thumbs-up mr-1"></i> 点赞 (31)
+                            </button>
+                            <button class="hover:text-primary transition-colors">
+                                <i class="fa fa-reply mr-1"></i> 回复
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-forum-card rounded-lg p-6 mt-8 forum-shadow">
+            <h3 class="text-lg font-semibold mb-4">发表回复</h3>
+            <textarea class="w-full border border-forum-border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary resize-none" rows="4" placeholder="请输入你的回复内容..."></textarea>
+            <div class="mt-4 flex justify-between items-center">
+                <div class="flex space-x-3 text-forum-muted">
+                    <button class="hover:text-primary transition-colors"><i class="fa fa-smile-o"></i></button>
+                    <button class="hover:text-primary transition-colors"><i class="fa fa-picture-o"></i></button>
+                    <button class="hover:text-primary transition-colors"><i class="fa fa-link"></i></button>
+                </div>
+                <button class="bg-primary text-white px-6 py-2 rounded-md hover:bg-primary/90 transition-colors">发布回复</button>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-white border-t border-forum-border py-6 mt-12">
+        <div class="container mx-auto px-4 text-center text-forum-muted text-sm">
+            <p>© 2026 赫尔墨斯之眼论坛 - 探索未知，分享真相</p>
+        </div>
+    </footer>
+
+    <!-- 旋转唱片BGM控制按钮（固定在右下角） -->
+    <div class="bgm-container">
+        <span class="bgm-tooltip" id="bgmTooltip">🎵 正在播放</span>
+        <div class="record-btn" id="bgmRecordBtn" aria-label="音乐播放/暂停" role="button" tabindex="0">
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // 平滑滚动效果
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            // 点赞功能
+            document.querySelectorAll('button').forEach(button => {
+                if (button.innerHTML.includes('点赞')) {
+                    button.addEventListener('click', function() {
+                        const icon = this.querySelector('i');
+                        const text = this.innerHTML;
+                        const count = parseInt(text.match(/\d+/)[0]);
+                        if (icon.classList.contains('text-primary')) {
+                            icon.classList.remove('text-primary');
+                            this.innerHTML = `<i class="fa fa-thumbs-up mr-1"></i> 点赞 (${count - 1})`;
+                        } else {
+                            icon.classList.add('text-primary');
+                            this.innerHTML = `<i class="fa fa-thumbs-up mr-1 text-primary"></i> 点赞 (${count + 1})`;
+                        }
+                    });
+                }
+            });
+
+            // ---------- BGM 控制 ----------
+            const audio = document.getElementById('bgmAudio');
+            const recordBtn = document.getElementById('bgmRecordBtn');
+            const tooltip = document.getElementById('bgmTooltip');
+
+            function updateUI(isPlaying) {
+                if (isPlaying) {
+                    recordBtn.classList.add('record-spin');
+                    tooltip.textContent = '🎵 正在播放';
+                } else {
+                    recordBtn.classList.remove('record-spin');
+                    tooltip.textContent = '🔇 已暂停';
+                }
+            }
+
+            // 尝试自动播放（默认播放）
+            function attemptAutoPlay() {
+                const playPromise = audio.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        updateUI(true);
+                    }).catch(() => {
+                        // 自动播放被浏览器阻止，显示暂停状态
+                        updateUI(false);
+                    });
+                }
+            }
+
+            // 点击唱片按钮切换播放/暂停
+            recordBtn.addEventListener('click', () => {
+                if (audio.paused) {
+                    audio.play().then(() => {
+                        updateUI(true);
+                    }).catch(() => {
+                        updateUI(false);
+                    });
+                } else {
+                    audio.pause();
+                    updateUI(false);
+                }
+            });
+
+            // 页面加载完成后尝试自动播放
+            window.addEventListener('load', () => {
+                attemptAutoPlay();
+            });
+
+            // 如果用户离开页面后再回来，且音频仍在暂停，可保持不变
+            // 键盘可访问性
+            recordBtn.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    recordBtn.click();
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

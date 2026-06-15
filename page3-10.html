@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>剧终 - 民宿杀人事件</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sky: {
+                            100: '#f0f9ff',
+                            200: '#e0f2fe',
+                            300: '#bae6fd',
+                            400: '#7dd3fc',
+                        },
+                        grass: {
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                        },
+                        sun: {
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['"Noto Serif SC"', 'serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow-soft {
+                text-shadow: 0 2px 4px rgba(251, 191, 36, 0.3);
+            }
+            .bg-sunrise {
+                background: linear-gradient(to bottom, 
+                    #7dd3fc 0%, 
+                    #bae6fd 30%, 
+                    #e0f2fe 60%, 
+                    #fef3c7 85%, 
+                    #fed7aa 100%);
+            }
+            .sunbeam {
+                position: absolute;
+                background: linear-gradient(to bottom, 
+                    rgba(255, 255, 255, 0.3), 
+                    rgba(255, 255, 255, 0));
+                transform-origin: top center;
+                animation: sunbeam 8s infinite ease-in-out;
+            }
+            @keyframes sunbeam {
+                0%, 100% { opacity: 0.6; transform: rotate(-5deg); }
+                50% { opacity: 0.8; transform: rotate(5deg); }
+            }
+            .float {
+                animation: float 6s infinite ease-in-out;
+            }
+            @keyframes float {
+                0%, 100% { transform: translateY(0px); }
+                50% { transform: translateY(-10px); }
+            }
+            .fade-in {
+                animation: fadeIn 2s ease-in forwards;
+            }
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            .particle {
+                position: absolute;
+                width: 4px;
+                height: 4px;
+                background: rgba(255, 255, 255, 0.6);
+                border-radius: 50%;
+                animation: particle 10s infinite linear;
+            }
+            @keyframes particle {
+                0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+                10% { opacity: 1; }
+                90% { opacity: 1; }
+                100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+            }
+        }
+    </style>
+</head>
+<body class="bg-sunrise min-h-screen text-gray-700 font-serif overflow-x-hidden relative">
+    <!-- 阳光光束效果 -->
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div class="sunbeam w-40 h-96 top-0 left-1/4"></div>
+        <div class="sunbeam w-60 h-80 top-0 right-1/3" style="animation-delay: 2s;"></div>
+        <div class="sunbeam w-32 h-72 top-0 right-1/4" style="animation-delay: 4s;"></div>
+    </div>
+    
+    <!-- 阳光粒子效果 -->
+    <div id="particle-container" class="fixed inset-0 pointer-events-none z-0"></div>
+    
+    <!-- 主容器 -->
+    <div class="container mx-auto px-4 py-12 md:py-20 relative z-10">
+        <div class="max-w-3xl mx-auto">
+            <!-- 结局剧情卡片 -->
+            <div class="bg-white/70 backdrop-blur-sm rounded-2xl p-6 md:p-10 shadow-xl border border-white/50 fade-in" style="animation-delay: 0.3s;">
+                <p class="leading-relaxed mb-6">
+                    你跟随琴声的指引，在楼梯间上上下下。琴声停止，再抬头时，楼梯上出现了一道门。虚空中有风吹来，你感觉到好像有两只手轻柔的推你走进门去，风中夹杂若有似无的叹息。
+                </p>
+                
+                <p class="leading-relaxed mb-6">
+                    你踏到门外，发现自己已经离开了民宿，来到了不远处的一片草地。夜空月朗星稀，向东南方眺望，地平线和天空之间擦出了一抹红，天亮了。
+                </p>
+                
+                <p class="leading-relaxed mb-6">
+                    警察很快赶来，周老板以及刘启明等人被捉拿归案，警方设立了专案组调查当年的悬案，最终在民宿不远处的草地里挖出了带有双胞胎姐妹DNA的关键证物。相关人员被一一定罪。一切都在惊天动地中再次归于沉寂。
+                </p>
+                
+                <p class="text-center text-gray-500 mb-6">……</p>
+                
+                <p class="leading-relaxed mb-6">
+                    又是一年初夏，你驱车来到这里。民宿在后续调查中被推平，如今已然亭亭如盖。你带着几束小雏菊，栽种到了记忆中的位置。
+                </p>
+                
+                <p class="leading-relaxed text-center text-lg font-medium text-grass-600 mb-8">
+                    那是阳光下的花，哪怕曾在黑暗中徘徊，也依旧心存善念，寻找裂缝中的光。
+                </p>
+                
+                <p class="text-center text-sun-500 text-xl">
+                    🌼 剧终
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 页脚 -->
+    <footer class="absolute bottom-4 w-full text-center text-gray-500 text-sm z-10">
+        <p>© 2026 民宿杀人事件 | 感谢游玩</p>
+    </footer>
+    
+    <script>
+        // 创建阳光粒子效果
+        function createParticles() {
+            const particleContainer = document.getElementById('particle-container');
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                particle.style.animationDelay = Math.random() * 10 + 's';
+                particle.style.width = (Math.random() * 4 + 2) + 'px';
+                particle.style.height = particle.style.width;
+                particleContainer.appendChild(particle);
+            }
+        }
+        
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+        });
+    </script>
+</body>
+</html>
