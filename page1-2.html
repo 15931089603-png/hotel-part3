@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>霸王龙地图</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        amap: {
+                            blue: '#3370FF',
+                            lightBlue: '#E8F0FF',
+                            gray: '#F5F5F5',
+                            darkGray: '#666666',
+                            text: '#333333'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['PingFang SC', 'Helvetica Neue', 'Arial', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .search-shadow {
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            }
+            .bottom-nav-shadow {
+                box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
+            }
+        }
+    </style>
+</head>
+<body class="font-sans bg-white h-screen flex flex-col overflow-hidden">
+    <!-- 页面1: 搜索页面 -->
+    <div id="page1" class="flex flex-col h-full">
+        <!-- 顶部导航栏 (统一返回按键) -->
+        <div class="bg-white px-4 py-3 flex items-center border-b border-gray-100">
+            <button id="globalBackBtn1" class="text-amap-text mr-4">
+                <i class="fa fa-arrow-left text-xl"></i>
+            </button>
+            <h1 class="text-lg font-medium text-amap-text flex-1">霸王龙地图</h1>
+        </div>
+        <!-- 搜索栏区域（新增独立搜索按钮） -->
+        <div class="px-4 py-3 bg-white search-shadow z-10">
+            <div class="flex items-center bg-amap-gray rounded-lg px-3 py-2.5">
+                <i class="fa fa-search text-amap-darkGray mr-2"></i>
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    placeholder="搜索地点、公交、地铁" 
+                    class="flex-1 bg-transparent outline-none text-amap-text"
+                    autocomplete="off"
+                >
+                <button id="clearBtn" class="text-amap-darkGray hidden mr-2">
+                    <i class="fa fa-times-circle"></i>
+                </button>
+                <!-- 新增搜索按钮 -->
+                <button 
+                    id="searchBtn" 
+                    class="px-3 py-1.5 bg-amap-blue text-white rounded hover:bg-blue-600 transition-colors text-sm font-medium"
+                >
+                    搜索
+                </button>
+            </div>
+        </div>
+        <!-- 地图背景区域 -->
+        <div class="flex-1 bg-amap-lightBlue relative">
+            <!-- 模拟地图网格 -->
+            <div class="absolute inset-0 opacity-20">
+                <div class="h-full w-full" style="background-image: linear-gradient(#ccc 1px, transparent 1px), linear-gradient(90deg, #ccc 1px, transparent 1px); background-size: 50px 50px;"></div>
+            </div>
+            
+            <!-- 定位图标 -->
+            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                <div class="relative">
+                    <div class="w-6 h-6 bg-amap-blue rounded-full flex items-center justify-center text-white">
+                        <i class="fa fa-location-arrow text-xs"></i>
+                    </div>
+                    <div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-8 border-l-transparent border-r-transparent border-t-amap-blue"></div>
+                </div>
+            </div>
+            <!-- 搜索结果提示区域 (默认隐藏) -->
+            <div id="noResult" class="absolute inset-0 bg-white bg-opacity-95 flex flex-col items-center justify-center hidden">
+                <div class="text-6xl mb-4">🦖</div>
+                <p class="text-xl text-amap-text font-medium mb-2">查不到捏o(￣ヘ￣o#)</p>
+                <p class="text-amap-darkGray text-sm mb-6">霸王龙还没去过这个地方呢</p>
+                <button id="backToSearch1" class="bg-amap-blue text-white px-6 py-2 rounded-lg">
+                    返回搜索
+                </button>
+            </div>
+        </div>
+        <!-- 底部导航栏 -->
+        <div class="bg-white bottom-nav-shadow px-6 py-2 flex justify-around items-center">
+            <div class="flex flex-col items-center text-amap-blue">
+                <i class="fa fa-map-o text-xl mb-1"></i>
+                <span class="text-xs">地图</span>
+            </div>
+            <div class="flex flex-col items-center text-amap-darkGray">
+                <i class="fa fa-bus text-xl mb-1"></i>
+                <span class="text-xs">公交</span>
+            </div>
+            <div class="flex flex-col items-center text-amap-darkGray">
+                <i class="fa fa-road text-xl mb-1"></i>
+                <span class="text-xs">路线</span>
+            </div>
+            <div class="flex flex-col items-center text-amap-darkGray">
+                <i class="fa fa-user-o text-xl mb-1"></i>
+                <span class="text-xs">我的</span>
+            </div>
+        </div>
+    </div>
+    <!-- 页面2: 结果展示页面 -->
+    <div id="page2" class="flex flex-col h-full hidden">
+        <!-- 顶部导航栏 (统一返回按键样式) -->
+        <div class="bg-white px-4 py-3 flex items-center border-b border-gray-100">
+            <button id="globalBackBtn2" class="text-amap-text mr-4">
+                <i class="fa fa-arrow-left text-xl"></i>
+            </button>
+            <h1 class="text-lg font-medium text-amap-text flex-1 truncate">
+                x省a市小番茄区圣女果街111号
+            </h1>
+        </div>
+        <!-- 图片展示区域 -->
+        <div class="flex-1 bg-gray-100 flex items-center justify-center p-4">
+            <img 
+                src="picture11.png" 
+                alt="x省a市小番茄区圣女果街111号" 
+                class="max-w-full max-h-full object-contain rounded-lg shadow-lg"
+                onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjRjVGNUY1Ii8+PHRleHQgeD0iNTAlIiB5PSI0NSUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzY2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+5pmu5Yiw5Zyo5LiK5pyN5Yqh5Zmo5bGV56S65Lq655qEcGljdHVyZTExLnBuZzwvdGV4dD48dGV4dCB4PSI1MCUiIHk9IjU1JSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEyIiBmaWxsPSIjOTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7mlL/nmoTljJfkuqznmoTkuK3mloc8L3RleHQ+PC9zdmc+'"
+            >
+        </div>
+        <!-- 底部信息栏 -->
+        <div class="bg-white px-4 py-3 border-t border-gray-100">
+            <div class="flex items-start mb-2">
+                <i class="fa fa-map-marker text-amap-blue mt-1 mr-2"></i>
+                <div>
+                    <p class="text-amap-text font-medium">x省a市小番茄区圣女果街111号</p>
+                </div>
+            </div>
+            <div class="flex space-x-3">
+                <button class="flex-1 bg-amap-blue text-white py-2 rounded-lg flex items-center justify-center">
+                    <i class="fa fa-location-arrow mr-2"></i>
+                    导航
+                </button>
+                <button class="flex-1 bg-amap-gray text-amap-text py-2 rounded-lg flex items-center justify-center">
+                    <i class="fa fa-share-alt mr-2"></i>
+                    分享
+                </button>
+            </div>
+        </div>
+    </div>
+    <script>
+        // 获取DOM元素
+        const searchInput = document.getElementById('searchInput');
+        const clearBtn = document.getElementById('clearBtn');
+        const searchBtn = document.getElementById('searchBtn'); // 新增搜索按钮元素
+        const noResult = document.getElementById('noResult');
+        const backToSearch1 = document.getElementById('backToSearch1');
+        const page1 = document.getElementById('page1');
+        const page2 = document.getElementById('page2');
+        const globalBackBtn1 = document.getElementById('globalBackBtn1');
+        const globalBackBtn2 = document.getElementById('globalBackBtn2');
+        // 搜索功能
+        function performSearch() {
+            const query = searchInput.value.trim();
+            
+            if (query === '') {
+                return;
+            }
+            // 检查是否是指定地址
+            if (query === 'x省a市小番茄区圣女果街111号') {
+                // 显示结果页面
+                page1.classList.add('hidden');
+                page2.classList.remove('hidden');
+            } else {
+                // 显示无结果提示
+                noResult.classList.remove('hidden');
+            }
+        }
+        // 清除搜索框
+        function clearSearch() {
+            searchInput.value = '';
+            clearBtn.classList.add('hidden');
+            noResult.classList.add('hidden');
+        }
+        // 统一跳转函数
+        function goToPage1() {
+            window.location.href = 'page1.html';
+        }
+        // 事件监听
+        searchInput.addEventListener('input', function() {
+            if (this.value.length > 0) {
+                clearBtn.classList.remove('hidden');
+            } else {
+                clearBtn.classList.add('hidden');
+            }
+        });
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+        clearBtn.addEventListener('click', clearSearch);
+        searchBtn.addEventListener('click', performSearch); // 新增搜索按钮点击事件
+        
+        // 所有返回按钮都跳转到page1.html
+        backToSearch1.addEventListener('click', goToPage1);
+        globalBackBtn1.addEventListener('click', goToPage1);
+        globalBackBtn2.addEventListener('click', goToPage1);
+    </script>
+</body>
+</html>

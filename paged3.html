@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>微信</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .wechat-green {
+            background-color: #07c160;
+        }
+        .message-left {
+            background-color: #ffffff;
+        }
+        .message-right {
+            background-color: #95ec69;
+        }
+        .chat-container::-webkit-scrollbar {
+            display: none;
+        }
+        .chat-container {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
+        }
+        #contactList {
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
+        }
+        .modal-overlay {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 h-screen flex flex-col overflow-hidden">
+    <header class="wechat-green text-white p-3 flex items-center pt-[env(safe-area-inset-top)] flex-shrink-0">
+        <button onclick="window.location.href='page1.html'" class="mr-4 text-xl">←</button>
+        <h1 class="text-lg font-medium flex-1 text-center mr-8">微信</h1>
+    </header>
+
+    <div id="contactList" class="flex-1 overflow-y-auto min-h-0">
+        <div onclick="openChat()" class="flex items-center p-3 bg-white border-b border-gray-200 hover:bg-gray-100 cursor-pointer">
+            <img src="picture16.jpg" alt="王律师" class="w-12 h-12 rounded-lg mr-3 object-cover">
+            <div class="flex-1">
+                <div class="flex justify-between items-center">
+                    <h3 class="font-medium text-base">王律师</h3>
+                    <span class="text-xs text-gray-400">昨天 22:14</span>
+                </div>
+                <p class="text-sm text-gray-500 mt-1 truncate">布丁不会白死。</p>
+            </div>
+        </div>
+        <div class="flex items-center p-3 bg-white border-b border-gray-200">
+            <div class="w-12 h-12 rounded-lg bg-gray-300 mr-3"></div>
+            <div class="flex-1">
+                <div class="flex justify-between items-center">
+                    <h3 class="font-medium text-base">文件传输助手</h3>
+                    <span class="text-xs text-gray-400">3月15日</span>
+                </div>
+                <p class="text-sm text-gray-500 mt-1 truncate">文件已过期</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="chatInterface" class="flex-1 flex flex-col hidden overflow-hidden min-h-0">
+        <div class="bg-white border-b border-gray-200 p-3 flex items-center flex-shrink-0">
+            <button onclick="backToContacts()" class="mr-3 text-xl text-gray-600">←</button>
+            <img src="picture16.jpg" alt="王律师" class="w-10 h-10 rounded-lg mr-3 object-cover">
+            <h2 class="text-lg font-medium flex-1">王律师</h2>
+        </div>
+
+        <div id="chatArea" class="chat-container flex-1 overflow-y-auto p-3 bg-gray-100 min-h-0">
+            <div class="flex justify-end mb-4">
+                <div class="max-w-[75%]">
+                    <div class="message-right rounded-lg p-3 text-sm">王律师，那个视频我看了无数遍。他的车轧上路沿的时候，其实停了一下，很短。布丁叫了一声，他不可能没听见。然后他继续踩油门，直接碾过去了。</div>
+                </div>
+                <img src="picture15.png" alt="我" class="w-10 h-10 rounded-lg ml-2 object-cover">
+            </div>
+            <div class="flex justify-start mb-4">
+                <img src="picture16.jpg" alt="王律师" class="w-10 h-10 rounded-lg mr-2 object-cover">
+                <div class="max-w-[75%]">
+                    <div class="message-left rounded-lg p-3 text-sm shadow-sm">这个停顿……</div>
+                </div>
+            </div>
+            <div class="flex justify-end mb-4">
+                <div class="max-w-[75%]">
+                    <div class="message-right rounded-lg p-3 text-sm">他是故意的。狗没死就得治，治疗费没底，他不想背。一脚轧死，省事。</div>
+                </div>
+                <img src="picture15.png" alt="我" class="w-10 h-10 rounded-lg ml-2 object-cover">
+            </div>
+            <div class="flex justify-start mb-4">
+                <img src="picture16.jpg" alt="王律师" class="w-10 h-10 rounded-lg mr-2 object-cover">
+                <div class="max-w-[75%]">
+                    <div class="message-left rounded-lg p-3 text-sm shadow-sm">主观故意民事上很难认定，但您的怀疑我理解。</div>
+                </div>
+            </div>
+            <div class="flex justify-end mb-4">
+                <div class="max-w-[75%]">
+                    <div class="message-right rounded-lg p-3 text-sm">出事当天在派出所，他当警察面答应赔六千。第二天把我微信删了。我换号打过去，他说"不就一条狗，你还没完了是吧"，挂了。调解员找他，他居然说我们已经私了、我收了钱。我什么时候收过他一分钱？</div>
+                </div>
+                <img src="picture15.png" alt="我" class="w-10 h-10 rounded-lg ml-2 object-cover">
+            </div>
+            <div class="flex justify-start mb-4">
+                <img src="picture16.jpg" alt="王律师" class="w-10 h-10 rounded-lg mr-2 object-cover">
+                <div class="max-w-[75%]">
+                    <div class="message-left rounded-lg p-3 text-sm shadow-sm">捏造事实，调解记录可以作证。</div>
+                </div>
+            </div>
+            <div class="flex justify-end mb-4">
+                <div class="max-w-[75%]">
+                    <div class="message-right rounded-lg p-3 text-sm">我去物业调监控，物业一开始同意，突然又说得他点头才行。后来才知道，他提前找过物业了。他还跑业主群里说我讹人，一条破狗要六千。我在小区碰见他，他还冲我笑。</div>
+                </div>
+                <img src="picture15.png" alt="我" class="w-10 h-10 rounded-lg ml-2 object-cover">
+            </div>
+            <div class="flex justify-start mb-4">
+                <img src="picture16.jpg" alt="王律师" class="w-10 h-10 rounded-lg mr-2 object-cover">
+                <div class="max-w-[75%]">
+                    <div class="message-left rounded-lg p-3 text-sm shadow-sm">群聊截图保留。诉讼立案后，法院可以强制调取监控。</div>
+                </div>
+            </div>
+            <div class="flex justify-end mb-4">
+                <div class="max-w-[75%]">
+                    <div class="message-right rounded-lg p-3 text-sm">我妈走的时候拉着我手，说布丁以后就靠我了。我就取了个快递，三分钟，把它拴在路边，我以为那儿安全。王律师，钱我可以不要。我就要他当面鞠躬道歉，承认他是故意的。</div>
+                </div>
+                <img src="picture15.png" alt="我" class="w-10 h-10 rounded-lg ml-2 object-cover">
+            </div>
+            <div class="flex justify-start mb-4">
+                <img src="picture16.jpg" alt="王律师" class="w-10 h-10 rounded-lg mr-2 object-cover">
+                <div class="max-w-[75%]">
+                    <div class="message-left rounded-lg p-3 text-sm shadow-sm">余小姐，不是您的错。把材料发我，我们起诉，主张赔偿和精神抚慰金。布丁不会白死。</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 新增加的固定提示条，位于聊天区域和输入框之间 -->
+        <div class="flex-shrink-0 bg-gray-100 text-center py-2 border-t border-gray-200 cursor-pointer" onclick="showEvidenceModal()">
+            <span class="text-gray-400 text-sm">点击获取证据关键词</span>
+        </div>
+
+        <div class="bg-white border-t border-gray-200 p-2 flex items-center pb-[calc(0.5rem+env(safe-area-inset-bottom))] flex-shrink-0">
+            <input type="text" placeholder="输入消息" class="flex-1 p-2 rounded-lg border border-gray-300 focus:outline-none focus:border-green-500">
+            <button class="ml-2 bg-green-500 text-white px-4 py-2 rounded-lg">发送</button>
+        </div>
+    </div>
+
+    <div id="evidenceModal" class="fixed inset-0 modal-overlay flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl p-6 max-w-sm mx-4 shadow-2xl">
+            <h3 class="text-xl font-bold text-center mb-4 text-red-600">📌 证据发现</h3>
+            <p class="text-lg text-center mb-6">证据关键词：聊天记录</p>
+            <button onclick="closeModal()" class="w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg transition-colors">知道了</button>
+        </div>
+    </div>
+
+    <script>
+        function openChat() {
+            document.getElementById('contactList').classList.add('hidden');
+            document.getElementById('chatInterface').classList.remove('hidden');
+            const chatContainer = document.querySelector('.chat-container');
+            requestAnimationFrame(() => {
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            });
+        }
+
+        function backToContacts() {
+            document.getElementById('chatInterface').classList.add('hidden');
+            document.getElementById('contactList').classList.remove('hidden');
+        }
+
+        function showEvidenceModal() {
+            document.getElementById('evidenceModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('evidenceModal').classList.add('hidden');
+        }
+
+        document.getElementById('evidenceModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        (function() {
+            const chatArea = document.getElementById('chatArea');
+            let touchStartX = 0;
+            let touchStartY = 0;
+            let touchMoved = false;
+            const MOVE_THRESHOLD = 10;
+
+            chatArea.addEventListener('touchstart', function(e) {
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+                touchMoved = false;
+            }, { passive: true });
+
+            chatArea.addEventListener('touchmove', function(e) {
+                const deltaX = Math.abs(e.touches[0].clientX - touchStartX);
+                const deltaY = Math.abs(e.touches[0].clientY - touchStartY);
+                if (deltaX > MOVE_THRESHOLD || deltaY > MOVE_THRESHOLD) {
+                    touchMoved = true;
+                }
+            }, { passive: true });
+
+            chatArea.addEventListener('touchend', function(e) {
+                if (!touchMoved) {
+                    showEvidenceModal();
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

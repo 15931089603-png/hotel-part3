@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔥 锐利科技：被严重低估的专精特新黑马？对话产业专家薛毅 - 哔哩哔哩</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bilibili: {
+                            blue: '#00A1D6',
+                            pink: '#FB7299',
+                            dark: '#18191C',
+                            gray: '#61666D'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <!-- 顶部导航栏 -->
+    <header class="bg-white shadow-sm sticky top-0 z-20">
+        <div class="max-w-6xl mx-auto px-4 py-2 flex items-center">
+            <!-- 返回按钮 -->
+            <a href="page1.html" class="flex items-center text-gray-600 hover:text-bilibili-blue transition-colors mr-6">
+                <i class="fa fa-arrow-left mr-2"></i>
+                返回
+            </a>
+            
+            <!-- B站Logo -->
+            <div class="flex items-center mr-8">
+                <i class="fa fa-play-circle text-bilibili-pink text-2xl mr-2"></i>
+                <span class="text-xl font-bold text-bilibili-dark">哔哩哔哩</span>
+            </div>
+            
+            <!-- 搜索框 -->
+            <div class="flex-1 max-w-md">
+                <div class="relative">
+                    <input type="text" placeholder="搜索" class="w-full pl-4 pr-10 py-2 rounded-l-full bg-gray-100 border border-gray-200 focus:outline-none focus:border-bilibili-blue">
+                    <button class="absolute right-0 top-0 bottom-0 px-4 bg-gray-100 border border-l-0 border-gray-200 rounded-r-full hover:bg-gray-200 transition-colors">
+                        <i class="fa fa-search text-gray-500"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 用户头像 -->
+            <div class="ml-auto">
+                <div class="w-8 h-8 rounded-full bg-gray-300 overflow-hidden">
+                    <img src="https://picsum.photos/100/100?random=9" alt="用户头像" class="w-full h-full object-cover">
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要内容区 -->
+    <main class="max-w-6xl mx-auto px-4 py-6">
+        <div class="flex flex-col lg:flex-row gap-6">
+            <!-- 左侧视频和信息区 -->
+            <div class="flex-1">
+                <!-- 视频封面区域 - 点击可获取证据 -->
+                <div id="video-container" class="relative rounded-lg overflow-hidden shadow-lg cursor-pointer" onclick="showEvidence()">
+                    <!-- 视频封面 -->
+                    <img src="picture17.png" alt="视频封面" class="w-full aspect-video object-cover">
+                    
+                    <!-- 暂停按钮 -->
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="w-20 h-20 rounded-full bg-black/50 flex items-center justify-center">
+                            <i class="fa fa-play text-white text-3xl ml-1"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- 视频时长 -->
+                    <div class="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
+                        12:34
+                    </div>
+                </div>
+                
+                <!-- 点击提示 -->
+                <div class="mt-3 text-center">
+                    <p class="text-bilibili-blue font-medium flex items-center justify-center">
+                        <i class="fa fa-hand-pointer-o mr-2"></i>
+                        点击视频封面获取证据关键词
+                    </p>
+                </div>
+                
+                <!-- 视频标题 -->
+                <h1 class="text-xl md:text-2xl font-bold text-bilibili-dark mt-4 mb-4 leading-tight">
+                    🔥 锐利科技：被严重低估的专精特新黑马？对话产业专家薛毅
+                </h1>
+                
+                <!-- UP主信息和发布时间 -->
+                <div class="flex items-center justify-between mb-6 pb-6 border-b border-gray-200">
+                    <div class="flex items-center">
+                        <!-- UP主头像（已改为随机生成） -->
+                        <div class="w-12 h-12 rounded-full overflow-hidden mr-4">
+                            <img src="https://picsum.photos/100/100?random=0" alt="殷教授说财经" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <h3 class="font-medium text-bilibili-dark hover:text-bilibili-blue cursor-pointer">殷教授说财经</h3>
+                            <p class="text-sm text-bilibili-gray">500.3万粉丝</p>
+                        </div>
+                        <button class="ml-4 px-4 py-1 bg-bilibili-pink text-white rounded-full hover:bg-pink-600 transition-colors">
+                            + 关注
+                        </button>
+                    </div>
+                    <div class="text-sm text-bilibili-gray">
+                        发布时间：2025年4月18日
+                    </div>
+                </div>
+                
+                <!-- 视频简介 -->
+                <div class="mb-8">
+                    <h3 class="text-lg font-semibold text-bilibili-dark mb-3">视频简介</h3>
+                    <div class="bg-gray-50 rounded-lg p-4 text-bilibili-dark leading-relaxed">
+                        <p class="mb-4">本期特邀国内某头部智能装备企业战略顾问、前工信部电子一所研究员薛毅先生，深度解读锐利科技核心技术壁垒。</p>
+                        
+                        <p class="mb-4">薛毅先生长期深耕高端制造产业研究，对锐利科技供应链有独到见解。节目中他将首次披露：锐利科技某核心产品良率已突破行业瓶颈，有望进入某国家级重大专项采购名录。</p>
+                        
+                        <p>节目尾声，殷教授总结："这只票，我们团队给出的第一目标价是45元。"</p>
+                    </div>
+                </div>
+                
+                <!-- 评论区 -->
+                <div>
+                    <h3 class="text-lg font-semibold text-bilibili-dark mb-4 flex items-center">
+                        评论区
+                        <span class="ml-2 text-bilibili-gray text-sm">(128条评论)</span>
+                    </h3>
+                    
+                    <!-- 高赞评论 -->
+                    <div class="space-y-6">
+                        <!-- 评论1 -->
+                        <div class="flex">
+                            <div class="w-10 h-10 rounded-full bg-gray-300 overflow-hidden mr-4 flex-shrink-0">
+                                <img src="https://picsum.photos/100/100?random=1" alt="用户头像" class="w-full h-full object-cover">
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center mb-1">
+                                    <span class="font-medium text-bilibili-dark mr-2">价值投资小王</span>
+                                    <span class="text-xs text-bilibili-gray">2025-04-18</span>
+                                </div>
+                                <p class="text-bilibili-dark mb-2">薛老师讲得太透了，明天开盘就干！</p>
+                                <div class="flex items-center text-sm text-bilibili-gray">
+                                    <button class="flex items-center hover:text-bilibili-blue transition-colors mr-4">
+                                        <i class="fa fa-thumbs-up mr-1"></i>
+                                        328
+                                    </button>
+                                    <button class="flex items-center hover:text-bilibili-blue transition-colors">
+                                        <i class="fa fa-reply mr-1"></i>
+                                        回复
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 评论2 -->
+                        <div class="flex">
+                            <div class="w-10 h-10 rounded-full bg-gray-300 overflow-hidden mr-4 flex-shrink-0">
+                                <img src="https://picsum.photos/100/100?random=2" alt="用户头像" class="w-full h-full object-cover">
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center mb-1">
+                                    <span class="font-medium text-bilibili-dark mr-2">财经观察家</span>
+                                    <span class="text-xs text-bilibili-gray">2025-04-18</span>
+                                </div>
+                                <p class="text-bilibili-dark mb-2">殷教授请的嘉宾越来越硬核，关注了。</p>
+                                <div class="flex items-center text-sm text-bilibili-gray">
+                                    <button class="flex items-center hover:text-bilibili-blue transition-colors mr-4">
+                                        <i class="fa fa-thumbs-up mr-1"></i>
+                                        215
+                                    </button>
+                                    <button class="flex items-center hover:text-bilibili-blue transition-colors">
+                                        <i class="fa fa-reply mr-1"></i>
+                                        回复
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 评论3 -->
+                        <div class="flex">
+                            <div class="w-10 h-10 rounded-full bg-gray-300 overflow-hidden mr-4 flex-shrink-0">
+                                <img src="https://picsum.photos/100/100?random=3" alt="用户头像" class="w-full h-full object-cover">
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center mb-1">
+                                    <span class="font-medium text-bilibili-dark mr-2">股市小韭菜</span>
+                                    <span class="text-xs text-bilibili-gray">2025-04-18</span>
+                                </div>
+                                <p class="text-bilibili-dark mb-2">这个薛毅和殷教授配合得真好，感觉是个实在人。</p>
+                                <div class="flex items-center text-sm text-bilibili-gray">
+                                    <button class="flex items-center hover:text-bilibili-blue transition-colors mr-4">
+                                        <i class="fa fa-thumbs-up mr-1"></i>
+                                        187
+                                    </button>
+                                    <button class="flex items-center hover:text-bilibili-blue transition-colors">
+                                        <i class="fa fa-reply mr-1"></i>
+                                        回复
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 右侧推荐栏 - 桌面端显示 -->
+            <div class="hidden lg:block w-80">
+                <h3 class="text-lg font-semibold text-bilibili-dark mb-4">推荐视频</h3>
+                <div class="space-y-4">
+                    <a href="#" class="flex">
+                        <div class="w-40 h-24 rounded overflow-hidden mr-3 flex-shrink-0">
+                            <img src="https://picsum.photos/160/96?random=10" alt="推荐视频" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-medium text-bilibili-dark line-clamp-2 mb-1">A股三大指数集体收涨，半导体板块领涨</h4>
+                            <p class="text-xs text-bilibili-gray">财经早知道 · 1.2万播放</p>
+                        </div>
+                    </a>
+                    
+                    <a href="#" class="flex">
+                        <div class="w-40 h-24 rounded overflow-hidden mr-3 flex-shrink-0">
+                            <img src="https://picsum.photos/160/96?random=11" alt="推荐视频" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-medium text-bilibili-dark line-clamp-2 mb-1">专精特新企业迎来政策红利，这些赛道值得关注</h4>
+                            <p class="text-xs text-bilibili-gray">产业观察 · 8900播放</p>
+                        </div>
+                    </a>
+                    
+                    <a href="#" class="flex">
+                        <div class="w-40 h-24 rounded overflow-hidden mr-3 flex-shrink-0">
+                            <img src="https://picsum.photos/160/96?random=12" alt="推荐视频" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-medium text-bilibili-dark line-clamp-2 mb-1">深度解析：锐利科技的技术实力到底如何？</h4>
+                            <p class="text-xs text-bilibili-gray">科技前沿 · 6500播放</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 证据关键词弹窗 -->
+    <div id="evidence-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 transform transition-all">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-xl font-bold text-bilibili-dark flex items-center">
+                        <i class="fa fa-exclamation-triangle text-red-500 mr-2"></i>
+                        证据关键词
+                    </h3>
+                    <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
+                        <i class="fa fa-times text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-8 text-center">
+                <p class="text-4xl font-bold text-red-500 mb-4">散布虚假信息</p>
+                <p class="text-bilibili-gray">已获取关键证据</p>
+            </div>
+            <div class="p-4 border-t border-gray-200 text-center">
+                <button onclick="closeModal()" class="px-6 py-2 bg-bilibili-blue text-white rounded-lg hover:bg-blue-700 transition-colors">
+                    确定
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 显示证据关键词弹窗
+        function showEvidence() {
+            document.getElementById('evidence-modal').classList.remove('hidden');
+            // 禁止背景滚动
+            document.body.style.overflow = 'hidden';
+        }
+
+        // 关闭弹窗
+        function closeModal() {
+            document.getElementById('evidence-modal').classList.add('hidden');
+            // 恢复背景滚动
+            document.body.style.overflow = 'auto';
+        }
+
+        // 点击弹窗背景关闭
+        document.getElementById('evidence-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // 按ESC键关闭弹窗
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

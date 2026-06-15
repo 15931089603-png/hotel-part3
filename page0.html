@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>民宿杀人事件 - 网页解密游戏</title>
+    <title>第一幕 迷途 - 民宿杀人事件</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     
@@ -81,58 +81,38 @@
     <!-- 主容器 -->
     <div class="container mx-auto px-4 py-12 md:py-20 relative z-10">
         <div class="max-w-3xl mx-auto">
-            <!-- 标题 -->
+            <!-- 幕标题 -->
             <div class="text-center mb-12 fade-in" style="animation-delay: 0.2s;">
-                <h1 class="text-4xl md:text-6xl font-bold text-candle-400 text-shadow-lg mb-4 candle-flicker">
-                    民宿杀人事件
+                <h1 class="text-3xl md:text-5xl font-bold text-candle-400 text-shadow-lg mb-4 candle-flicker">
+                    第一幕 迷途
                 </h1>
-                <div class="w-32 h-1 bg-candle-500 mx-auto rounded-full opacity-70"></div>
+                <div class="w-24 h-1 bg-candle-500 mx-auto rounded-full opacity-70"></div>
             </div>
             
-            <!-- 游戏介绍卡片 -->
+            <!-- 剧情介绍卡片 -->
             <div class="bg-wood-800/80 backdrop-blur-sm rounded-lg p-6 md:p-8 mb-8 shadow-2xl border border-wood-600 fade-in" style="animation-delay: 0.5s;">
                 <div class="flex items-center mb-4">
-                    <i class="fa fa-book text-candle-400 mr-3 text-xl"></i>
-                    <h2 class="text-xl md:text-2xl font-semibold text-candle-300">故事背景</h2>
+                    <i class="fa fa-file-text-o text-candle-400 mr-3 text-xl"></i>
+                    <h2 class="text-xl md:text-2xl font-semibold text-candle-300">案件进展</h2>
                 </div>
-                <p class="leading-relaxed text-gray-300 mb-4">
-                    你中奖免费参与了一个体验活动，居住在大山深处的民宿中，亲手采摘，学习非遗手工，观赏风光。
+                <p class="leading-relaxed text-gray-300 mb-6">
+                    民宿老板向你提供了几名嫌疑人入住时填的基本信息，现场没有打斗的痕迹，激情犯罪的可能性很小，先从几个嫌疑人的社会关系入手，调查一下他们是不是有作案动机吧。
                 </p>
-                <p class="leading-relaxed text-gray-300 mb-4">
-                    原本一切风平浪静，可是这天晚上八点，民宿老板发现其中一名游客死在了房间内！
-                </p>
-                <p class="leading-relaxed text-gray-300">
-                    由于你沉迷手工制作，有充分的不在场证明，民宿位置又十分偏远，警察得明天天亮才能赶来，于是紧急调查的重任落在了你身上。
-                </p>
+                
+                <!-- 提示信息 -->
+                <div class="bg-wood-700/60 rounded-lg p-4 border-l-4 border-candle-500">
+                    <p class="text-candle-300 text-sm leading-relaxed">
+                        <i class="fa fa-lightbulb-o mr-2"></i>
+                        <strong>提示：</strong>如果没有头绪可以先点开侦探记录本看一看，将动机收集完整就可以进入第二幕啦！
+                    </p>
+                </div>
             </div>
             
-            <!-- 玩法说明卡片 -->
-            <div class="bg-wood-800/80 backdrop-blur-sm rounded-lg p-6 md:p-8 mb-12 shadow-2xl border border-wood-600 fade-in" style="animation-delay: 0.8s;">
-                <div class="flex items-center mb-4">
-                    <i class="fa fa-gamepad text-candle-400 mr-3 text-xl"></i>
-                    <h2 class="text-xl md:text-2xl font-semibold text-candle-300">游戏玩法</h2>
-                </div>
-                <ul class="space-y-3 text-gray-300">
-                    <li class="flex items-start">
-                        <i class="fa fa-search text-candle-400 mt-1 mr-3"></i>
-                        <span>作为侦探调查整个事件的始末，找出真正的凶手。</span>
-                    </li>
-                    <li class="flex items-start">
-                        <i class="fa fa-bookmark text-candle-400 mt-1 mr-3"></i>
-                        <span>游戏分为三幕，第一、二幕是非恐的调查和本格推理，第三幕包含一定的微恐元素。</span>
-                    </li>
-                    <li class="flex items-start">
-                        <i class="fa fa-keyboard-o text-candle-400 mt-1 mr-3"></i>
-                        <span>游戏通过搜索关键词推进剧情。</span>
-                    </li>
-                </ul>
-            </div>
-            
-            <!-- 开始游戏按钮 -->
-            <div class="text-center fade-in" style="animation-delay: 1.1s;">
-                <a href="page0.html" class="inline-block bg-candle-500 hover:bg-candle-400 text-wood-900 font-bold py-4 px-12 rounded-lg text-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-candle-500/30">
-                    <i class="fa fa-play mr-2"></i>
-                    开始游戏
+            <!-- 进入第一幕按钮 -->
+            <div class="text-center fade-in" style="animation-delay: 0.8s;">
+                <a href="page1.html" class="inline-block bg-candle-500 hover:bg-candle-400 text-wood-900 font-bold py-4 px-12 rounded-lg text-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-candle-500/30">
+                    进入第一幕
+                    <i class="fa fa-arrow-right ml-2"></i>
                 </a>
             </div>
         </div>
@@ -163,13 +143,6 @@
         // 页面加载完成后执行
         document.addEventListener('DOMContentLoaded', function() {
             createRain();
-            
-            // 为按钮添加点击音效提示（如果后续添加音效的话）
-            const startButton = document.querySelector('a[href="page0.html"]');
-            startButton.addEventListener('click', function(e) {
-                // 这里可以添加点击音效
-                // 例如：document.getElementById('click-sound').play();
-            });
         });
     </script>
 </body>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>霸王龙破译器</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col">
+    <!-- 顶部导航栏 -->
+    <header class="bg-gray-800 p-4 flex items-center">
+        <button onclick="window.location.href='page1.html'" class="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg transition-colors mr-4">
+            ← 返回
+        </button>
+        <h1 class="text-3xl font-bold text-center flex-1 mr-16">霸王龙破译器</h1>
+    </header>
+    <!-- 主内容区 -->
+    <main class="flex-1 flex flex-col items-center justify-center p-8">
+        <!-- 初始破译区域 -->
+        <div id="initialArea" class="w-full max-w-md">
+            <div class="bg-gray-800 rounded-xl p-6 shadow-2xl">
+                <!-- 新增的使用提示 -->
+                <p class="text-gray-400 text-sm mb-4 text-center">
+                    可破译电子邮箱，聊天软件等账号密码，但是若账号密码为初始密码或默认密码则无法破译
+                </p>
+                
+                <input 
+                    type="text" 
+                    id="mainInput" 
+                    placeholder="请输入需要破译的内容"
+                    class="w-full p-4 mb-4 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                <button 
+                    onclick="decrypt()" 
+                    class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-6 rounded-lg transition-colors text-lg"
+                >
+                    🔓 破译
+                </button>
+            </div>
+        </div>
+        <!-- 结果显示区域 -->
+        <div id="resultArea" class="w-full max-w-md hidden">
+            <div class="bg-gray-800 rounded-xl p-6 shadow-2xl text-center">
+                <img id="resultImage" src="" alt="破译结果" class="w-full rounded-lg mb-6">
+                
+                <input 
+                    type="text" 
+                    id="passwordInput" 
+                    placeholder="输入图中密码完成破译"
+                    class="w-full p-4 mb-4 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                <button 
+                    onclick="verifyPassword()" 
+                    class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-6 rounded-lg transition-colors text-lg"
+                >
+                    ✅ 确认
+                </button>
+                
+                <div id="message" class="mt-4 text-lg font-medium"></div>
+            </div>
+        </div>
+        <!-- 无法破译区域 -->
+        <div id="errorArea" class="w-full max-w-md hidden">
+            <div class="bg-gray-800 rounded-xl p-6 shadow-2xl text-center">
+                <div class="text-6xl mb-4">❌</div>
+                <h2 class="text-2xl font-bold text-red-500 mb-4">无法破译</h2>
+                <p class="text-gray-400 mb-6">你输入的内容无法被霸王龙破译器识别</p>
+                <button 
+                    onclick="resetToInitial()" 
+                    class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors"
+                >
+                    重新输入
+                </button>
+            </div>
+        </div>
+    </main>
+    <script>
+        // 存储正确的密码和跳转页面对应关系
+        const passwordMap = {
+            "13333333333": {
+                image: "picture13.jpg",
+                correctPassword: "7431",
+                redirectPage: "paged3.html"
+            },
+            "14444444444@111.com": {
+                image: "picture14.jpg",
+                correctPassword: "3298",
+                redirectPage: "pagee2.html"
+            }
+        };
+        let currentData = null;
+        function decrypt() {
+            const input = document.getElementById("mainInput").value.trim();
+            
+            if (passwordMap[input]) {
+                // 保存当前条目的所有数据
+                currentData = passwordMap[input];
+                document.getElementById("resultImage").src = currentData.image;
+                document.getElementById("initialArea").classList.add("hidden");
+                document.getElementById("resultArea").classList.remove("hidden");
+                document.getElementById("errorArea").classList.add("hidden");
+                document.getElementById("message").textContent = "";
+                document.getElementById("passwordInput").value = "";
+            } else {
+                // 显示无法破译
+                document.getElementById("initialArea").classList.add("hidden");
+                document.getElementById("resultArea").classList.add("hidden");
+                document.getElementById("errorArea").classList.remove("hidden");
+            }
+        }
+        function verifyPassword() {
+            const inputPassword = document.getElementById("passwordInput").value.trim();
+            const messageElement = document.getElementById("message");
+            
+            if (inputPassword === currentData.correctPassword) {
+                messageElement.textContent = "✅ 破译成功！正在跳转...";
+                messageElement.className = "mt-4 text-lg font-medium text-green-500";
+                
+                // 显示成功提示1秒后跳转到对应页面
+                setTimeout(() => {
+                    window.location.href = currentData.redirectPage;
+                }, 1000);
+            } else {
+                messageElement.textContent = "❌ 密码错误，请重新输入";
+                messageElement.className = "mt-4 text-lg font-medium text-red-500";
+            }
+        }
+        function resetToInitial() {
+            document.getElementById("initialArea").classList.remove("hidden");
+            document.getElementById("resultArea").classList.add("hidden");
+            document.getElementById("errorArea").classList.add("hidden");
+            document.getElementById("mainInput").value = "";
+            document.getElementById("message").textContent = "";
+            currentData = null;
+        }
+        // 支持回车键快速提交
+        document.getElementById("mainInput").addEventListener("keypress", function(e) {
+            if (e.key === "Enter") {
+                decrypt();
+            }
+        });
+        document.getElementById("passwordInput").addEventListener("keypress", function(e) {
+            if (e.key === "Enter") {
+                verifyPassword();
+            }
+        });
+    </script>
+</body>
+</html>

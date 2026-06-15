@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>perceptivity的博客</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        danger: '#ef4444',
+                        blogBg: '#f8fafc',
+                        cardBg: '#ffffff',
+                        textPrimary: '#1e293b',
+                        textSecondary: '#64748b'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .card-shadow {
+                box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            }
+            .hover-lift {
+                transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            }
+            .hover-lift:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            }
+            .modal-backdrop {
+                background-color: rgba(0, 0, 0, 0.5);
+                backdrop-filter: blur(2px);
+            }
+        }
+    </style>
+</head>
+<body class="bg-blogBg min-h-screen font-sans text-textPrimary">
+    <!-- 顶部导航栏 -->
+    <header class="bg-white card-shadow sticky top-0 z-50">
+        <div class="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between">
+            <!-- 唯一返回按钮：点击跳转到page1.html -->
+            <button onclick="goBack()" class="text-textSecondary hover:text-primary transition-colors">
+                <i class="fa fa-arrow-left text-xl"></i>
+            </button>
+            <h1 class="text-xl font-bold">perceptivity的博客</h1>
+            <div class="w-6"></div> <!-- 占位，保持标题居中 -->
+        </div>
+    </header>
+    
+    <!-- 博客内容 -->
+    <main class="max-w-3xl mx-auto px-4 py-8">
+        <!-- 个人信息卡片 -->
+        <div class="bg-cardBg rounded-xl card-shadow p-6 mb-8 hover-lift">
+            <div class="flex items-center">
+                <div class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-primary text-2xl font-bold mr-4">
+                    P
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold">perceptivity</h2>
+                    <p class="text-textSecondary text-sm">记录生活中的美好瞬间</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 登录区域 -->
+        <div id="login-section" class="bg-cardBg rounded-xl card-shadow p-6 mb-8">
+            <h3 class="text-lg font-bold mb-4 flex items-center">
+                <i class="fa fa-lock mr-2 text-primary"></i>
+                登录查看加密内容
+            </h3>
+            <p class="text-textSecondary text-sm mb-4">此博客包含加密内容，请登录后查看</p>
+            
+            <form id="login-form" class="space-y-4">
+                <div>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        placeholder="账号：电话号码" 
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors"
+                    >
+                </div>
+                <div>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        placeholder="密码：默认密码为八位生日" 
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors"
+                    >
+                </div>
+                <div id="error-message" class="text-danger text-sm hidden">账号或密码错误，请重试</div>
+                <button 
+                    type="submit" 
+                    class="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary/90 transition-colors font-medium"
+                >
+                    登录
+                </button>
+            </form>
+        </div>
+        
+        <!-- 博客文章列表 -->
+        <div class="space-y-6">
+            <!-- 隐藏的加密博文：登录成功后显示 -->
+            <article id="hidden-post" class="bg-cardBg rounded-xl card-shadow overflow-hidden hover-lift hidden cursor-pointer">
+                <div class="p-6">
+                    <div class="flex items-center text-textSecondary text-sm mb-3">
+                        <i class="fa fa-calendar-o mr-2"></i>
+                        <span>2026-05-15</span>
+                        <span class="ml-2 bg-primary/10 text-primary px-2 py-0.5 rounded text-xs">加密</span>
+                    </div>
+                    <p class="text-lg mb-4 whitespace-pre-line">我是花生大学的一名博士生。我的导师殷锐，用毕业证当缰绳，压榨了我整整五年。
+研一开始，我被要求无偿替他给本科生代课，三个学期没拿到一分钱。最让我崩溃的是那篇独立完成的论文——录用通知下来那天，他笑着要我把一作改成他儿子殷小明，一个刚上六年级的孩子，只为给小升初简历添一笔。我拒绝后，他立刻翻脸：“你想一辈子拿不到博士学位吗？”
+今天，我把所有录音、聊天记录和证据整理到这个加密博客。殷锐教授，总有一天我要将这些证据公开公开。你欠所有被压榨的学生一个道歉，也欠我一个毕业证。</p>
+                    <p class="text-primary text-sm flex items-center">
+                        <i class="fa fa-hand-pointer-o mr-1"></i>
+                        点击查看证据线索
+                    </p>
+                </div>
+            </article>
+            
+            <!-- 博客文章1 -->
+            <article class="bg-cardBg rounded-xl card-shadow overflow-hidden hover-lift">
+                <div class="p-6">
+                    <div class="flex items-center text-textSecondary text-sm mb-3">
+                        <i class="fa fa-calendar-o mr-2"></i>
+                        <span>2023-05-19</span>
+                    </div>
+                    <p class="text-lg mb-4">深夜改论文😭😭😭</p>
+                </div>
+                <img src="picture2.png" 
+                     alt="深夜改论文" 
+                     class="w-full h-auto object-cover"
+                     onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSI0MDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iI2UyZThmMCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzk0YTNiOCI+5aSn5a2x5pS/5pyN5Yqh5ZmoPC90ZXh0Pjwvc3ZnPg=='">
+            </article>
+            
+            <!-- 博客文章2 -->
+            <article class="bg-cardBg rounded-xl card-shadow overflow-hidden hover-lift">
+                <div class="p-6">
+                    <div class="flex items-center text-textSecondary text-sm mb-3">
+                        <i class="fa fa-calendar-o mr-2"></i>
+                        <span>2022-03-04</span>
+                    </div>
+                    <p class="text-lg mb-4">美美吃一顿烤鱼😘😘</p>
+                </div>
+                <img src="picture3.png" 
+                     alt="烤鱼" 
+                     class="w-full h-auto object-cover"
+                     onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSI0MDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iI2UyZThmMCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzk0YTNiOCI+54Gr6bG8PC90ZXh0Pjwvc3ZnPg=='">
+            </article>
+            
+            <!-- 博客文章3 -->
+            <article class="bg-cardBg rounded-xl card-shadow overflow-hidden hover-lift">
+                <div class="p-6">
+                    <div class="flex items-center text-textSecondary text-sm mb-3">
+                        <i class="fa fa-calendar-o mr-2"></i>
+                        <span>2022-01-01</span>
+                    </div>
+                    <p class="text-lg mb-4">特别开心的一场旅行😍😍</p>
+                </div>
+                <img src="picture4.png" 
+                     alt="旅行" 
+                     class="w-full h-auto object-cover"
+                     onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSI0MDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iI2UyZThmMCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzk0YTNiOCI+5peF6KGMPC90ZXh0Pjwvc3ZnPg=='">
+            </article>
+            
+            <!-- 博客文章4 -->
+            <article class="bg-cardBg rounded-xl card-shadow overflow-hidden hover-lift">
+                <div class="p-6">
+                    <div class="flex items-center text-textSecondary text-sm mb-3">
+                        <i class="fa fa-calendar-o mr-2"></i>
+                        <span>2021-12-23</span>
+                    </div>
+                    <p class="text-lg mb-4">大烧烤，别嫉妒～</p>
+                </div>
+                <img src="picture5.png" 
+                     alt="烧烤" 
+                     class="w-full h-auto object-cover"
+                     onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSI0MDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iI2UyZThmMCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzk0YTNiOCI+54Gr54On54OnPC90ZXh0Pjwvc3ZnPg=='">
+            </article>
+            
+            <!-- 博客文章5 -->
+            <article class="bg-cardBg rounded-xl card-shadow overflow-hidden hover-lift">
+                <div class="p-6">
+                    <div class="flex items-center text-textSecondary text-sm mb-3">
+                        <i class="fa fa-calendar-o mr-2"></i>
+                        <span>2021-10-16</span>
+                    </div>
+                    <p class="text-lg mb-4">校园里的可爱小猫😽</p>
+                </div>
+                <img src="picture6.png" 
+                     alt="小猫" 
+                     class="w-full h-auto object-cover"
+                     onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSI0MDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iI2UyZThmMCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzk0YTNiOCI+5Y+v54Gr5bCP54yrPC90ZXh0Pjwvc3ZnPg=='">
+            </article>
+        </div>
+        
+        <!-- 底部提示 -->
+        <div class="text-center text-textSecondary text-sm mt-12 pb-8">
+            <p>没有更多内容了</p>
+        </div>
+    </main>
+    
+    <!-- 底部回到顶部按钮 -->
+    <div class="fixed bottom-6 right-6">
+        <button onclick="scrollToTop()" class="w-12 h-12 bg-white rounded-full card-shadow flex items-center justify-center text-textSecondary hover:text-primary hover:bg-gray-50 transition-colors opacity-0 invisible">
+            <i class="fa fa-arrow-up text-xl"></i>
+        </button>
+    </div>
+    
+    <!-- 证据弹窗 -->
+    <div id="evidence-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+        <div id="modal-backdrop" class="absolute inset-0 modal-backdrop"></div>
+        <div class="bg-white rounded-xl card-shadow p-6 max-w-md mx-4 relative z-10">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-bold flex items-center">
+                    <i class="fa fa-exclamation-circle mr-2 text-primary"></i>
+                    发现关键证据
+                </h3>
+                <button onclick="closeModal()" class="text-textSecondary hover:text-danger transition-colors">
+                    <i class="fa fa-times text-xl"></i>
+                </button>
+            </div>
+            <p class="text-lg font-medium text-center py-4">
+                证据关键词：<span class="text-primary font-bold">社交媒体截图</span>
+            </p>
+            <p class="text-textSecondary text-sm text-center">
+                请记住这个线索，它将帮助你解开后续谜题
+            </p>
+        </div>
+    </div>
+    
+    <script>
+        // 返回侦探记录本页面
+        function goBack() {
+            window.location.href = 'page1.html';
+        }
+        
+        // 回到顶部功能
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+        
+        // 滚动显示/隐藏回到顶部按钮
+        const backToTopBtn = document.querySelector('.fixed.bottom-6 button');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                backToTopBtn.classList.remove('opacity-0', 'invisible');
+                backToTopBtn.classList.add('opacity-100', 'visible');
+            } else {
+                backToTopBtn.classList.remove('opacity-100', 'visible');
+                backToTopBtn.classList.add('opacity-0', 'invisible');
+            }
+        });
+        
+        // 登录验证功能（已取消记忆功能）
+        const loginForm = document.getElementById('login-form');
+        const loginSection = document.getElementById('login-section');
+        const hiddenPost = document.getElementById('hidden-post');
+        const errorMessage = document.getElementById('error-message');
+        
+        // 正确的账号密码
+        const CORRECT_USERNAME = '12222222222';
+        const CORRECT_PASSWORD = '19970502';
+        
+        // 显示隐藏内容
+        function showHiddenContent() {
+            loginSection.classList.add('hidden');
+            hiddenPost.classList.remove('hidden');
+            // 平滑滚动到隐藏内容
+            hiddenPost.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        
+        // 登录表单提交
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            
+            if (username === CORRECT_USERNAME && password === CORRECT_PASSWORD) {
+                // 登录成功（不再保存登录状态）
+                errorMessage.classList.add('hidden');
+                showHiddenContent();
+            } else {
+                // 登录失败
+                errorMessage.classList.remove('hidden');
+                // 清空密码输入框
+                document.getElementById('password').value = '';
+                // 聚焦到密码输入框
+                document.getElementById('password').focus();
+            }
+        });
+        
+        // 证据弹窗功能
+        const evidenceModal = document.getElementById('evidence-modal');
+        const modalBackdrop = document.getElementById('modal-backdrop');
+        
+        // 点击隐藏博文显示弹窗
+        hiddenPost.addEventListener('click', () => {
+            evidenceModal.classList.remove('hidden');
+            // 禁止页面滚动
+            document.body.style.overflow = 'hidden';
+        });
+        
+        // 关闭弹窗函数
+        function closeModal() {
+            evidenceModal.classList.add('hidden');
+            // 恢复页面滚动
+            document.body.style.overflow = '';
+        }
+        
+        // 点击弹窗外区域关闭弹窗
+        modalBackdrop.addEventListener('click', closeModal);
+    </script>
+</body>
+</html>

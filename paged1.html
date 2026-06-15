@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小区门口违规停车撞死宠物犬 双方未能和解</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f9f9f9;
+        }
+        .header {
+            position: sticky;
+            top: 0;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 16px;
+            color: #333;
+            text-decoration: none;
+            font-size: 16px;
+            transition: background-color 0.2s;
+        }
+        .back-button:hover {
+            background-color: #f5f5f5;
+        }
+        .back-button::before {
+            content: "←";
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            min-height: calc(100vh - 48px);
+        }
+        .news-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            line-height: 1.4;
+            color: #1a1a1a;
+        }
+        .news-meta {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #eee;
+        }
+        .news-content {
+            font-size: 17px;
+            line-height: 1.8;
+            margin-bottom: 32px;
+        }
+        .news-content p {
+            margin-bottom: 16px;
+            text-align: justify;
+        }
+        .news-image {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 24px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .news-image:hover {
+            opacity: 0.9;
+        }
+        .image-caption {
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+            margin-top: -16px;
+            margin-bottom: 24px;
+        }
+
+        /* 图片预览弹窗样式 */
+        .img-preview {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 20px;
+        }
+        .img-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        .img-preview .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: #fff;
+            font-size: 36px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+            }
+            .news-title {
+                font-size: 20px;
+            }
+            .news-content {
+                font-size: 16px;
+            }
+            .img-preview .close-btn {
+                top: 10px;
+                right: 20px;
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <a href="page1.html" class="back-button">返回</a>
+    </header>
+    <main class="container">
+        <h1 class="news-title">小区门口违规停车撞死宠物犬 车主拒赔偿还阻挠维权</h1>
+        
+        <div class="news-meta">
+            本报讯 | 2026年5月23日
+        </div>
+        <div class="news-content">
+            <p>昨日下午，锦绣华府小区北门外，居民余女士将宠物犬拴在路边隔离桩后进驿站取快递。殷先生驾车违规骑上路沿停放，因疏于观察将小狗撞压致死。交警认定殷先生负全责。</p>
+        </div>
+        <img class="news-image" src="picture12.png" alt="事故现场：女子着急跑向事故地点，身后掉落了一个快递">
+        <p class="image-caption">事故现场：余女士取完快递发现爱犬被撞，着急跑向事故地点</p>
+        <div class="news-content">
+            <p>然而，事发至今双方始终未能和解。余女士称，事后殷先生态度急转，不仅拒绝赔偿，还多次阻挠其正常维权——删微信、拒接电话、向调解员谎称已解决。余女士表示将通过诉讼途径讨回公道，目前正在收集证据。</p>
+        </div>
+    </main>
+
+    <!-- 图片预览弹窗 -->
+    <div class="img-preview" id="imgPreview">
+        <span class="close-btn" id="closeBtn">×</span>
+        <img id="previewImg" src="" alt="大图预览">
+    </div>
+
+    <script>
+        const newsImage = document.querySelector('.news-image');
+        const imgPreview = document.getElementById('imgPreview');
+        const previewImg = document.getElementById('previewImg');
+        const closeBtn = document.getElementById('closeBtn');
+
+        // 点击图片打开预览
+        newsImage.addEventListener('click', function() {
+            previewImg.src = this.src;
+            imgPreview.style.display = 'flex';
+            // 禁止页面滚动
+            document.body.style.overflow = 'hidden';
+        });
+
+        // 关闭预览
+        function closePreview() {
+            imgPreview.style.display = 'none';
+            document.body.style.overflow = '';
+        }
+
+        // 点击关闭按钮
+        closeBtn.addEventListener('click', closePreview);
+        // 点击遮罩区域关闭
+        imgPreview.addEventListener('click', function(e) {
+            if(e.target === imgPreview) {
+                closePreview();
+            }
+        });
+    </script>
+</body>
+</html>

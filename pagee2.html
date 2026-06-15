@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>14444444444@111.com - 邮箱</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 min-h-screen font-sans">
+    <!-- 顶部导航栏 -->
+    <header class="bg-white shadow-sm border-b border-gray-200 fixed top-0 left-0 right-0 z-20">
+        <div class="flex items-center px-4 py-3">
+            <!-- 返回按钮 -->
+            <a href="page1.html" class="flex items-center text-gray-600 hover:text-blue-600 transition-colors mr-4">
+                <i class="fa fa-arrow-left mr-2"></i>
+                返回
+            </a>
+            
+            <!-- 移动端菜单按钮 -->
+            <button id="menu-toggle" class="md:hidden text-gray-600 hover:text-blue-600 mr-4">
+                <i class="fa fa-bars text-xl"></i>
+            </button>
+            
+            <!-- 邮箱Logo和名称 -->
+            <div class="flex items-center">
+                <i class="fa fa-envelope-o text-blue-600 text-xl mr-2"></i>
+                <span class="text-xl font-semibold text-gray-800">111邮箱</span>
+            </div>
+            
+            <!-- 搜索框 - 桌面端显示 -->
+            <div class="hidden md:flex flex-1 mx-8">
+                <div class="relative max-w-md">
+                    <input type="text" placeholder="搜索邮件" class="w-full pl-10 pr-4 py-2 rounded-full bg-gray-100 border border-gray-200 focus:outline-none focus:border-blue-500">
+                    <i class="fa fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                </div>
+            </div>
+            
+            <!-- 用户信息 - 桌面端显示 -->
+            <div class="hidden md:flex items-center ml-auto">
+                <span class="text-gray-600 mr-3">14444444444@111.com</span>
+                <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-medium">
+                    刘
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主内容区 -->
+    <div class="flex pt-14 h-screen relative">
+        <!-- 左侧边栏 - 移动端可折叠 -->
+        <aside id="sidebar" class="w-56 bg-white border-r border-gray-200 h-full overflow-y-auto fixed md:relative left-0 top-14 bottom-0 z-10 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
+            <div class="p-4">
+                <button class="w-full bg-blue-600 text-white rounded-lg py-2 px-4 flex items-center justify-center hover:bg-blue-700 transition-colors">
+                    <i class="fa fa-pencil mr-2"></i>
+                    写邮件
+                </button>
+            </div>
+            
+            <nav class="mt-2">
+                <a href="#" class="flex items-center px-4 py-3 bg-blue-50 text-blue-600 border-r-4 border-blue-600" onclick="showEmailList()">
+                    <i class="fa fa-inbox w-5 mr-3"></i>
+                    <span>收件箱</span>
+                    <span class="ml-auto bg-blue-600 text-white text-xs rounded-full px-2 py-0.5">2</span>
+                </a>
+                <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-paper-plane w-5 mr-3"></i>
+                    <span>已发送</span>
+                </a>
+                <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-file-text-o w-5 mr-3"></i>
+                    <span>草稿箱</span>
+                </a>
+                <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-trash-o w-5 mr-3"></i>
+                    <span>已删除</span>
+                </a>
+                <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-star-o w-5 mr-3"></i>
+                    <span>星标邮件</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- 邮件内容区 -->
+        <div class="flex-1 bg-white h-full overflow-y-auto">
+            <!-- 邮件列表 - 初始显示 -->
+            <div id="email-list-container" class="email-list">
+                <div class="p-4 border-b border-gray-200">
+                    <h2 class="text-lg font-semibold text-gray-800">收件箱 (2)</h2>
+                </div>
+                
+                <!-- 邮件1 - 银行催收通知（未读） -->
+                <div id="email1" class="email-item p-4 border-b border-gray-200 bg-blue-50 cursor-pointer hover:bg-blue-100 transition-colors" onclick="showEmail(1)">
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="font-semibold text-gray-800">大莴笋银行信贷管理部</span>
+                        <span class="text-xs text-gray-500">2026-05-12</span>
+                    </div>
+                    <div class="font-medium text-gray-700 mb-1 truncate">【重要】关于您的个人住房抵押贷款逾期催收通知</div>
+                    <div class="text-sm text-gray-500 truncate">我行正式通知，您名下以z省d市红樱桃区山竹家园12-1203室不动产作为抵押...</div>
+                </div>
+                
+                <!-- 邮件2 - 股票推荐 -->
+                <div id="email2" class="email-item p-4 cursor-pointer hover:bg-gray-50 transition-colors" onclick="showEmail(2)">
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="text-gray-700">殷教授·财经小助手</span>
+                        <span class="text-xs text-gray-500">2025-03-24</span>
+                    </div>
+                    <div class="text-gray-700 mb-1 truncate">【内部私享】刘哥，这支票务必关注一下，跟紧殷教授</div>
+                    <div class="text-sm text-gray-500 truncate">我是殷教授团队的财经小助手小陈，您上周订阅了教授的私享内参服务...</div>
+                </div>
+            </div>
+            
+            <!-- 第一封邮件内容（默认隐藏） -->
+            <div id="email-content-1" class="email-content hidden">
+                <div class="p-4 md:p-6">
+                    <!-- 返回邮件列表按钮 -->
+                    <div class="mb-4">
+                        <button onclick="showEmailList()" class="flex items-center text-gray-600 hover:text-blue-600">
+                            <i class="fa fa-chevron-left mr-2"></i>
+                            返回邮件列表
+                        </button>
+                    </div>
+                    
+                    <!-- 邮件标题 -->
+                    <h1 class="text-xl md:text-2xl font-bold text-gray-800 mb-4 md:mb-6">【重要】关于您的个人住房抵押贷款逾期催收通知</h1>
+                    
+                    <!-- 邮件头部信息 -->
+                    <div class="flex flex-col md:flex-row items-start mb-4 md:mb-6 pb-4 md:pb-6 border-b border-gray-200">
+                        <div class="w-10 h-10 rounded-full bg-red-500 flex items-center justify-center text-white font-medium mr-0 md:mr-4 mb-3 md:mb-0">
+                            银
+                        </div>
+                        <div class="flex-1 w-full">
+                            <div class="flex flex-col md:flex-row md:items-center justify-between mb-2">
+                                <div class="mb-2 md:mb-0">
+                                    <span class="font-medium text-gray-800">大莴笋银行信贷管理部</span>
+                                    <span class="text-gray-500 text-sm block md:inline md:ml-2">&lt;credit_alert@biglettuce-bank.com&gt;</span>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <button class="text-gray-400 hover:text-gray-600 p-1">
+                                        <i class="fa fa-reply"></i>
+                                    </button>
+                                    <button class="text-gray-400 hover:text-gray-600 p-1">
+                                        <i class="fa fa-forward"></i>
+                                    </button>
+                                    <button class="text-gray-400 hover:text-gray-600 p-1">
+                                        <i class="fa fa-trash-o"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="text-sm text-gray-500 mb-1">
+                                收件人：刘启明 &lt;14444444444@111.com&gt;
+                            </div>
+                            <div class="text-sm text-gray-500">
+                                日期：2026-05-12
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 邮件正文 -->
+                    <div class="prose max-w-none text-gray-700 leading-relaxed text-sm md:text-base">
+                        <p class="mb-4">刘启明先生：</p>
+                        
+                        <p class="mb-4">您好。我行正式通知，您名下以z省d市红樱桃区山竹家园12-1203室不动产作为抵押、于2025-05-03申请的个人贷款（合同号：BL-2025-08XX），截至本邮件发出之日，已连续逾期93天。</p>
+                        
+                        <p class="mb-4">您的贷款信息如下：</p>
+                        
+                        <ul class="mb-4 pl-5 list-disc">
+                            <li>贷款本金：3,000,000元</li>
+                            <li>当前逾期金额（含罚息）：312,540元</li>
+                            <li>抵押物：上述房产</li>
+                            <li>逾期起始日：2026-02-10</li>
+                        </ul>
+                        
+                        <p class="mb-4">根据借款合同及《中华人民共和国民法典》相关规定，我行有权：</p>
+                        
+                        <ol class="mb-4 pl-5 list-decimal">
+                            <li>自逾期之日起，在原利率基础上按日加收50%罚息；</li>
+                            <li>依法处置您名下抵押房产以清偿债务；</li>
+                            <li>将您的逾期信息报送中国人民银行征信中心，影响您的个人信用记录。</li>
+                        </ol>
+                        
+                        <p class="mb-4">请务必在7个工作日内清偿全部逾期款项。如有还款意愿但存在暂时困难，请联系客户经理邱芸协商展期方案。</p>
+                        
+                        <p class="mb-2">大莴笋银行信贷管理部</p>
+                        <p>联系电话：010-XXXX-XXXX</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 第二封邮件内容（默认隐藏） -->
+            <div id="email-content-2" class="email-content hidden">
+                <div class="p-4 md:p-6">
+                    <!-- 返回邮件列表按钮 -->
+                    <div class="mb-4">
+                        <button onclick="showEmailList()" class="flex items-center text-gray-600 hover:text-blue-600">
+                            <i class="fa fa-chevron-left mr-2"></i>
+                            返回邮件列表
+                        </button>
+                    </div>
+                    
+                    <!-- 邮件标题 -->
+                    <h1 class="text-xl md:text-2xl font-bold text-gray-800 mb-4 md:mb-6">【内部私享】刘哥，这支票务必关注一下，跟紧殷教授</h1>
+                    
+                    <!-- 邮件头部信息 -->
+                    <div class="flex flex-col md:flex-row items-start mb-4 md:mb-6 pb-4 md:pb-6 border-b border-gray-200">
+                        <div class="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center text-white font-medium mr-0 md:mr-4 mb-3 md:mb-0">
+                            殷
+                        </div>
+                        <div class="flex-1 w-full">
+                            <div class="flex flex-col md:flex-row md:items-center justify-between mb-2">
+                                <div class="mb-2 md:mb-0">
+                                    <span class="font-medium text-gray-800">殷教授·财经小助手</span>
+                                    <span class="text-gray-500 text-sm block md:inline md:ml-2">&lt;prof-yin@yinfinance.top&gt;</span>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <button class="text-gray-400 hover:text-gray-600 p-1">
+                                        <i class="fa fa-reply"></i>
+                                    </button>
+                                    <button class="text-gray-400 hover:text-gray-600 p-1">
+                                        <i class="fa fa-forward"></i>
+                                    </button>
+                                    <button class="text-gray-400 hover:text-gray-600 p-1">
+                                        <i class="fa fa-trash-o"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="text-sm text-gray-500 mb-1">
+                                收件人：刘启明 &lt;14444444444@111.com&gt;
+                            </div>
+                            <div class="text-sm text-gray-500">
+                                日期：2025-03-24
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 邮件正文 -->
+                    <div class="prose max-w-none text-gray-700 leading-relaxed text-sm md:text-base">
+                        <p class="mb-4">刘哥您好：</p>
+                        
+                        <p class="mb-4">我是殷教授团队的财经小助手小陈，您上周订阅了教授的私享内参服务，感谢您的信任。教授让我把这次的深度调研成果优先发给您，请您务必保密，不要外传。</p>
+                        
+                        <p class="mb-4 font-medium">股票代码：300XXX【锐利科技】</p>
+                        
+                        <p class="mb-4">以下是核心逻辑简述：</p>
+                        
+                        <ul class="mb-4 pl-5 list-disc">
+                            <li><strong>重大利好临近：</strong> 殷教授通过产业圈内部渠道获悉，锐利科技的某核心产品已进入国家某重大专项采购目录，正式公告将在下月发布。目前市场对此完全不知情，是典型的"信息差"窗口期。</li>
+                            <li><strong>主力资金异动：</strong> 我团队量化系统监测显示，过去两周已有多个机构席位暗中吸筹，成交量温和放大，与2024年某牛股启动前形态高度相似。</li>
+                            <li><strong>教授个人操作：</strong> 殷教授本人已用自有资金重仓介入，本次推荐与教授个人利益高度绑定，绝非市面上那些"嘴炮"股评可比。</li>
+                            <li><strong>目标价：</strong> 根据估值模型，公告发布后第一目标价看至45元，距当前价位有80% 上行空间。</li>
+                        </ul>
+                        
+                        <p class="mb-4">建议您尽快分批建仓，不要错过这一波确定性极高的机会。如有疑问，请回复本邮件预约与教授的一对一连线。</p>
+                        
+                        <p class="mb-2">附：锐利科技深度研报（内部绝密版，阅后即焚）</p>
+                        
+                        <p class="mb-2">殷教授·财经小助手团队</p>
+                        <p class="text-blue-600 mb-6">[回复此邮件预约连线]</p>
+                        
+                        <!-- 新增：获取证据关键词按钮 -->
+                        <div class="mt-8 text-center">
+                            <button onclick="showInducementEvidence()" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium flex items-center justify-center mx-auto">
+                                <i class="fa fa-key mr-2"></i>
+                                点击获取证据关键词
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 移动端遮罩层 -->
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-5 hidden md:hidden"></div>
+
+    <!-- 新增：诱导邮件证据关键词弹窗 -->
+    <div id="inducement-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 transform transition-all">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-xl font-bold text-gray-800 flex items-center">
+                        <i class="fa fa-exclamation-triangle text-orange-500 mr-2"></i>
+                        证据关键词
+                    </h3>
+                    <button onclick="closeInducementModal()" class="text-gray-400 hover:text-gray-600">
+                        <i class="fa fa-times text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-8 text-center">
+                <p class="text-4xl font-bold text-blue-600 mb-4">诱导邮件</p>
+                <p class="text-gray-600">已获取关键证据</p>
+            </div>
+            <div class="p-4 border-t border-gray-200 text-center">
+                <button onclick="closeInducementModal()" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                    确定
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 显示邮件列表
+        function showEmailList() {
+            // 隐藏所有邮件内容
+            document.querySelectorAll('.email-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            
+            // 显示邮件列表
+            document.getElementById('email-list-container').classList.remove('hidden');
+            
+            // 隐藏移动端侧边栏
+            hideAllMobilePanels();
+        }
+        
+        // 显示指定邮件内容
+        function showEmail(emailId) {
+            // 隐藏邮件列表
+            document.getElementById('email-list-container').classList.add('hidden');
+            
+            // 隐藏所有邮件内容
+            document.querySelectorAll('.email-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            
+            // 显示选中的邮件内容
+            document.getElementById(`email-content-${emailId}`).classList.remove('hidden');
+            
+            // 更新邮件列表样式
+            document.querySelectorAll('.email-item').forEach(item => {
+                item.classList.remove('bg-blue-50', 'hover:bg-blue-100');
+                item.classList.add('hover:bg-gray-50');
+            });
+            
+            const selectedEmail = document.getElementById(`email${emailId}`);
+            selectedEmail.classList.add('bg-blue-50', 'hover:bg-blue-100');
+            selectedEmail.classList.remove('hover:bg-gray-50');
+            
+            // 标记为已读（移除未读背景色）
+            if (emailId === 1) {
+                selectedEmail.classList.remove('bg-blue-50');
+                selectedEmail.classList.add('bg-white');
+            }
+        }
+        
+        // 移动端菜单控制
+        const menuToggle = document.getElementById('menu-toggle');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        
+        function showSidebar() {
+            sidebar.classList.remove('-translate-x-full');
+            overlay.classList.remove('hidden');
+        }
+        
+        function hideAllMobilePanels() {
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+        }
+        
+        menuToggle.addEventListener('click', () => {
+            if (sidebar.classList.contains('-translate-x-full')) {
+                showSidebar();
+            } else {
+                hideAllMobilePanels();
+            }
+        });
+        
+        overlay.addEventListener('click', hideAllMobilePanels);
+        
+        // 窗口大小变化时重置移动端状态
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 768) {
+                hideAllMobilePanels();
+            }
+        });
+
+        // 新增：显示诱导邮件证据关键词弹窗
+        function showInducementEvidence() {
+            document.getElementById('inducement-modal').classList.remove('hidden');
+            // 禁止背景滚动
+            document.body.style.overflow = 'hidden';
+        }
+
+        // 新增：关闭诱导邮件证据弹窗
+        function closeInducementModal() {
+            document.getElementById('inducement-modal').classList.add('hidden');
+            // 恢复背景滚动
+            document.body.style.overflow = 'auto';
+        }
+
+        // 新增：点击弹窗背景关闭
+        document.getElementById('inducement-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeInducementModal();
+            }
+        });
+
+        // 新增：按ESC键关闭弹窗
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeInducementModal();
+            }
+        });
+    </script>
+</body>
+</html>

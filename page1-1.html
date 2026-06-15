@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>电子邮箱登录</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-8">
+        <!-- 标题区域 -->
+        <div class="text-center mb-8">
+            <div class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                </svg>
+            </div>
+            <h1 class="text-2xl font-bold text-gray-800">电子邮箱登录</h1>
+            <p class="text-gray-500 mt-2">请输入您的账号和密码</p>
+        </div>
+        <!-- 登录表单 -->
+        <form id="loginForm" class="space-y-6">
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">邮箱账号</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 outline-none"
+                    placeholder="请输入您的邮箱地址"
+                    required
+                >
+            </div>
+            <div>
+                <label for="password" class="block text-sm font-medium text-gray-700 mb-1">登录密码</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 outline-none"
+                    placeholder="请输入您的登录密码"
+                    required
+                >
+            </div>
+            <!-- 操作按钮 -->
+            <div class="flex flex-col space-y-3">
+                <button 
+                    type="submit" 
+                    class="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg"
+                >
+                    登录
+                </button>
+                
+                <div class="flex justify-between">
+                    <button 
+                        type="button" 
+                        id="forgotPasswordBtn"
+                        class="text-blue-500 hover:text-blue-700 text-sm font-medium transition-colors duration-200"
+                    >
+                        忘记密码？
+                    </button>
+                    
+                    <button 
+                        type="button" 
+                        id="backBtn"
+                        class="text-gray-500 hover:text-gray-700 text-sm font-medium transition-colors duration-200"
+                    >
+                        返回
+                    </button>
+                </div>
+            </div>
+        </form>
+        <!-- 错误提示 -->
+        <div id="errorMessage" class="hidden mt-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-lg text-center text-sm">
+            账号或密码错误
+        </div>
+    </div>
+    <!-- 忘记密码弹窗 -->
+    <div id="forgotPasswordModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden z-50">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 transform transition-all">
+            <h3 class="text-xl font-bold text-gray-800 mb-4 text-center">找回密码</h3>
+            
+            <!-- 安全问题区域 -->
+            <div id="securityQuestionSection" class="hidden">
+                <p class="text-gray-700 mb-3 text-center font-medium">我最喜欢的动漫</p>
+                <input 
+                    type="text" 
+                    id="securityAnswer" 
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 outline-none mb-4"
+                    placeholder="请输入答案"
+                >
+            </div>
+            
+            <!-- 无问题提示区域 -->
+            <div id="noQuestionSection" class="hidden">
+                <p class="text-gray-600 text-center py-4">没有设置问题，该功能无法使用</p>
+            </div>
+            <!-- 按钮区域 -->
+            <div class="flex space-x-3 mt-4">
+                <button 
+                    type="button" 
+                    id="cancelBtn"
+                    class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors duration-200"
+                >
+                    取消
+                </button>
+                <button 
+                    type="button" 
+                    id="submitAnswerBtn"
+                    class="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 hidden"
+                >
+                    提交
+                </button>
+            </div>
+        </div>
+    </div>
+    <script>
+        // 获取DOM元素
+        const loginForm = document.getElementById('loginForm');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const errorMessage = document.getElementById('errorMessage');
+        const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
+        const backBtn = document.getElementById('backBtn');
+        const forgotPasswordModal = document.getElementById('forgotPasswordModal');
+        const securityQuestionSection = document.getElementById('securityQuestionSection');
+        const noQuestionSection = document.getElementById('noQuestionSection');
+        const securityAnswer = document.getElementById('securityAnswer');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const submitAnswerBtn = document.getElementById('submitAnswerBtn');
+
+        // 登录表单提交
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = emailInput.value.trim();
+            const password = passwordInput.value.trim();
+            
+            // 隐藏错误信息
+            errorMessage.classList.add('hidden');
+
+            // 此处可替换为您的真实后端登录接口
+            // 示例：如果需要添加新的测试账号，可在此处添加判断
+            if (false) {
+                // 登录成功，跳转到pagee2.html
+                window.location.href = 'pagee2.html';
+            } else {
+                // 错误，显示提示
+                errorMessage.classList.remove('hidden');
+                // 3秒后自动隐藏
+                setTimeout(() => {
+                    errorMessage.classList.add('hidden');
+                }, 3000);
+            }
+        });
+
+        // 忘记密码按钮点击
+        forgotPasswordBtn.addEventListener('click', function() {
+            const email = emailInput.value.trim();
+            
+            // 清空答案输入框
+            securityAnswer.value = '';
+            
+            // 根据邮箱显示不同内容
+            if (email === '19999999999@111.com') {
+                // 显示安全问题
+                securityQuestionSection.classList.remove('hidden');
+                noQuestionSection.classList.add('hidden');
+                submitAnswerBtn.classList.remove('hidden');
+            } else {
+                // 其他邮箱，显示无问题提示
+                securityQuestionSection.classList.add('hidden');
+                noQuestionSection.classList.remove('hidden');
+                submitAnswerBtn.classList.add('hidden');
+            }
+            
+            // 显示弹窗
+            forgotPasswordModal.classList.remove('hidden');
+        });
+
+        // 取消按钮点击
+        cancelBtn.addEventListener('click', function() {
+            forgotPasswordModal.classList.add('hidden');
+        });
+
+        // 提交答案按钮点击
+        submitAnswerBtn.addEventListener('click', function() {
+            const answer = securityAnswer.value.trim();
+            // 检查答案是否正确（支持带书名号和不带书名号）
+            if (answer === '在魔王城说晚安' || answer === '《在魔王城说晚安》') {
+                // 正确，跳转到pagec3.html
+                window.location.href = 'pagec3.html';
+            } else {
+                // 错误，显示提示
+                alert('答案错误，请重新输入');
+            }
+        });
+
+        // 返回按钮点击
+        backBtn.addEventListener('click', function() {
+            window.location.href = 'page1.html';
+        });
+
+        // 点击弹窗外部关闭
+        forgotPasswordModal.addEventListener('click', function(e) {
+            if (e.target === forgotPasswordModal) {
+                forgotPasswordModal.classList.add('hidden');
+            }
+        });
+
+        // 按ESC键关闭弹窗
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && !forgotPasswordModal.classList.contains('hidden')) {
+                forgotPasswordModal.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

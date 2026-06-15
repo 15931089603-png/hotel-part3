@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>员工信息详情</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- 顶部导航栏 -->
+    <header class="bg-white shadow-sm">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex items-center">
+            <!-- 返回按钮 -->
+            <a href="page1.html" class="flex items-center text-gray-600 hover:text-blue-600 transition-colors mr-4">
+                <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+                返回
+            </a>
+            <h1 class="text-xl font-semibold text-gray-800">员工信息详情</h1>
+        </div>
+    </header>
+
+    <!-- 主要内容区 -->
+    <main class="max-w-4xl mx-auto px-4 py-8">
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <!-- 员工头像和基本信息头部 -->
+            <div class="bg-gradient-to-r from-blue-500 to-blue-600 px-6 py-8 text-white">
+                <div class="flex items-center">
+                    <!-- 员工头像 -->
+                    <div class="w-24 h-24 rounded-full bg-white/20 flex items-center justify-center text-3xl font-bold mr-6">
+                        刘
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold mb-1">刘启明</h2>
+                        <p class="text-blue-100">初级市场营销员</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 详细信息列表 -->
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="border-b border-gray-100 pb-4">
+                        <p class="text-gray-500 text-sm mb-1">员工姓名</p>
+                        <p class="text-gray-800 font-medium">刘启明</p>
+                    </div>
+                    
+                    <div class="border-b border-gray-100 pb-4">
+                        <p class="text-gray-500 text-sm mb-1">性别</p>
+                        <p class="text-gray-800 font-medium">男</p>
+                    </div>
+                    
+                    <div class="border-b border-gray-100 pb-4">
+                        <p class="text-gray-500 text-sm mb-1">年龄</p>
+                        <p class="text-gray-800 font-medium">48岁</p>
+                    </div>
+                    
+                    <div class="border-b border-gray-100 pb-4">
+                        <p class="text-gray-500 text-sm mb-1">职位</p>
+                        <p class="text-gray-800 font-medium">初级市场营销员</p>
+                    </div>
+                    
+                    <div class="md:col-span-2 border-b border-gray-100 pb-4">
+                        <p class="text-gray-500 text-sm mb-1">工作邮箱</p>
+                        <a href="mailto:14444444444@111.com" class="text-blue-600 hover:underline font-medium">
+                            14444444444@111.com
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

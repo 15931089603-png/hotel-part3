@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>电子邮箱 - 收件箱</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- 顶部导航栏 -->
+    <header class="bg-blue-600 text-white shadow-md">
+        <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                    </svg>
+                </div>
+                <h1 class="text-xl font-bold">电子邮箱</h1>
+            </div>
+            <div class="flex items-center space-x-4">
+                <span class="text-sm">巴菲特.an</span>
+                <span class="text-xs opacity-80">19999999999@111.com</span>
+                <button 
+                    id="backBtn"
+                    class="bg-white text-blue-600 hover:bg-blue-50 px-4 py-1.5 rounded-lg text-sm font-medium transition-colors duration-200"
+                >
+                    返回首页
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主内容区域 -->
+    <div class="container mx-auto px-4 py-6 flex flex-col lg:flex-row gap-6">
+        <!-- 侧边栏 -->
+        <aside class="w-full lg:w-64 space-y-2">
+            <div class="bg-white rounded-lg shadow p-4">
+                <button class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg mb-4 transition-colors duration-200">
+                    写邮件
+                </button>
+                <nav class="space-y-1">
+                    <a href="#" class="flex items-center space-x-2 px-3 py-2 rounded-lg bg-blue-50 text-blue-600 font-medium">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                        <span>收件箱</span>
+                        <span class="ml-auto bg-blue-600 text-white text-xs px-2 py-0.5 rounded-full">1</span>
+                    </a>
+                    <a href="#" class="flex items-center space-x-2 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors duration-200">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                        </svg>
+                        <span>已发送</span>
+                    </a>
+                    <a href="#" class="flex items-center space-x-2 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors duration-200">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        <span>草稿箱</span>
+                    </a>
+                    <a href="#" class="flex items-center space-x-2 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors duration-200">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                        <span>垃圾箱</span>
+                    </a>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- 邮件内容区域 -->
+        <main class="flex-1">
+            <div class="bg-white rounded-lg shadow overflow-hidden">
+                <!-- 邮件头部 -->
+                <div class="border-b border-gray-200 p-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">诊断单</h2>
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between text-sm text-gray-600 space-y-2 sm:space-y-0">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">
+                                大
+                            </div>
+                            <div>
+                                <p class="font-medium text-gray-800">大玉米医院</p>
+                                <p>收件人：巴菲特.an</p>
+                            </div>
+                        </div>
+                        <p>2026-02-07 09:15:32</p>
+                    </div>
+                </div>
+
+                <!-- 邮件正文 -->
+                <div class="p-6">
+                    <p class="text-gray-700 mb-6">您好，这是您的门诊病历诊断单，请查收。</p>
+                    
+                    <!-- 附件区域 -->
+                    <div class="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">附件：大玉米医院 · 心理科 门诊病历</h3>
+                        
+                        <!-- 可点击的诊断单 -->
+                        <div 
+                            id="diagnosisReport"
+                            class="bg-white border border-gray-300 rounded-lg p-6 cursor-pointer hover:shadow-lg transition-shadow duration-200"
+                        >
+                            <div class="text-center mb-6">
+                                <h4 class="text-xl font-bold text-gray-800">大玉米医院 · 心理科</h4>
+                                <h5 class="text-lg font-semibold text-gray-700 mt-2">门诊病历</h5>
+                            </div>
+                            
+                            <table class="w-full mb-6">
+                                <tbody>
+                                    <tr class="border-b border-gray-200">
+                                        <td class="py-2 font-medium text-gray-700 w-24">姓名</td>
+                                        <td class="py-2 text-gray-800">许安安</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-200">
+                                        <td class="py-2 font-medium text-gray-700">性别</td>
+                                        <td class="py-2 text-gray-800">女</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-200">
+                                        <td class="py-2 font-medium text-gray-700">年龄</td>
+                                        <td class="py-2 text-gray-800">30岁</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-200">
+                                        <td class="py-2 font-medium text-gray-700">就诊日期</td>
+                                        <td class="py-2 text-gray-800">2026年1月20日</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2 font-medium text-gray-700">科别</td>
+                                        <td class="py-2 text-gray-800">心理科</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            
+                            <div class="space-y-4">
+                                <div>
+                                    <h6 class="font-semibold text-gray-800 mb-1">主诉：</h6>
+                                    <p class="text-gray-700">情绪剧烈波动、失眠、冲动行为倾向两周，加重3天。</p>
+                                </div>
+                                
+                                <div>
+                                    <h6 class="font-semibold text-gray-800 mb-1">现病史：</h6>
+                                    <p class="text-gray-700 leading-relaxed">
+                                        患者2025年9月17日发布揭露某财经博主视频后，遭大规模网络攻击，包括人格侮辱、隐私曝光、法律威胁。此后情绪剧烈波动：时而极度低落哭泣，时而暴怒、言语激越，称"他毁了我，我要让他付出代价"。近三天几乎不眠，连夜整理对方"黑料"，扬言"同归于尽"。就诊时情绪敌对，称接诊医师"你是不是也是他们的人"。否认幻觉，存在被害观念，自知力部分缺失。
+                                    </p>
+                                </div>
+                                
+                                <div>
+                                    <h6 class="font-semibold text-gray-800 mb-1">既往史：</h6>
+                                    <p class="text-gray-700">2023年曾因类似网暴事件出现短暂情绪低落，未经治疗自行缓解。</p>
+                                </div>
+                                
+                                <div>
+                                    <h6 class="font-semibold text-gray-800 mb-1">初步诊断：</h6>
+                                    <p class="text-gray-700">双相障碍，目前为伴有精神病性症状的躁狂发作（ICD-10 F31.2）</p>
+                                </div>
+                                
+                                <div>
+                                    <h6 class="font-semibold text-gray-800 mb-1">处理意见：</h6>
+                                    <ol class="list-decimal list-inside text-gray-700 space-y-1">
+                                        <li>建议住院治疗</li>
+                                        <li>心境稳定剂联合抗精神病药物</li>
+                                        <li>风险评估：对他人存在潜在危险</li>
+                                    </ol>
+                                </div>
+                                
+                                <div class="text-right mt-8">
+                                    <p class="text-gray-700">医师签名： 爆米花</p>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2 text-center">点击诊断单查看证据关键词</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 证据关键词弹窗 -->
+    <div id="evidenceModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden z-50">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 transform transition-all">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">获取证据成功</h3>
+                <p class="text-gray-600 mb-4">证据关键词已记录</p>
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                    <p class="text-lg font-semibold text-blue-800">诊断单</p>
+                </div>
+                <button 
+                    id="closeModalBtn"
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
+                >
+                    确定
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 获取DOM元素
+        const backBtn = document.getElementById('backBtn');
+        const diagnosisReport = document.getElementById('diagnosisReport');
+        const evidenceModal = document.getElementById('evidenceModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+
+        // 返回按钮点击
+        backBtn.addEventListener('click', function() {
+            window.location.href = 'page1.html';
+        });
+
+        // 点击诊断单显示弹窗
+        diagnosisReport.addEventListener('click', function() {
+            evidenceModal.classList.remove('hidden');
+        });
+
+        // 关闭弹窗按钮点击
+        closeModalBtn.addEventListener('click', function() {
+            evidenceModal.classList.add('hidden');
+        });
+
+        // 点击弹窗外部关闭
+        evidenceModal.addEventListener('click', function(e) {
+            if (e.target === evidenceModal) {
+                evidenceModal.classList.add('hidden');
+            }
+        });
+
+        // 按ESC键关闭弹窗
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && !evidenceModal.classList.contains('hidden')) {
+                evidenceModal.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

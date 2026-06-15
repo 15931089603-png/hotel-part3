@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>瓜子大学官微</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        wechat: '#f5f5f5',
+                        wechatGreen: '#07c160',
+                        articleBg: '#ffffff',
+                        textPrimary: '#333333',
+                        textSecondary: '#888888'
+                    },
+                    fontFamily: {
+                        wechat: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .article-shadow {
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            }
+            .avatar-shadow {
+                box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+            }
+        }
+    </style>
+</head>
+<body class="bg-wechat min-h-screen font-wechat text-textPrimary">
+    <!-- 顶部状态栏 -->
+    <div class="bg-white h-12 flex items-center justify-between px-4 sticky top-0 z-50 border-b border-gray-200">
+        <button onclick="goBack()" class="text-gray-600">
+            <i class="fa fa-angle-left text-2xl"></i>
+        </button>
+        <span class="font-medium">公众号</span>
+        <button class="text-gray-600">
+            <i class="fa fa-ellipsis-h text-xl"></i>
+        </button>
+    </div>
+    
+    <!-- 公众号头部 -->
+    <div class="bg-white p-4 flex items-center justify-between border-b border-gray-100">
+        <div class="flex items-center">
+            <div class="w-12 h-12 rounded-lg overflow-hidden avatar-shadow mr-3">
+                <div class="w-full h-full bg-blue-500 flex items-center justify-center text-white font-bold text-xl">
+                    瓜
+                </div>
+            </div>
+            <div>
+                <div class="font-bold text-lg">瓜子大学官微</div>
+                <div class="text-xs text-textSecondary flex items-center">
+                    <span class="bg-wechatGreen text-white px-1.5 py-0.5 rounded text-xs mr-1">已关注</span>
+                    <span>公众号</span>
+                </div>
+            </div>
+        </div>
+        <button class="border border-gray-300 rounded px-3 py-1 text-sm text-gray-600">
+            发消息
+        </button>
+    </div>
+    
+    <!-- 文章内容 -->
+    <div class="bg-articleBg article-shadow">
+        <!-- 文章标题 -->
+        <div class="px-4 pt-6 pb-4">
+            <h1 class="text-2xl font-bold leading-tight mb-4">
+                逐梦深耕，步履不停｜我校22届硕士毕业生姚敏升学花生大学攻读博士
+            </h1>
+            <div class="flex items-center text-xs text-textSecondary">
+                <span>瓜子大学官微</span>
+                <span class="mx-2">·</span>
+                <span>2025-06-15</span>
+                <span class="mx-2">·</span>
+                <span>阅读 1258</span>
+            </div>
+        </div>
+        
+        <!-- 文章正文 -->
+        <div class="px-4 pb-6">
+            <p class="mb-4 leading-relaxed">
+                近日，我校2022届硕士毕业生姚敏凭借扎实的专业功底与良好的科研素养，成功升学花生大学攻读博士学位，以不懈奋斗开启学术新征程，展现了我校学子勤学笃行、奋勇争先的青春风采。
+            </p>
+            
+            <p class="mb-4 leading-relaxed">
+                在读期间，姚敏始终严于律己、潜心治学。她认真深耕专业知识，积极参与科研项目与学术交流，不断锻炼科研思维与创新能力。凭借踏实的学习态度、稳定的学业表现和突出的科研潜力，她顺利通过考核，成功拿到花生大学博士深造资格，为研究生阶段的学习画上圆满句号。
+            </p>
+            
+            <p class="mb-4 leading-relaxed">
+                由于学姐不在本地，小编在微信上对学姐进行了采访：
+            </p>
+            
+            <!-- 微信聊天截图 -->
+            <div class="my-6 rounded-lg overflow-hidden border border-gray-200">
+                <img src="picture1.jpg" 
+                     alt="微信采访截图" 
+                     class="w-full h-auto"
+                     onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSI2MDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iI2YwZjBmMCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzk5OSI+5b6u5L+h5aSn5a2x6YCa5aSp5Yiw5pWw5o2u5Yiw5pyN5Yqh5ZmoPC90ZXh0Pjwvc3ZnPg=='">
+            </div>
+            
+            <p class="mb-4 leading-relaxed">
+                青年有志，笃行致远。祝愿姚敏同学在新的学术平台继续深耕不辍、不负韶华！也希望全体学子以榜样为动力，勤学善思、砥砺前行，追逐理想、成就自我！
+            </p>
+        </div>
+        
+        <!-- 文章底部 -->
+        <div class="px-4 pb-6 border-t border-gray-100 pt-4">
+            <div class="flex items-center justify-between text-xs text-textSecondary mb-4">
+                <span>原创 2025-06-15</span>
+                <div class="flex items-center space-x-4">
+                    <span><i class="fa fa-thumbs-o-up mr-1"></i> 赞 86</span>
+                    <span><i class="fa fa-comment-o mr-1"></i> 写留言</span>
+                </div>
+            </div>
+            
+            <!-- 关注提示 -->
+            <div class="bg-gray-50 rounded-lg p-4 flex items-center justify-between">
+                <div class="flex items-center">
+                    <div class="w-10 h-10 rounded-full overflow-hidden mr-3 bg-blue-500 flex items-center justify-center text-white font-bold">
+                        瓜
+                    </div>
+                    <div>
+                        <div class="font-medium">瓜子大学官微</div>
+                        <div class="text-xs text-textSecondary">关注我们，了解更多校园资讯</div>
+                    </div>
+                </div>
+                <button class="bg-wechatGreen text-white px-4 py-1.5 rounded-full text-sm">
+                    关注
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 底部返回按钮 -->
+    <div class="fixed bottom-6 right-6">
+        <button onclick="goBack()" class="w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-gray-600 hover:bg-gray-50 transition-colors">
+            <i class="fa fa-arrow-left text-xl"></i>
+        </button>
+    </div>
+    
+    <script>
+        // 返回侦探记录本页面
+        function goBack() {
+            window.location.href = 'page1.html';
+        }
+    </script>
+</body>
+</html>

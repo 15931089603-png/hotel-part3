@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>手机主页</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body{
+            background: #f0f2f5;
+            overflow-x: hidden;
+        }
+        .app-icon:active{
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-b from-sky-100 to-white">
+    <!-- 顶部手机状态栏 时间改为20:21 -->
+    <div class="bg-sky-600 text-white px-5 py-2 flex justify-between items-center text-sm">
+        <span>20:21</span>
+        <span>🔋 100%</span>
+    </div>
+
+    <!-- 桌面应用区域 -->
+    <div class="px-5 py-8">
+        <!-- 应用图标网格 3列布局 -->
+        <div class="grid grid-cols-3 gap-y-8 gap-x-4">
+
+            <!-- 1.侦探记录本 -->
+            <a href="note1.html" class="app-icon flex flex-col items-center">
+                <img src="picture18.png" alt="侦探记录本" class="w-16 h-16 rounded-xl shadow-md object-cover">
+                <p class="mt-2 text-sm text-gray-800">侦探记录本</p>
+            </a>
+
+            <!-- 2.霸王龙查快递 -->
+            <a href="paged2.html" class="app-icon flex flex-col items-center">
+                <img src="picture19.jpg" alt="霸王龙查快递" class="w-16 h-16 rounded-xl shadow-md object-cover">
+                <p class="mt-2 text-sm text-gray-800">霸王龙查快递</p>
+            </a>
+
+            <!-- 3.霸王龙地图 -->
+            <a href="page1-2.html" class="app-icon flex flex-col items-center">
+                <img src="picture20.jpg" alt="霸王龙地图" class="w-16 h-16 rounded-xl shadow-md object-cover">
+                <p class="mt-2 text-sm text-gray-800">霸王龙地图</p>
+            </a>
+
+            <!-- 4.霸王龙电子邮箱 -->
+            <a href="page1-1.html" class="app-icon flex flex-col items-center">
+                <img src="picture21.jpg" alt="霸王龙电子邮箱" class="w-16 h-16 rounded-xl shadow-md object-cover">
+                <p class="mt-2 text-sm text-gray-800">霸王龙电子邮箱</p>
+            </a>
+
+            <!-- 5.霸王龙浏览器 -->
+            <a href="page1-4.html" class="app-icon flex flex-col items-center">
+                <img src="picture22.jpg" alt="霸王龙浏览器" class="w-16 h-16 rounded-xl shadow-md object-cover">
+                <p class="mt-2 text-sm text-gray-800">霸王龙浏览器</p>
+            </a>
+
+            <!-- 6.霸王龙破译器 -->
+            <a href="page1-3.html" class="app-icon flex flex-col items-center">
+                <img src="picture23.jpg" alt="霸王龙破译器" class="w-16 h-16 rounded-xl shadow-md object-cover">
+                <p class="mt-2 text-sm text-gray-800">霸王龙破译器</p>
+            </a>
+
+        </div>
+    </div>
+</body>
+</html>

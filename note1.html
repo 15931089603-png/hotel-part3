@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>侦探记录本 - 民宿谋杀案</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        paper: '#f5f0e6',
+                        ink: '#2c2416',
+                        accent: '#8b4513',
+                        error: '#dc2626',
+                        success: '#16a34a'
+                    },
+                    fontFamily: {
+                        detective: ['Georgia', 'Cambria', 'Times New Roman', 'serif'],
+                        handwritten: ['Courier New', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .paper-texture {
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23a89984' fill-opacity='0.05'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9z'/%3E%3Cpath d='M6 5V0H5v5H0v1h5v94h1V6h94V5H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            }
+            .notebook-line {
+                background-image: linear-gradient(transparent 95%, #c4b5a0 95%);
+                background-size: 100% 2rem;
+            }
+            .card-shadow {
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06), 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            }
+            .keyword-tag {
+                display: inline-block;
+                padding: 2px 8px;
+                margin: 2px;
+                border-radius: 4px;
+                background-color: #e2e8f0;
+                font-size: 0.875rem;
+            }
+            .keyword-tag.clickable {
+                background-color: #fef3c7;
+                cursor: pointer;
+                color: #92400e;
+            }
+            .keyword-tag.clickable:hover {
+                background-color: #fde68a;
+            }
+            .next-button {
+                animation: pulse 2s infinite;
+            }
+            @keyframes pulse {
+                0% {
+                    box-shadow: 0 0 0 0 rgba(139, 69, 19, 0.7);
+                }
+                70% {
+                    box-shadow: 0 0 0 10px rgba(139, 69, 19, 0);
+                }
+                100% {
+                    box-shadow: 0 0 0 0 rgba(139, 69, 19, 0);
+                }
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-800 min-h-screen py-8 px-4 md:px-8">
+    <div class="max-w-4xl mx-auto bg-paper paper-texture notebook-line rounded-lg card-shadow p-6 md:p-10 font-detective text-ink relative">
+        <!-- 左上角返回按钮 → 新增 -->
+        <div class="absolute top-4 left-4">
+            <a href="page1.html" class="flex items-center text-accent hover:text-accent/70 transition-colors text-lg">
+                <i class="fa fa-arrow-left mr-2"></i>
+                <span>返回</span>
+            </a>
+        </div>
+
+        <!-- 标题 -->
+        <div class="text-center mb-8 border-b-2 border-accent pb-4">
+            <h1 class="text-4xl md:text-5xl font-bold text-accent mb-2">侦探记录本</h1>
+            <p class="text-lg italic">民宿谋杀案调查档案</p>
+        </div>
+        
+        <!-- 使用说明 -->
+        <div class="mb-10 p-4 bg-amber-50/50 rounded-lg border border-amber-200">
+            <h2 class="text-xl font-bold mb-3 flex items-center">
+                <i class="fa fa-book mr-2 text-accent"></i>使用方法
+            </h2>
+            <ol class="list-decimal list-inside space-y-2 ml-2">
+                <li>记录本包括了民宿老板提供的嫌疑人及死者的基本信息</li>
+                <li>身份、作案动机需要在搜集证据并推理清楚后进行选择</li>
+                <li>证据栏在搜集到关键线索时，点击关键线索会得到对应的关键词，粘贴或输入进证据的输入框，完成证据收集</li>
+            </ol>
+        </div>
+        
+        <!-- 死者档案 -->
+        <div class="mb-10">
+            <h2 class="text-2xl font-bold mb-4 text-accent border-b border-accent/50 pb-2">
+                <i class="fa fa-user-times mr-2"></i>死者档案
+            </h2>
+            <div class="bg-white/60 rounded-lg p-5 card-shadow">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="flex items-center">
+                        <span class="font-bold w-20">姓名：</span>
+                        <span class="font-handwritten">殷锐</span>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="font-bold w-20">年龄：</span>
+                        <span class="font-handwritten">55岁</span>
+                    </div>
+                    <div class="flex items-center md:col-span-2">
+                        <span class="font-bold w-20">身份证号：</span>
+                        <span class="font-handwritten">10010119710201xxxx</span>
+                    </div>
+                    <div class="flex items-center md:col-span-2">
+                        <span class="font-bold w-20">住址：</span>
+                        <span class="font-handwritten">x省a市小番茄区圣女果街111号</span>
+                    </div>
+                    <div class="flex items-center md:col-span-2">
+                        <span class="font-bold w-20">身份：</span>
+                        <span id="deceased-identity" class="font-handwritten cursor-pointer text-accent hover:underline" onclick="openIdentityModal('deceased', ['博士生', '企业职员', '大学教授', '网络博主', '不明'], 2)">
+                            <i class="fa fa-question-circle mr-1"></i>点击选择
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 嫌疑人档案 -->
+        <h2 class="text-2xl font-bold mb-4 text-accent border-b border-accent/50 pb-2">
+            <i class="fa fa-users mr-2"></i>嫌疑人档案
+        </h2>
+        
+        <!-- 姚敏 -->
+        <div class="mb-8 bg-white/60 rounded-lg p-5 card-shadow">
+            <h3 class="text-xl font-bold mb-3 text-accent">嫌疑人一：姚敏</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="flex items-center">
+                    <span class="font-bold w-20">年龄：</span>
+                    <span class="font-handwritten">29岁</span>
+                </div>
+                <div class="flex items-center">
+                    <span class="font-bold w-20">身份证号：</span>
+                    <span class="font-handwritten">10040319970502bbbb</span>
+                </div>
+                <div class="flex items-center md:col-span-2">
+                    <span class="font-bold w-20">住址：</span>
+                    <span class="font-handwritten">x省c市马铃薯区大番薯街121号</span>
+                </div>
+                <div class="flex items-center md:col-span-2">
+                    <span class="font-bold w-20">身份：</span>
+                    <span id="suspect1-identity" class="font-handwritten cursor-pointer text-accent hover:underline" onclick="openIdentityModal('suspect1', ['博士生', '企业职员', '大学教授', '网络博主', '不明'], 0)">
+                        <i class="fa fa-question-circle mr-1"></i>点击选择
+                    </span>
+                </div>
+                <div class="flex items-center md:col-span-2">
+                    <span class="font-bold w-20">证据：</span>
+                    <span id="suspect1-evidence" class="font-handwritten">
+                        <span class="keyword-tag clickable" onclick="openSingleEvidenceModal('suspect1', 0, '社交媒体截图')">
+                            <i class="fa fa-plus mr-1"></i>添加证据
+                        </span>
+                    </span>
+                </div>
+                <div class="flex items-center md:col-span-2">
+                    <span class="font-bold w-20">作案动机：</span>
+                    <span id="suspect1-motive" class="font-handwritten text-gray-400">
+                        <i class="fa fa-lock mr-1"></i>需先完成证据收集
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 许安安 -->
+        <div class="mb-8 bg-white/60 rounded-lg p-5 card-shadow">
+            <h3 class="text-xl font-bold mb-3 text-accent">嫌疑人二：许安安</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="flex items-center">
+                    <span class="font-bold w-20">年龄：</span>
+                    <span class="font-handwritten">30岁</span>
+                </div>
+                <div class="flex items-center">
+                    <span class="font-bold w-20">身份证号：</span>
+                    <span class="font-handwritten">80050119960901cccc</span>
+                </div>
+                <div class="flex items-center md:col-span-2">
+                    <span class="font-bold w-20">住址：</span>
+                    <span class="font-handwritten">y省b市水蜜桃区青苹果路310号</span>
+                </div>
+                <div class="flex items-center md:col-span-2">
+                    <span class="font-bold w-20">身份：</span>
+                    <span id="suspect2-identity" class="font-handwritten cursor-pointer text-accent hover:underline" onclick="openIdentityModal('suspect2', ['博士生', '企业职员', '大学教授', '网络博主', '不明'], 3)">
+                        <i class="fa fa-question-circle mr-1"></i>点击选择
+                    </span>
+                </div>
+                <div class="flex items-center md:col-span-2">
+                    <span class="font-bold w-20">证据：</span>
+                    <span id="suspect2-evidence" class="font-handwritten">
+                        <span class="keyword-tag clickable" onclick="openSingleEvidenceModal('suspect2', 0, '诊断单')">
+                            <i class="fa fa-plus mr-1"></i>添加证据
+                        </span>
+                    </span>
+                </div>
+                <div class="flex items-center md:col-span-2">
+                    <span class="font-bold w-20">作案动机：</span>
+                    <span id="suspect2-motive" class="font-handwritten text-gray-400">
+                        <i class="fa fa-lock mr-1"></i>需先完成证据收集
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 余念 -->
+        <div class="mb-8 bg-white/60 rounded-lg p-5 card-shadow">
+            <h3 class="text-xl font-bold mb-3 text-accent">嫌疑人三：余念</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="flex items-center">
+                    <span class="font-bold w-20">年龄：</span>
+                    <span class="font-handwritten">23岁</span>
+                </div>
+                <div class="flex items-center">
+                    <span class="font-bold w-20">身份证号：</span>
+                    <span class="font-handwritten">10010120030608dddd</span>
+                </div>
+                <div class="flex items-center md:col-span-2">
+                    <span class="font-bold w-20">住址：</span>
+                    <span class="font-handwritten">x省a市小番茄区圣女果街111号</span>
+                </div>
+                <div class="flex items-center md:col-span-2">
+                    <span class="font-bold w-20">身份：</span>
+                    <span id="suspect3-identity" class="font-handwritten cursor-pointer text-accent hover:underline" onclick="openIdentityModal('suspect3', ['博士生', '企业职员', '大学教授', '网络博主', '不明'], 4)">
+                        <i class="fa fa-question-circle mr-1"></i>点击选择
+                    </span>
+                </div>
+                <div class="flex items-center md:col-span-2">
+                    <span class="font-bold w-20">证据：</span>
+                    <span id="suspect3-evidence" class="font-handwritten">
+                        <span class="keyword-tag clickable" onclick="openSingleEvidenceModal('suspect3', 0, '聊天记录')">
+                            <i class="fa fa-plus mr-1"></i>添加证据
+                        </span>
+                    </span>
+                </div>
+                <div class="flex items-center md:col-span-2">
+                    <span class="font-bold w-20">作案动机：</span>
+                    <span id="suspect3-motive" class="font-handwritten text-gray-400">
+                        <i class="fa fa-lock mr-1"></i>需先完成证据收集
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 刘启明 -->
+        <div class="mb-8 bg-white/60 rounded-lg p-5 card-shadow">
+            <h3 class="text-xl font-bold mb-3 text-accent">嫌疑人四：刘启明</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="flex items-center">
+                    <span class="font-bold w-20">年龄：</span>
+                    <span class="font-handwritten">48岁</span>
+                </div>
+                <div class="flex items-center">
+                    <span class="font-bold w-20">身份证号：</span>
+                    <span class="font-handwritten">90010219781102eeee</span>
+                </div>
+                <div class="flex items-center md:col-span-2">
+                    <span class="font-bold w-20">住址：</span>
+                    <span class="font-handwritten">z省d市红樱桃区车厘子路322号</span>
+                </div>
+                <div class="flex items-center md:col-span-2">
+                    <span class="font-bold w-20">身份：</span>
+                    <span id="suspect4-identity" class="font-handwritten cursor-pointer text-accent hover:underline" onclick="openIdentityModal('suspect4', ['博士生', '企业职员', '大学教授', '网络博主', '不明'], 1)">
+                        <i class="fa fa-question-circle mr-1"></i>点击选择
+                    </span>
+                </div>
+                <div class="flex items-center md:col-span-2">
+                    <span class="font-bold w-20">证据：</span>
+                    <span id="suspect4-evidence" class="font-handwritten">
+                        <span class="keyword-tag clickable" onclick="openSingleEvidenceModal('suspect4', 0, '诱导邮件')">
+                            <i class="fa fa-plus mr-1"></i>证据1
+                        </span>
+                        <span class="keyword-tag clickable" onclick="openSingleEvidenceModal('suspect4', 1, '财报')">
+                            <i class="fa fa-plus mr-1"></i>证据2
+                        </span>
+                        <span class="keyword-tag clickable" onclick="openSingleEvidenceModal('suspect4', 2, '散布虚假信息')">
+                            <i class="fa fa-plus mr-1"></i>证据3
+                        </span>
+                    </span>
+                </div>
+                <div class="flex items-center md:col-span-2">
+                    <span class="font-bold w-20">作案动机：</span>
+                    <span id="suspect4-motive" class="font-handwritten text-gray-400">
+                        <i class="fa fa-lock mr-1"></i>需先完成全部证据收集
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 完成推理按钮 -->
+        <div id="next-button-container" class="text-center mt-10 pt-4 border-t border-gray-300 hidden">
+            <button onclick="goToNextPage()" class="next-button bg-accent text-white py-3 px-8 rounded-lg text-xl font-bold hover:bg-accent/90 transition-colors">
+                完成推理进入第二幕→
+            </button>
+        </div>
+        
+        <!-- 页脚 -->
+        <div class="text-center text-gray-500 mt-10 pt-4 border-t border-gray-300">
+            <p>侦探记录本 - 第1页</p>
+        </div>
+    </div>
+    
+    <!-- 身份选择弹窗 -->
+    <div id="identity-modal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+        <div class="bg-paper rounded-lg p-6 max-w-md w-full mx-4 card-shadow transform transition-all">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-accent">选择身份</h3>
+                <button onclick="closeModal('identity-modal')" class="text-gray-500 hover:text-gray-700">
+                    <i class="fa fa-times text-xl"></i>
+                </button>
+            </div>
+            <div id="identity-options" class="space-y-3">
+                <!-- 身份选项将通过JS动态生成 -->
+            </div>
+            <div id="identity-error" class="mt-4 text-error hidden">
+                <i class="fa fa-exclamation-circle mr-1"></i>选择错误，请重新选择
+            </div>
+        </div>
+    </div>
+    
+    <!-- 单个证据输入弹窗 -->
+    <div id="single-evidence-modal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+        <div class="bg-paper rounded-lg p-6 max-w-md w-full mx-4 card-shadow transform transition-all">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-accent">输入证据关键词</h3>
+                <button onclick="closeModal('single-evidence-modal')" class="text-gray-500 hover:text-gray-700">
+                    <i class="fa fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="space-y-3">
+                <div class="flex flex-col">
+                    <label class="text-sm text-gray-600 mb-1">请输入关键词：</label>
+                    <input type="text" id="single-evidence-input" class="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/50" placeholder="请输入关键词">
+                </div>
+            </div>
+            <div id="single-evidence-error" class="mt-4 text-error hidden">
+                <i class="fa fa-exclamation-circle mr-1"></i>关键词错误，请重新输入
+            </div>
+            <button id="single-evidence-submit" onclick="submitSingleEvidence()" class="mt-4 w-full bg-accent text-white py-2 rounded-lg hover:bg-accent/90 transition-colors">
+                确认提交
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // 全局变量
+        let currentTarget = '';
+        let correctIdentityIndex = -1;
+        let currentEvidenceIndex = -1;
+        let currentCorrectKeyword = '';
+        
+        // 作案动机数据
+        const motives = {
+            suspect1: '被死者威胁压榨，无偿劳动，抢夺科研成果',
+            suspect2: '因为揭露死者的阴谋，长期遭受死者粉丝的网络暴力',
+            suspect3: '心爱的小狗被死者蓄意撞死，维权受挫',
+            suspect4: '听信死者的虚假信息，借贷炒股，倾家荡产'
+        };
+        
+        // 证据数据
+        const evidenceData = {
+            suspect1: {
+                keywords: ['社交媒体截图'],
+                completed: [false]
+            },
+            suspect2: {
+                keywords: ['诊断单'],
+                completed: [false]
+            },
+            suspect3: {
+                keywords: ['聊天记录'],
+                completed: [false]
+            },
+            suspect4: {
+                keywords: ['诱导邮件', '财报', '散布虚假信息'],
+                completed: [false, false, false]
+            }
+        };
+        
+        // 身份数据
+        const identityData = {
+            deceased: {
+                options: ['博士生', '企业职员', '大学教授', '网络博主', '不明'],
+                correctIndex: 2,
+                completed: false,
+                value: ''
+            },
+            suspect1: {
+                options: ['博士生', '企业职员', '大学教授', '网络博主', '不明'],
+                correctIndex: 0,
+                completed: false,
+                value: ''
+            },
+            suspect2: {
+                options: ['博士生', '企业职员', '大学教授', '网络博主', '不明'],
+                correctIndex: 3,
+                completed: false,
+                value: ''
+            },
+            suspect3: {
+                options: ['博士生', '企业职员', '大学教授', '网络博主', '不明'],
+                correctIndex: 4,
+                completed: false,
+                value: ''
+            },
+            suspect4: {
+                options: ['博士生', '企业职员', '大学教授', '网络博主', '不明'],
+                correctIndex: 1,
+                completed: false,
+                value: ''
+            }
+        };
+        
+        // 页面加载时恢复状态
+        window.onload = function() {
+            loadStateFromSession();
+            updateAllUI();
+            checkAllCompleted();
+        };
+        
+        // 保存状态到sessionStorage
+        function saveStateToSession() {
+            const state = {
+                identityData: identityData,
+                evidenceData: evidenceData
+            };
+            sessionStorage.setItem('detectiveNotebookState', JSON.stringify(state));
+        }
+        
+        // 从sessionStorage加载状态
+        function loadStateFromSession() {
+            const savedState = sessionStorage.getItem('detectiveNotebookState');
+            if (savedState) {
+                const state = JSON.parse(savedState);
+                Object.assign(identityData, state.identityData);
+                Object.assign(evidenceData, state.evidenceData);
+            }
+        }
+        
+        // 更新所有UI
+        function updateAllUI() {
+            // 更新身份UI
+            for (const [target, data] of Object.entries(identityData)) {
+                if (data.completed) {
+                    const element = document.getElementById(`${target}-identity`);
+                    element.textContent = data.value;
+                    element.classList.remove('cursor-pointer', 'text-accent', 'hover:underline');
+                    element.onclick = null;
+                }
+            }
+            
+            // 更新证据和动机UI
+            for (const [target, data] of Object.entries(evidenceData)) {
+                updateEvidenceUI(target);
+                updateMotiveUI(target);
+            }
+        }
+        
+        // 检查是否所有内容都已完成
+        function checkAllCompleted() {
+            // 检查所有身份是否完成
+            const allIdentitiesCompleted = Object.values(identityData).every(data => data.completed);
+            
+            // 检查所有证据是否完成
+            const allEvidenceCompleted = Object.values(evidenceData).every(data => 
+                data.completed.every(completed => completed)
+            );
+            
+            // 如果都完成了，显示下一页按钮
+            if (allIdentitiesCompleted && allEvidenceCompleted) {
+                document.getElementById('next-button-container').classList.remove('hidden');
+            }
+        }
+        
+        // 跳转到第二幕
+        function goToNextPage() {
+            // 这里修改为你的第二幕页面地址
+            window.location.href = 'page2.html';
+        }
+        
+        // 打开身份选择弹窗
+        function openIdentityModal(target, options, correctIndex) {
+            currentTarget = target;
+            correctIdentityIndex = correctIndex;
+            
+            const modal = document.getElementById('identity-modal');
+            const optionsContainer = document.getElementById('identity-options');
+            const errorMessage = document.getElementById('identity-error');
+            
+            // 清空之前的内容
+            optionsContainer.innerHTML = '';
+            errorMessage.classList.add('hidden');
+            
+            // 生成选项
+            options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'p-3 bg-white/70 rounded-lg cursor-pointer hover:bg-white transition-colors border border-gray-200';
+                optionElement.textContent = option;
+                optionElement.onclick = () => selectIdentity(index, option);
+                optionsContainer.appendChild(optionElement);
+            });
+            
+            // 显示弹窗
+            modal.classList.remove('hidden');
+        }
+        
+        // 选择身份
+        function selectIdentity(index, identity) {
+            const errorMessage = document.getElementById('identity-error');
+            
+            if (index === correctIdentityIndex) {
+                // 正确
+                identityData[currentTarget].completed = true;
+                identityData[currentTarget].value = identity;
+                
+                const element = document.getElementById(`${currentTarget}-identity`);
+                element.textContent = identity;
+                element.classList.remove('cursor-pointer', 'text-accent', 'hover:underline');
+                element.onclick = null;
+                
+                saveStateToSession();
+                closeModal('identity-modal');
+                checkAllCompleted();
+            } else {
+                // 错误
+                errorMessage.classList.remove('hidden');
+            }
+        }
+        
+        // 打开单个证据输入弹窗
+        function openSingleEvidenceModal(target, index, correctKeyword) {
+            // 如果已经完成，不打开弹窗
+            if (evidenceData[target].completed[index]) {
+                return;
+            }
+            
+            currentTarget = target;
+            currentEvidenceIndex = index;
+            currentCorrectKeyword = correctKeyword;
+            
+            const modal = document.getElementById('single-evidence-modal');
+            const input = document.getElementById('single-evidence-input');
+            const errorMessage = document.getElementById('single-evidence-error');
+            
+            // 清空输入框和错误信息
+            input.value = '';
+            errorMessage.classList.add('hidden');
+            
+            // 显示弹窗
+            modal.classList.remove('hidden');
+            input.focus();
+        }
+        
+        // 提交单个证据
+        function submitSingleEvidence() {
+            const input = document.getElementById('single-evidence-input');
+            const errorMessage = document.getElementById('single-evidence-error');
+            const value = input.value.trim();
+            
+            if (value === currentCorrectKeyword) {
+                // 正确
+                evidenceData[currentTarget].completed[currentEvidenceIndex] = true;
+                
+                updateEvidenceUI(currentTarget);
+                updateMotiveUI(currentTarget);
+                
+                saveStateToSession();
+                closeModal('single-evidence-modal');
+                checkAllCompleted();
+            } else {
+                // 错误
+                errorMessage.classList.remove('hidden');
+            }
+        }
+        
+        // 更新证据UI
+        function updateEvidenceUI(target) {
+            const evidenceElement = document.getElementById(`${target}-evidence`);
+            const data = evidenceData[target];
+            
+            evidenceElement.innerHTML = '';
+            
+            for (let i = 0; i < data.keywords.length; i++) {
+                if (data.completed[i]) {
+                    // 已完成的证据
+                    const tag = document.createElement('span');
+                    tag.className = 'keyword-tag';
+                    tag.textContent = data.keywords[i];
+                    evidenceElement.appendChild(tag);
+                } else {
+                    // 未完成的证据
+                    const tag = document.createElement('span');
+                    tag.className = 'keyword-tag clickable';
+                    
+                    if (data.keywords.length === 1) {
+                        tag.innerHTML = '<i class="fa fa-plus mr-1"></i>添加证据';
+                    } else {
+                        tag.innerHTML = `<i class="fa fa-plus mr-1"></i>证据${i + 1}`;
+                    }
+                    
+                    // 使用立即执行函数捕获当前的i值
+                    (function(index, keyword) {
+                        tag.onclick = function() {
+                            openSingleEvidenceModal(target, index, keyword);
+                        };
+                    })(i, data.keywords[i]);
+                    
+                    evidenceElement.appendChild(tag);
+                }
+            }
+        }
+        
+        // 更新作案动机UI
+        function updateMotiveUI(target) {
+            const data = evidenceData[target];
+            const allCompleted = data.completed.every(completed => completed);
+            
+            if (allCompleted) {
+                const motiveElement = document.getElementById(`${target}-motive`);
+                motiveElement.innerHTML = `<i class="fa fa-unlock-alt mr-1 text-success"></i>${motives[target]}`;
+                motiveElement.classList.remove('text-gray-400');
+            }
+        }
+        
+        // 关闭弹窗
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+        
+        // 点击弹窗外部关闭
+        document.getElementById('identity-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal('identity-modal');
+            }
+        });
+        
+        document.getElementById('single-evidence-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal('single-evidence-modal');
+            }
+        });
+        
+        // 回车键提交证据
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !document.getElementById('single-evidence-modal').classList.contains('hidden')) {
+                submitSingleEvidence();
+            }
+        });
+    </script>
+</body>
+</html>
